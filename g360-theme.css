@@ -1,0 +1,218 @@
+/* G360 Theme - Variables CSS para el ecosistema */
+/* Se genera automaticamente del skill seleccionado */
+
+:root {
+  /* Colores base G360 */
+  --g360-bg: #0b1220;
+  --g360-surface: #151e2e;
+  --g360-surface-glass: rgba(21, 30, 46, 0.75);
+  --g360-accent: #00d084;
+  --g360-glow: rgba(0, 208, 132, 0.4);
+  --g360-text: #f0f4f8;
+  --g360-muted: #94a3b8;
+  --g360-border: rgba(255, 255, 255, 0.1);
+
+  /* Colores especificos por skill */
+  --g360-apt: #10b981;
+  --g360-qc: #f59e0b;
+  --g360-ves: #06b6d4;
+
+  /* Layout */
+  --g360-sidebar: 280px;
+  --g360-gap: 16px;
+  --g360-radius: 16px;
+  --g360-radius-sm: 8px;
+  --g360-radius-lg: 24px;
+
+  /* Tipografia */
+  --g360-font: 'Inter', sans-serif;
+  --g360-font-mono: 'JetBrains Mono', monospace;
+  --g360-xs: 0.75rem;
+  --g360-sm: 0.875rem;
+  --g360-base: 1rem;
+  --g360-lg: 1.125rem;
+  --g360-xl: 1.25rem;
+
+  /* Animaciones */
+  --g360-duration-fast: 0.2s;
+  --g360-duration-normal: 0.3s;
+  --g360-duration-slow: 0.5s;
+}
+
+/* Skill: full (G360 - Empresa Principal) */
+.skill-full {
+  --g360-bg: #0b1220;
+  --g360-surface: #151e2e;
+  --g360-surface-glass: rgba(21, 30, 46, 0.75);
+  --g360-accent: #00d084;
+  --g360-glow: rgba(0, 208, 132, 0.4);
+  --g360-text: #f0f4f8;
+  --g360-muted: #94a3b8;
+  --g360-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Tema claro para skill full */
+.skill-full.light {
+  --g360-bg: #f8fafc;
+  --g360-surface: #ffffff;
+  --g360-surface-glass: rgba(255, 255, 255, 0.9);
+  --g360-accent: #008f5d;
+  --g360-glow: rgba(0, 143, 93, 0.2);
+  --g360-text: #0f172a;
+  --g360-muted: #64748b;
+  --g360-border: rgba(15, 23, 42, 0.1);
+}
+
+/* Skill: client - Proyecto Cliente (Powered by G360) */
+/* Contexto Desktop - Modo Oscuro */
+.skill-client {
+  --g360-bg: #0b1220;
+  --g360-surface: #151e2e;
+  --g360-surface-glass: rgba(21, 30, 46, 0.75);
+  --g360-accent: #00d084;
+  --g360-glow: rgba(0, 208, 132, 0.4);
+  --g360-text: #f0f4f8;
+  --g360-muted: #94a3b8;
+  --g360-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Contexto Desktop - Modo Claro */
+.skill-client.light {
+  --g360-bg: #ffffff;
+  --g360-surface: #f8fafc;
+  --g360-surface-glass: rgba(255, 255, 255, 0.9);
+  --g360-accent: #00d084;
+  --g360-glow: rgba(0, 208, 132, 0.2);
+  --g360-text: #1f2937;
+  --g360-muted: #6b7280;
+  --g360-border: rgba(0, 0, 0, 0.1);
+}
+
+/* Contexto Mobile - Modo Claro (Default) */
+.skill-client.mobile {
+  --g360-bg: #f8fafc;
+  --g360-surface: #ffffff;
+  --g360-surface-glass: rgba(255, 255, 255, 0.95);
+  --g360-accent: #008f5d;
+  --g360-glow: rgba(0, 143, 93, 0.2);
+  --g360-text: #1f2937;
+  --g360-muted: #6b7280;
+  --g360-border: rgba(0, 0, 0, 0.08);
+}
+
+/* Contexto Mobile - Modo Oscuro */
+.skill-client.mobile.dark {
+  --g360-bg: #0b1220;
+  --g360-surface: #151e2e;
+  --g360-surface-glass: rgba(21, 30, 46, 0.85);
+  --g360-accent: #00d084;
+  --g360-glow: rgba(0, 208, 132, 0.4);
+  --g360-text: #f0f4f8;
+  --g360-muted: #94a3b8;
+  --g360-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Skill: libre (Sin definir - Neutro/Base) */
+.skill-libre {
+  --g360-bg: #0f172a;
+  --g360-surface: #1e293b;
+  --g360-surface-glass: rgba(30, 41, 59, 0.5);
+  --g360-accent: #94a3b8;
+  --g360-glow: none;
+  --g360-text: #f8fafc;
+  --g360-muted: #64748b;
+  --g360-border: rgba(255, 255, 255, 0.05);
+}
+
+/* Tema claro para skill libre */
+.skill-libre.light {
+  --g360-bg: #ffffff;
+  --g360-surface: #f8fafc;
+  --g360-surface-glass: rgba(248, 250, 252, 0.9);
+  --g360-accent: #2563eb;
+  --g360-glow: none;
+  --g360-text: #1f2937;
+  --g360-muted: #6b7280;
+  --g360-border: rgba(0, 0, 0, 0.1);
+}
+
+/* Componentes base */
+.g360-sidebar {
+  width: var(--g360-sidebar);
+  background: var(--g360-surface-glass);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid var(--g360-border);
+  height: 100vh;
+  position: fixed;
+  left: 0; top: 0;
+  padding: 2rem;
+  z-index: 10;
+}
+
+.g360-card {
+  background: var(--g360-surface-glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--g360-border);
+  border-radius: var(--g360-radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.g360-btn {
+  background: var(--g360-accent);
+  color: var(--g360-bg);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  filter: var(--g360-glow);
+  transition: 0.2s;
+}
+
+.g360-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .g360-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .g360-sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}
