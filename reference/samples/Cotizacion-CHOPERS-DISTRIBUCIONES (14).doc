@@ -1,0 +1,736 @@
+
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
+<head>
+  <meta charset="utf-8">
+  <title>Cotización CIPSA - CHOPERS DISTRIBUCIONES</title>
+  <meta name="Author" content="Corporación de Industrias Plásticas S.A.">
+  <style>
+    /* =================================================================
+       ESTILOS CORPORATIVOS - Fieles al VBA v4.3
+       ================================================================= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    @page { size: A4; margin: 1.5cm 2cm 2cm 2cm; }
+    
+    body { 
+      font-family: 'Calibri', Arial, sans-serif; 
+      font-size: 11pt; 
+      line-height: 1.2; 
+      color: #000000;
+      background: white;
+    }
+    
+    /* ENCABEZADO CORPORATIVO */
+    .header-vba { 
+      margin-bottom: 6px; 
+      border-bottom: 1px solid #CCCCCC;
+      padding-bottom: 5px;
+    }
+    .logo-img { 
+      width: 50px; 
+      height: auto; 
+      display: block;
+      margin-bottom: 3px;
+    }
+    .empresa-nombre { 
+      font-size: 12pt; 
+      font-weight: 700; 
+      color: #333333; 
+    }
+    
+    /* DATOS DEL DOCUMENTO */
+    .doc-line { 
+      margin-bottom: 6px; 
+      font-size: 11pt;
+      white-space: pre;
+    }
+    }
+    
+    /* DATOS DEL DESTINATARIO */
+    .cliente-bloque {
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .cliente-label { 
+      font-weight: 700; 
+      color: #333333;
+      margin-bottom: 0;
+    }
+    .cliente-nombre { 
+      font-weight: 600;
+      margin: 0;
+    }
+    .cliente-doc { 
+      font-size: 10pt;
+      color: #666;
+      margin: 0;
+    }
+    .saludo {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    
+    /* INTRODUCCIÓN */
+    .introduccion { 
+      margin-bottom: 10px; 
+      font-size: 11pt;
+      line-height: 1.3;
+    }
+    
+    /* CIERRE */
+    .cierre { 
+      margin-top: 10px; 
+      margin-bottom: 15px; 
+      font-size: 11pt;
+    }
+    
+    /* TABLA DE PRODUCTOS - 7 COLUMNAS VBA STYLE */
+    .product-table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-bottom: 8px;
+      font-size: 9pt;
+      border: 1px solid #CCCCCC;
+    }
+    .product-table th { 
+      background: #333333; 
+      color: #FFFFFF; 
+      padding: 1px 2px; 
+      text-align: center; 
+      font-weight: 700;
+      font-size: 8pt;
+      border: 1px solid #333333;
+    }
+    .product-table td { 
+      padding: 1px 2px; 
+      border: 1px solid #CCCCCC; 
+      text-align: center;
+      font-size: 9pt;
+    }
+    .product-table td.text-left { text-align: left; padding-left: 4px; }
+    .product-table td.text-right { text-align: right; padding-right: 4px; }
+    .product-table td.text-center { text-align: center; }
+    .product-table tr:nth-child(even) {
+      background: #F0F0F0; 
+    }
+    
+    /* TOTALES VBA STYLE */
+    .totals-section { 
+      margin-left: auto; 
+      width: 260px; 
+      margin-bottom: 10px;
+    }
+    .totals-table { 
+      width: 100%; 
+      border-collapse: collapse;
+      border: 1px solid #CCCCCC;
+    }
+    .totals-table td { 
+      padding: 4px 8px; 
+      border: 1px solid #CCCCCC;
+    }
+    .totals-table .label { 
+      font-weight: 700; 
+      text-align: right; 
+      color: #333333;
+      background: #FFFFFF;
+      font-size: 10pt;
+    }
+    .totals-table .value { 
+      text-align: right; 
+      font-weight: 700;
+      font-size: 10pt;
+      color: #FF0000;
+    }
+    .totals-table .igv-row .label { 
+      font-size: 10pt;
+      color: #333333;
+    }
+    .totals-table .igv-row .value { 
+      font-size: 10pt;
+      color: #FF0000;
+    }
+    
+    /* CONDICIONES COMERCIALES */
+    .conditions { 
+      margin-top: 10px; 
+      margin-bottom: 10px;
+    }
+    .conditions-title { 
+      font-size: 10pt; 
+      font-weight: 700;
+      color: #333333; 
+      margin-bottom: 4px;
+    }
+    .conditions-list { 
+      font-size: 9pt; 
+      list-style: none;
+      padding-left: 0;
+    }
+    .conditions-list li { 
+      margin: 2px 0; 
+      color: #000000;
+      padding-left: 15px;
+      position: relative;
+    }
+    .conditions-list li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+    
+    /* FIRMA */
+    .firma { 
+      margin-top: 20px; 
+    }
+    .firma-line { 
+      border-top: 1px solid #333333;
+      width: 250px;
+      margin-top: 25px;
+      margin-bottom: 5px;
+    }
+    .firma-nombre { 
+      font-weight: 700;
+      font-size: 11pt;
+      color: #333333;
+    }
+    .firma-cargo { 
+      font-size: 10pt; 
+      color: #333333;
+    }
+    .firma-contacto { 
+      font-size: 9pt; 
+      color: #333333;
+      margin-top: 5px;
+    }
+    
+    /* FOOTER VBA STYLE */
+    .footer-vba { 
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center; 
+      font-size: 8pt; 
+      color: #666;
+      border-top: 1px solid #ccc;
+      padding-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Encabezado Corporativo -->
+  <div class="header-vba">
+    <img src="data:image/png;base64,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" alt="CIPSA Logo" class="logo-img">
+    <p class="empresa-nombre">CORPORACIÓN DE INDUSTRIAS PLÁSTICAS S.A.</p>
+  </div>
+
+  <!-- Datos del Documento -->
+  <p class="doc-line">COTIZACIÓN N°: CC000103					jueves, 09 de abril de 2026</p>
+
+  <!-- Datos del Destinatario -->
+  <div class="cliente-bloque">
+    <p class="cliente-label">SEÑOR(ES):</p>
+    <p class="cliente-nombre">CHOPERS DISTRIBUCIONES</p>
+    <p class="cliente-doc">RUC: 20100654025</p>
+  </div>
+
+  <p class="saludo">Estimados Señores:</p>
+
+  <!-- Introducción -->
+  <div class="introduccion">
+    <p>Es un placer dirigirnos a usted para presentar nuestra propuesta comercial correspondiente a los productos de interés que hemos conversado previamente.</p>
+    <p style="margin-top: 5px;">A continuación detallamos las condiciones y precios vigentes para su consideración:</p>
+  </div>
+
+  <!-- Tabla de Productos - 7 Columnas VBA Style -->
+  <table class="product-table">
+    <thead>
+      <tr>
+        <th style="width: 5%;">ITEM</th>
+        <th style="width: 10%;">CÓDIGO</th>
+        <th style="width: 40%;">DESCRIPCIÓN</th>
+        <th style="width: 8%;">CANT.</th>
+        <th style="width: 7%;">U/M</th>
+        <th style="width: 15%;">P. UNIT.</th>
+        <th style="width: 15%;">TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td class="text-center">1</td>
+          <td class="text-center">76191</td>
+          <td class="text-left">MARCADOR VFAN BRUSH MARKER DUO NEON - EST 6</td>
+          <td class="text-center">48</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 3.14</td>
+          <td class="text-right">S/ 150.72</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">2</td>
+          <td class="text-center">72008</td>
+          <td class="text-left">GOMA EN BARRA CIRCULAR VINIFAN FORTE 40G</td>
+          <td class="text-center">864</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 1.75</td>
+          <td class="text-right">S/ 1507.84</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">3</td>
+          <td class="text-center">76121</td>
+          <td class="text-left">RESALTADOR VFAN TRI BRILLIANT 49 PASTEL ESTUCHE X6</td>
+          <td class="text-center">144</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 6.51</td>
+          <td class="text-right">S/ 936.81</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">4</td>
+          <td class="text-center">76193</td>
+          <td class="text-left">MARCADOR VFAN BRUSH MARKER DUO MIX - EST 12</td>
+          <td class="text-center">48</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 9.04</td>
+          <td class="text-right">S/ 433.95</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">5</td>
+          <td class="text-center">76198</td>
+          <td class="text-left">MARCADOR PUNTA FINA VFAN FINETIP 709 - EST X 36</td>
+          <td class="text-center">12</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 12.46</td>
+          <td class="text-right">S/ 149.52</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">6</td>
+          <td class="text-center">76225</td>
+          <td class="text-left">RESALTADOR VINIFAN MILDLINER CALIDOS - ESTUCHE X 24</td>
+          <td class="text-center">12</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 19.89</td>
+          <td class="text-right">S/ 238.65</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">7</td>
+          <td class="text-center">76226</td>
+          <td class="text-left">RESALTADOR VINIFAN MILDLINER FRIOS - ESTUCHE X 24</td>
+          <td class="text-center">12</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 19.89</td>
+          <td class="text-right">S/ 238.65</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">8</td>
+          <td class="text-center">76227</td>
+          <td class="text-left">RESALTADOR VINIFAN MILDLINER MIX - ESTUCHE X 12</td>
+          <td class="text-center">24</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 12.38</td>
+          <td class="text-right">S/ 297.20</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">9</td>
+          <td class="text-center">76242</td>
+          <td class="text-left">MARCADOR VFAN SKETCH MARKER LINE CANDY ESTUCHE X12</td>
+          <td class="text-center">24</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 10.77</td>
+          <td class="text-right">S/ 258.59</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">10</td>
+          <td class="text-center">76248</td>
+          <td class="text-left">MARCADOR VFAN SKETCH MARKER LINE ARTSY ESTUCHE X12</td>
+          <td class="text-center">24</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 10.77</td>
+          <td class="text-right">S/ 258.59</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">11</td>
+          <td class="text-center">77136</td>
+          <td class="text-left">PLUMON VINIFAN CHILDREN 47 EST 12</td>
+          <td class="text-center">300</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 7.22</td>
+          <td class="text-right">S/ 2166.24</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">12</td>
+          <td class="text-center">77264</td>
+          <td class="text-left">PLUMON VINIFAN WONDER TIPS EST100</td>
+          <td class="text-center">12</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 48.69</td>
+          <td class="text-right">S/ 584.24</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">13</td>
+          <td class="text-center">79117</td>
+          <td class="text-left">TIJERA VINIFAN LLAMITA BLISTER</td>
+          <td class="text-center">24</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 3.74</td>
+          <td class="text-right">S/ 89.75</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">14</td>
+          <td class="text-center">79127</td>
+          <td class="text-left">TIJERA VINIFAN NEON</td>
+          <td class="text-center">360</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 0.87</td>
+          <td class="text-right">S/ 314.13</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">15</td>
+          <td class="text-center">79150</td>
+          <td class="text-left">TIJERA VINIFAN JIRAFA</td>
+          <td class="text-center">24</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 3.22</td>
+          <td class="text-right">S/ 77.39</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">16</td>
+          <td class="text-center">79151</td>
+          <td class="text-left">TIJERA VINIFAN DINOSAURIO</td>
+          <td class="text-center">48</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 3.22</td>
+          <td class="text-right">S/ 154.78</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">17</td>
+          <td class="text-center">85229</td>
+          <td class="text-left">REPUESTO CUCHILLA (NEGRO) ASBB-10 X 10</td>
+          <td class="text-center">60</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 5.79</td>
+          <td class="text-right">S/ 347.16</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">18</td>
+          <td class="text-center">85241</td>
+          <td class="text-left">REPUESTO CUCHILLA (NEGRO) LBB-10 X 10</td>
+          <td class="text-center">80</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 12.00</td>
+          <td class="text-right">S/ 960.18</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">19</td>
+          <td class="text-center">85288</td>
+          <td class="text-left">ENGRAPADOR ALICATE K1 CLASICA</td>
+          <td class="text-center">440</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 41.97</td>
+          <td class="text-right">S/ 18464.78</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">20</td>
+          <td class="text-center">76089</td>
+          <td class="text-left">MARCADOR PUNTA FINA VFAN FINETIP 709 - EST X 12</td>
+          <td class="text-center">48</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 3.58</td>
+          <td class="text-right">S/ 171.65</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">21</td>
+          <td class="text-center">76090</td>
+          <td class="text-left">MARCADOR PUNTA FINA VFAN FINETIP 709 - EST X 24</td>
+          <td class="text-center">48</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 6.36</td>
+          <td class="text-right">S/ 305.28</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">22</td>
+          <td class="text-center">76192</td>
+          <td class="text-left">MARCADOR VFAN BRUSH MARKER DUO PASTEL - EST 6</td>
+          <td class="text-center">48</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 3.13</td>
+          <td class="text-right">S/ 150.24</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">23</td>
+          <td class="text-center">77263</td>
+          <td class="text-left">PLUMON VINIFAN WONDER TIPS EST50</td>
+          <td class="text-center">24</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 21.10</td>
+          <td class="text-right">S/ 506.34</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">24</td>
+          <td class="text-center">79025</td>
+          <td class="text-left">TIJERA VINIFAN MARIPOSA</td>
+          <td class="text-center">24</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 2.42</td>
+          <td class="text-right">S/ 58.08</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">25</td>
+          <td class="text-center">79044</td>
+          <td class="text-left">TIJERA VINIFAN PRINCESA</td>
+          <td class="text-center">72</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 2.42</td>
+          <td class="text-right">S/ 174.25</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">26</td>
+          <td class="text-center">79076</td>
+          <td class="text-left">BLISTER X3 TIJERAS CON FORMAS VINIFAN</td>
+          <td class="text-center">48</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 4.81</td>
+          <td class="text-right">S/ 230.65</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">27</td>
+          <td class="text-center">79126</td>
+          <td class="text-left">TIJERA VINIFAN PASTEL</td>
+          <td class="text-center">120</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 0.87</td>
+          <td class="text-right">S/ 104.71</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">28</td>
+          <td class="text-center">79159</td>
+          <td class="text-left">TAJADOR VINIFAN DOBLE ASTRONAUTA CON BORRADOR DISPLAY X20</td>
+          <td class="text-center">12</td>
+          <td class="text-center">DISPLAY</td>
+          <td class="text-right">S/ 48.69</td>
+          <td class="text-right">S/ 584.24</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">29</td>
+          <td class="text-center">79160</td>
+          <td class="text-left">TAJADOR VINIFAN SIMPLE PHOTOCAM CON BORRADOR DISPLAY X24</td>
+          <td class="text-center">12</td>
+          <td class="text-center">DISPLAY</td>
+          <td class="text-right">S/ 58.42</td>
+          <td class="text-right">S/ 701.08</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">30</td>
+          <td class="text-center">85304</td>
+          <td class="text-left">ENGRAPADOR ESCRITORIO K2 (100% METAL)</td>
+          <td class="text-center">12</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 115.46</td>
+          <td class="text-right">S/ 1385.57</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">31</td>
+          <td class="text-center">85693</td>
+          <td class="text-left">ENGRAPADOR ALICATE K1 VERDE PASTEL</td>
+          <td class="text-center">40</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 41.97</td>
+          <td class="text-right">S/ 1678.62</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">32</td>
+          <td class="text-center">85695</td>
+          <td class="text-left">ENGRAPADOR ALICATE K1 CELESTE</td>
+          <td class="text-center">80</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 41.97</td>
+          <td class="text-right">S/ 3357.23</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">33</td>
+          <td class="text-center">85696</td>
+          <td class="text-left">ENGRAPADOR ALICATE K1 NEGRO</td>
+          <td class="text-center">80</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 41.97</td>
+          <td class="text-right">S/ 3357.23</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">34</td>
+          <td class="text-center">72017</td>
+          <td class="text-left">GOMA ESCARCHADA STAR BLISTER X 6UND</td>
+          <td class="text-center">72</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 2.93</td>
+          <td class="text-right">S/ 210.79</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">35</td>
+          <td class="text-center">76236</td>
+          <td class="text-left">MARCADOR VFAN SKETCH MARKER LINE PRIMAVERAL ESTUCHE X12</td>
+          <td class="text-center">24</td>
+          <td class="text-center">ESTUCHE</td>
+          <td class="text-right">S/ 10.77</td>
+          <td class="text-right">S/ 258.59</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">36</td>
+          <td class="text-center">78456</td>
+          <td class="text-left">PORTAPAPELES VINIFAN A4 X 10 UND NP</td>
+          <td class="text-center">5000</td>
+          <td class="text-center">BOLSAS</td>
+          <td class="text-right">S/ 2.94</td>
+          <td class="text-right">S/ 14724.18</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">37</td>
+          <td class="text-center">79024</td>
+          <td class="text-left">TIJERA VINIFAN TIGRE</td>
+          <td class="text-center">48</td>
+          <td class="text-center">BLISTER</td>
+          <td class="text-right">S/ 2.42</td>
+          <td class="text-right">S/ 116.17</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">38</td>
+          <td class="text-center">85697</td>
+          <td class="text-left">ENGRAPADOR ALICATE K1 ROSADO</td>
+          <td class="text-center">80</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 41.97</td>
+          <td class="text-right">S/ 3357.23</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">39</td>
+          <td class="text-center">78458</td>
+          <td class="text-left">PORTAPAPELES TOP A4 X 10 UND NP</td>
+          <td class="text-center">2000</td>
+          <td class="text-center">BOLSAS</td>
+          <td class="text-right">S/ 2.44</td>
+          <td class="text-right">S/ 4882.05</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">40</td>
+          <td class="text-center">72015</td>
+          <td class="text-left">SILICONA LIQUIDA VINIFAN 250 ML</td>
+          <td class="text-center">864</td>
+          <td class="text-center">UNIDAD</td>
+          <td class="text-right">S/ 2.71</td>
+          <td class="text-right">S/ 2341.01</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">41</td>
+          <td class="text-center">79161</td>
+          <td class="text-left">TAJADOR VINIFAN DOBLE SCHOOL BAG CON BORRADOR DISPLAY X20</td>
+          <td class="text-center">12</td>
+          <td class="text-center">DISPLAY</td>
+          <td class="text-right">S/ 43.75</td>
+          <td class="text-right">S/ 524.97</td>
+        </tr>
+        
+        <tr>
+          <td class="text-center">42</td>
+          <td class="text-center">79112</td>
+          <td class="text-left">BORRADOR NEGRO GRANDE VINIFAN DISPLAY X20</td>
+          <td class="text-center">20</td>
+          <td class="text-center">DISPLAY</td>
+          <td class="text-right">S/ 6.31</td>
+          <td class="text-right">S/ 126.14</td>
+        </tr>
+        
+    </tbody>
+  </table>
+
+  <!-- Totales VBA Style -->
+  <div class="totals-section">
+    <table class="totals-table">
+      <tr>
+        <td class="label">SUBTOTAL</td>
+        <td class="value">S/ 66935.47</td>
+      </tr>
+      <tr class="igv-row">
+        <td class="label">IGV (18%)</td>
+        <td class="value">S/ 12048.38</td>
+      </tr>
+      <tr>
+        <td class="label" style="font-size: 12pt;">TOTAL</td>
+        <td class="value" style="font-size: 12pt;">S/ 78983.85</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Condiciones Comerciales Mejoradas -->
+  <div class="conditions">
+    <p class="conditions-title">CONDICIONES COMERCIALES</p>
+    <ul class="conditions-list">
+      <li><strong>Validez de la oferta:</strong> 30 días calendario contados a partir de la fecha de emisión</li>
+      <li><strong>Forma de pago:</strong> Contado al momento de la entrega</li>
+      <li><strong>Plazo de entrega:</strong> Inmediata previa confirmación de orden de compra</li>
+      <li><strong>Garantía:</strong> 12 meses contra defectos de fabricación</li>
+      <li><strong>Precios:</strong> Incluyen IGV y están sujetos a variación sin previo aviso</li>
+    </ul>
+  </div>
+
+  <!-- Cierre de Cortesía -->
+  <div class="cierre">
+    <p>Quedamos atentos a sus comentarios.</p>
+    <p style="margin-top: 5px;">Sin otro particular por el momento, nos despedimos cordialmente.</p>
+  </div>
+
+  <!-- Firma VBA Style -->
+  <div class="firma">
+    <p>Atentamente,</p>
+    <div class="firma-line"></div>
+    <p class="firma-nombre">Vendedor</p>
+    <p class="firma-cargo">Representante de Ventas</p>
+    <p class="firma-contacto">T: ______ | E: ______</p>
+  </div>
+
+  <!-- Footer Corporativo Actualizado -->
+  <div class="footer-vba">
+    <p>Av. Frutales 419 - Urb. El Artesano - Ate, Lima, Perú | RUC: 20100654025 | www.cipsa.com.pe</p>
+  </div>
+</body>
+</html>
+  

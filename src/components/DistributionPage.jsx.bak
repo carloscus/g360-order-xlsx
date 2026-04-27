@@ -1,0 +1,778 @@
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { loadFromStorage, setTareaPendiente } from '../hooks/usePedido'
+import { ProductTable } from './ProductTable'
+import { SubtotalCard, TotalIGVCard, AvailableTotalCard } from './TotalsPanel'
+import { PaymentSplit } from './PaymentSplit'
+import { generarXLSX } from '../utils/xlsxGenerator'
+import catalogoData from '../data/catalogo_productos.json'
+
+const CHART_COLORS = [
+  '#00d084', '#f43f5e', '#8b5cf6', '#f59e0b', '#06b6d4',
+  '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
+  '#eab308', '#06b6d4', '#a855f7', '#ef4444', '#22c55e',
+  '#3b82f6', '#d946ef', '#14b8a6', '#f97316', '#a3e635'
+]
+
+const IVA = 1.18
+
+const catalogoMap = new Map()
+catalogoData.productos.forEach(p => {
+  catalogoMap.set(p.sku, p)
+})
+
+const calcularProducto = (p) => {
+  const subtotal = p.cantidad * p.precioUnitario
+  const valorVenta = subtotal * (1 - p.descuento1 / 100) * (1 - p.descuento2 / 100)
+  const stock = p.stock || 0
+  const estadoStock = stock >= p.cantidad * 1.1 ? 'OK' : stock >= p.cantidad * 0.9 ? 'AJ' : 'Agotado'
+  const prodCatalogo = catalogoMap.get(p.codigo)
+  const linea = prodCatalogo?.linea || p.linea || p.descripcion?.split(' ')[0] || 'Sin Línea'
+  return { 
+    ...p, 
+    valorVenta, 
+    precioVenta: valorVenta * IVA, 
+    estadoStock, 
+    linea,
+    pesoKg: prodCatalogo?.peso_kg || 0,
+    unBx: prodCatalogo?.un_bx || 1
+  }
+}
+
+export const DistributionPage = ({ darkTheme = true, toggleTheme }) => {
+  const isDark = darkTheme !== false
+  const navigate = useNavigate()
+  const [pedidoData, setPedidoData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [cuotas, setCuotas] = useState([])
+
+  useEffect(() => {
+    const data = loadFromStorage()
+    setPedidoData(data)
+    setLoading(false)
+  }, [])
+
+  const getCliente = () => pedidoData?.cliente || ''
+  const getRuc = () => pedidoData?.ruc || ''
+  const getNumeroPedido = () => pedidoData?.numeroPedido || ''
+  const getVendedor = () => pedidoData?.vendedor || ''
+  const getEmailVendedor = () => pedidoData?.emailVendedor || ''
+  const getTelefonoVendedor = () => pedidoData?.telefonoVendedor || ''
+  const getProductos = () => pedidoData?.productos || []
+
+  const handleCuotasChange = (nuevasCuotas) => {
+    setCuotas(nuevasCuotas)
+  }
+
+  const handleVolver = () => {
+    setTareaPendiente(true)
+    navigate('/')
+  }
+
+  const handleFinalizar = () => {
+    setTareaPendiente(false)
+    navigate('/')
+  }
+
+  const handleDownloadXLSX = async () => {
+    const cliente = getCliente()
+    const ruc = getRuc()
+    const numeroPedido = getNumeroPedido()
+    const vendedor = getVendedor()
+    const emailVendedor = getEmailVendedor()
+    const telefonoVendedor = getTelefonoVendedor()
+    const productos = getProductos()
+
+    if (!productos || productos.length === 0) {
+      alert('No hay productos para generar el Excel.')
+      return
+    }
+
+    try {
+      await generarXLSX({
+        cliente,
+        documento: ruc,
+        numeroPedido,
+        vendedor,
+        emailVendedor,
+        telefonoVendedor,
+        productos,
+        totales,
+        tipo: 'cotizacion'
+      })
+    } catch (error) {
+      console.error('Error generando XLSX:', error)
+      alert('Error al generar el archivo Excel')
+    }
+  }
+
+  const handleDownloadHTML = () => {
+    const cliente = getCliente()
+    const ruc = getRuc()
+    const numeroPedido = getNumeroPedido()
+    
+    if (!cliente && !ruc && !numeroPedido) {
+      alert('Faltan datos del cliente. Complete los datos en la página principal.')
+      navigate('/')
+      return
+    }
+
+    const productos = getProductos()
+    if (!productos || productos.length === 0) {
+      alert('No hay productos para generar el cronograma.')
+      navigate('/')
+      return
+    }
+
+    const respuesta = prompt('¿Qué tema deseas para el HTML?\n1 = Oscuro\n2 = Claro\n(Presiona Enter para por defecto - Oscuro)', '1')
+    let htmlDarkTheme = isDark
+    if (respuesta === '2') {
+      htmlDarkTheme = false
+    } else if (respuesta !== '1') {
+      return
+    }
+
+    const vendedor = getVendedor()
+    const emailVendedor = getEmailVendedor()
+    const telefonoVendedor = getTelefonoVendedor()
+    
+    const now = new Date()
+    const dia = String(now.getDate()).padStart(2, '0')
+    const mes = String(now.getMonth() + 1).padStart(2, '0')
+    const anio = now.getFullYear()
+    const fechaArchivo = `${dia}${mes}${anio}`
+    
+    const rucLimpio = ruc ? ruc.replace(/\D/g, '') : ''
+    const documentoValido = (rucLimpio.length === 8 || rucLimpio.length === 11) ? rucLimpio : 'DOC'
+    
+    const pedidoLimpio = numeroPedido 
+      ? numeroPedido.replace(/[^a-zA-Z0-9\-_]/g, '').trim().substring(0, 12)
+      : 'PEDIDO'
+    
+    const nombreArchivo = `cronograma_${documentoValido}_${pedidoLimpio}_${fechaArchivo}.html`
+
+    const bgColor = htmlDarkTheme ? '#0f172a' : '#f8fafc'
+    const surfaceColor = htmlDarkTheme ? '#1e293b' : '#ffffff'
+    const textColor = htmlDarkTheme ? '#e2e8f0' : '#1e293b'
+    const mutedColor = htmlDarkTheme ? '#94a3b8' : '#64748b'
+    const borderColor = htmlDarkTheme ? '#334155' : '#e2e8f0'
+    const accentColor = '#00d084'
+    const radius = 90
+    const cx = 110
+    const cy = 110
+
+    const segmentosSVG = datosLinea.reduce((acc, d, idx) => {
+      const angle = (d.porcentaje / 100) * 360
+      const prevAngle = idx === 0 ? -90 : acc[idx - 1].endAngle
+      const startAngle = prevAngle
+      const endAngle = startAngle + angle
+      const x1 = cx + radius * Math.cos(startAngle * Math.PI / 180)
+      const y1 = cy + radius * Math.sin(startAngle * Math.PI / 180)
+      const x2 = cx + radius * Math.cos(endAngle * Math.PI / 180)
+      const y2 = cy + radius * Math.sin(endAngle * Math.PI / 180)
+      const largeArc = angle > 180 ? 1 : 0
+      const path = `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`
+      return [...acc, { path, color: d.color, endAngle, ...d }]
+    }, [])
+
+    const htmlContent = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedido ${numeroPedido || ''} - Distribución</title>
+  <style>
+    :root { --bg: ${bgColor}; --surface: ${surfaceColor}; --text: ${textColor}; --muted: ${mutedColor}; --border: ${borderColor}; --accent: ${accentColor}; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 24px; line-height: 1.5; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--accent); }
+    .header h1 { font-size: 26px; color: var(--accent); margin-bottom: 4px; }
+    .header-meta { font-size: 12px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+    .badge { background: var(--accent); color: var(--bg); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+    .section { margin-bottom: 28px; }
+    .section-title { font-size: 16px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    .client-item { background: var(--surface); padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); }
+    .client-item label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; font-weight: 600; }
+    .client-item span { font-size: 15px; font-weight: 600; }
+    .kpis { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+    .kpi-card { flex: 1 1 180px; background: var(--surface); border-radius: 10px; padding: 16px 20px; border: 1px solid var(--border); text-align: center; }
+    .kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .kpi-value { font-size: 24px; font-weight: 700; color: var(--accent); }
+    .totals-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .total-card { background: var(--surface); padding: 18px; border-radius: 12px; flex: 1; min-width: 160px; text-align: center; border: 1px solid var(--border); }
+    .total-card.main { background: linear-gradient(135deg, ${accentColor}20, ${accentColor}10); border: 2px solid var(--accent); }
+    .total-card h4 { color: var(--muted); font-size: 10px; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
+    .total-card .value { font-size: 22px; font-weight: 700; color: var(--accent); }
+    .chart-ranking { display: flex; gap: 20px; flex-wrap: wrap; }
+    .chart-wrapper { flex: 0 0 280px; background: var(--surface); border-radius: 12px; padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; }
+    .chart-wrapper h4 { margin-bottom: 16px; font-size: 14px; color: var(--muted); }
+    .chart-pie { width: 220px; height: 220px; }
+    .chart-total-info { margin-top: 16px; font-size: 13px; color: var(--accent); font-weight: 600; }
+    .ranking-wrapper { flex: 1 1 400px; background: var(--surface); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+    .ranking-wrapper h4 { margin-bottom: 12px; font-size: 14px; color: var(--muted); }
+    .ranking-header { display: flex; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .ranking-header .rh-label { width: 48%; display: flex; align-items: center; gap: 6px; }
+    .ranking-header .rh-values { width: 52%; display: flex; justify-content: flex-end; gap: 6px; }
+    .ranking-header span { font-size: 9px; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+    .ranking-header .rh-values span { text-align: right; }
+    .ranking-header .rh-values .rh-pct { width: 40px; }
+    .ranking-header .rh-values .rh-monto { width: 60px; }
+    .ranking-header .rh-values .rh-bx { width: 32px; }
+    .ranking-header .rh-values .rh-kg { width: 36px; }
+    .ranking-row { display: flex; padding: 4px 0; align-items: center; }
+    .ranking-row .rr-label { width: 48%; display: flex; align-items: center; gap: 6px; }
+    .ranking-row .rr-values { width: 52%; display: flex; justify-content: flex-end; gap: 6px; }
+    .ranking-row span { font-size: 12px; }
+    .ranking-row .rr-num { width: 20px; text-align: right; color: var(--muted); font-weight: 700; }
+    .ranking-row .rr-bar { width: 44px; height: 10px; background: rgba(128,128,128,0.15); border-radius: 2px; position: relative; flex-shrink: 0; }
+    .ranking-row .rr-bar-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 2px; }
+    .ranking-row .rr-name { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ranking-row .rr-values span { text-align: right; }
+    .ranking-row .rr-pct { width: 40px; font-weight: 700; }
+    .ranking-row .rr-monto { width: 60px; }
+    .ranking-row .rr-bx { width: 32px; color: var(--muted); }
+    .ranking-row .rr-kg { width: 36px; color: var(--muted); }
+    .ranking-total { display: flex; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 8px; align-items: center; }
+    .ranking-total .rt-label { width: 48%; display: flex; align-items: center; gap: 8px; }
+    .ranking-total .rt-values { width: 52%; display: flex; justify-content: flex-end; gap: 6px; }
+    .ranking-total span { font-size: 12px; font-weight: 700; }
+    .ranking-total .rt-bar { width: 52px; height: 3px; background: var(--accent); border-radius: 2px; }
+    .ranking-total .rt-name { color: var(--text); }
+    .ranking-total .rt-values span { text-align: right; }
+    .ranking-total .rt-pct { width: 40px; color: var(--accent); }
+    .ranking-total .rt-monto { width: 60px; color: var(--text); }
+    .ranking-total .rt-bx { width: 32px; color: var(--text); }
+    .ranking-total .rt-kg { width: 36px; color: var(--text); }
+    .categories-bar { background: var(--surface); border-radius: 10px; padding: 14px 18px; border: 1px solid var(--border); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .cat-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+    .cat-item { display: flex; align-items: center; gap: 6px; }
+    .cat-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .cat-name { font-size: 12px; }
+    .cat-pct { font-size: 12px; font-weight: 600; }
+    .cat-detail { font-size: 10px; color: var(--muted); }
+    .cat-total { font-size: 12px; font-weight: 600; margin-left: auto; }
+    .table-container { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    thead th { background: var(--border); padding: 10px 8px; text-align: left; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; white-space: nowrap; }
+    tbody td { padding: 10px 8px; border-top: 1px solid var(--border); }
+    tbody tr:nth-child(even) { background: rgba(128,128,128,0.05); }
+    .stock-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+    .stock-dot.stock-ok { background: #22c55e; }
+    .stock-dot.stock-aj { background: #f59e0b; }
+    .stock-dot.stock-agotado { background: #ef4444; }
+    tfoot td { padding: 12px 8px; font-weight: 700; border-top: 2px solid var(--accent); background: var(--surface); }
+    tfoot .tf-label { color: var(--muted); text-transform: uppercase; font-size: 10px; }
+    tfoot .tf-value { color: var(--accent); text-align: right; font-size: 13px; }
+    .footer { text-align: center; padding: 24px 0 8px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 32px; }
+    .print-btn { background: var(--accent); color: var(--bg); border: none; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
+    .print-btn:hover { opacity: 0.9; }
+    @media (max-width: 768px) {
+      .header { flex-direction: column; gap: 12px; }
+      .chart-ranking { flex-direction: column; }
+      .chart-wrapper { flex: none; width: 100%; }
+      .ranking-wrapper { flex: none; width: 100%; }
+      .client-grid { grid-template-columns: 1fr; }
+      .totals-row { flex-direction: column; }
+      .kpis { flex-direction: column; }
+    }
+    @media print {
+      @page { size: A4; margin: 15mm 12mm 15mm 12mm; }
+      body { background: white !important; color: #000 !important; padding: 0 !important; font-size: 10pt; }
+      .container { max-width: 100% !important; }
+      .print-btn { display: none !important; }
+      * { background: transparent !important; color: #000 !important; box-shadow: none !important; text-shadow: none !important; }
+      .header { border-bottom-color: #000 !important; }
+      .header h1 { color: #000 !important; font-size: 18pt !important; }
+      .header-meta { color: #555 !important; }
+      .badge { border: 1px solid #000 !important; color: #000 !important; }
+      .section-title { color: #000 !important; border-bottom-color: #000 !important; font-size: 13pt !important; }
+      .client-item { border-color: #ccc !important; }
+      .client-item label { color: #555 !important; }
+      .client-item span { color: #000 !important; }
+      .kpi-card { border-color: #ccc !important; }
+      .kpi-label { color: #555 !important; }
+      .kpi-value { color: #000 !important; }
+      .total-card { border-color: #ccc !important; }
+      .total-card h4 { color: #555 !important; }
+      .total-card .value { color: #000 !important; }
+      .chart-wrapper { border-color: #ccc !important; }
+      .chart-wrapper h4 { color: #555 !important; }
+      .ranking-wrapper { border-color: #ccc !important; }
+      .ranking-wrapper h4 { color: #555 !important; }
+      .ranking-header { border-bottom-color: #ccc !important; }
+      .ranking-header span { color: #555 !important; }
+      .ranking-total { border-top-color: #ccc !important; }
+      .categories-bar { border-color: #ccc !important; }
+      .cat-label { color: #555 !important; }
+      .cat-name { color: #000 !important; }
+      .cat-pct { color: #000 !important; }
+      .cat-detail { color: #555 !important; }
+      .cat-total { color: #000 !important; }
+      table { font-size: 8pt !important; }
+      thead th { background: #333 !important; color: white !important; font-size: 7pt !important; }
+      tbody td { border-color: #ccc !important; }
+      tbody tr:nth-child(even) { background: #f5f5f5 !important; }
+      tfoot td { border-color: #000 !important; }
+      tfoot .tf-label { color: #555 !important; }
+      tfoot .tf-value { color: #000 !important; }
+      .footer { color: #666 !important; border-color: #ccc !important; }
+      .section { page-break-inside: avoid; }
+      thead { display: table-header-group; }
+      tr { page-break-inside: avoid; }
+      h3, h4 { page-break-after: avoid; }
+      .chart-ranking { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="print-btn" onclick="window.print()">🖨️ Imprimir / Guardar como PDF</button>
+    <div class="header">
+      <div>
+        <h1>📊 ${cliente || 'Pedido'}</h1>
+        <div class="header-meta">
+          ${ruc ? '<span>RUC: ' + ruc + '</span>' : ''}
+          ${numeroPedido ? '<span>Pedido: ' + numeroPedido + '</span>' : ''}
+          ${vendedor ? '<span>Vendedor: ' + vendedor + '</span>' : ''}
+          ${emailVendedor ? '<span>Email: ' + emailVendedor + '</span>' : ''}
+          ${telefonoVendedor ? '<span>Tel: ' + telefonoVendedor + '</span>' : ''}
+          <span>Fecha: ${now.toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        </div>
+      </div>
+      <span class="badge">Distribución</span>
+    </div>
+    <div class="section">
+      <div class="section-title">📋 Datos del Cliente</div>
+      <div class="client-grid">
+        <div class="client-item"><label>Cliente</label><span>${cliente || 'No especificado'}</span></div>
+        <div class="client-item"><label>RUC / DNI</label><span>${ruc || 'No especificado'}</span></div>
+        <div class="client-item"><label>N° Pedido</label><span>${numeroPedido || 'No especificado'}</span></div>
+        <div class="client-item"><label>Vendedor</label><span>${vendedor || 'No especificado'}</span></div>
+        ${emailVendedor ? '<div class="client-item"><label>Email</label><span>' + emailVendedor + '</span></div>' : ''}
+        ${telefonoVendedor ? '<div class="client-item"><label>Teléfono</label><span>' + telefonoVendedor + '</span></div>' : ''}
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">💰 Totales del Pedido</div>
+      <div class="totals-row">
+        <div class="total-card"><h4>Subtotal</h4><div class="value">S/ ${totales.subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div></div>
+        <div class="total-card main"><h4>Total + IGV (18%)</h4><div class="value">S/ ${totales.totalIGV.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div></div>
+        <div class="total-card"><h4>Total Disponible</h4><div class="value">S/ ${totales.totalDisponible.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">📈 Análisis por Línea de Productos</div>
+      <div class="kpis">
+        <div class="kpi-card"><div class="kpi-label">💰 Ventas Totales</div><div class="kpi-value">S/ ${Math.round(subtotal).toLocaleString()}</div></div>
+        <div class="kpi-card"><div class="kpi-label">📦 Cajas Totales</div><div class="kpi-value">${totalGeneral.cajas}</div></div>
+        <div class="kpi-card"><div class="kpi-label">⚖️ Peso Total</div><div class="kpi-value">${totalGeneral.peso.toFixed(0)} kg</div></div>
+      </div>
+    </div>
+    <div class="chart-ranking">
+      <div class="chart-wrapper">
+        <h4>📊 Distribución (Ventas)</h4>
+        <svg viewBox="0 0 220 220" class="chart-pie">
+          ${segmentosSVG.map(s => '<path d="' + s.path + '" fill="' + s.color + '" stroke="' + bgColor + '" stroke-width="2"/>').join('')}
+          <circle cx="110" cy="110" r="55" fill="${surfaceColor}"/>
+          <text x="110" y="105" text-anchor="middle" fill="${textColor}" font-size="28" font-weight="700">${datosLinea.length}</text>
+          <text x="110" y="122" text-anchor="middle" fill="${mutedColor}" font-size="11">Líneas</text>
+        </svg>
+        <div class="chart-total-info">Total: ${totalGeneral.cajas} bx / ${totalGeneral.peso.toFixed(0)} kg</div>
+      </div>
+      <div class="ranking-wrapper">
+        <h4>🏆 Ranking por Cajas</h4>
+        <div class="ranking-header">
+          <div class="rh-label"><span style="width:20px;text-align:right">#</span><span>LÍNEA</span></div>
+          <div class="rh-values"><span class="rh-pct">%</span><span class="rh-monto">MONTO</span><span class="rh-bx">BX</span><span class="rh-kg">KG</span></div>
+        </div>
+        ${datosLinea.map((d, idx) => '<div class="ranking-row"><div class="rr-label"><span class="rr-num">' + (idx + 1) + '</span><div class="rr-bar"><div class="rr-bar-fill" style="width:' + Math.min(d.porcentaje * 2, 100) + '%;background:' + d.color + '"></div></div><span class="rr-name">' + d.linea + '</span></div><div class="rr-values"><span class="rr-pct" style="color:' + d.color + '">' + d.porcentaje.toFixed(1) + '%</span><span class="rr-monto">' + Math.round(d.monto).toLocaleString() + '</span><span class="rr-bx">' + d.cajas + '</span><span class="rr-kg">' + d.peso.toFixed(0) + '</span></div></div>').join('')}
+        <div class="ranking-total">
+          <div class="rt-label"><div class="rt-bar"></div><span class="rt-name">TOTAL</span></div>
+          <div class="rt-values"><span class="rt-pct">100%</span><span class="rt-monto">${Math.round(subtotal).toLocaleString()}</span><span class="rt-bx">${totalGeneral.cajas}</span><span class="rt-kg">${totalGeneral.peso.toFixed(0)}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="section" style="margin-top: 20px;">
+      <div class="categories-bar">
+        <span class="cat-label">Por Categoría</span>
+        ${datosCategoria.map((cat, idx) => '<div class="cat-item"><span class="cat-dot" style="background:' + CHART_COLORS[idx % CHART_COLORS.length] + '"></span><span class="cat-name">' + cat.categoria + '</span><span class="cat-pct" style="color:' + CHART_COLORS[idx % CHART_COLORS.length] + '">' + cat.porcentaje.toFixed(0) + '%</span><span class="cat-detail">(' + cat.cajas + 'c / ' + cat.peso.toFixed(0) + 'kg)</span></div>').join('')}
+        <span class="cat-total">Total: ${totalGeneral.cajas}c / ${totalGeneral.peso.toFixed(0)}kg</span>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">📦 Detalle de Productos (${productosCalculados.length})</div>
+      <div class="table-container">
+        <table>
+          <thead><tr><th>#</th><th>SKU</th><th>Descripción</th><th>Cant</th><th>U/M</th><th>P. Lista</th><th>Dsct1</th><th>Dsct2</th><th>P. Neto</th><th>Total Neto</th><th>Stock</th></tr></thead>
+          <tbody>
+            ${productosCalculados.map((p, i) => '<tr><td>' + (i + 1) + '</td><td>' + p.codigo + '</td><td title="' + (p.descripcion || '') + '">' + (p.descripcion ? (p.descripcion.length > 45 ? p.descripcion.substring(0, 45) + '...' : p.descripcion) : '-') + '</td><td>' + p.cantidad + '</td><td>' + (p.unidadMedida || '-') + '</td><td>' + p.precioUnitario.toFixed(2) + '</td><td>' + p.descuento1.toFixed(1) + '%</td><td>' + p.descuento2.toFixed(1) + '%</td><td>' + ((p.valorVenta / p.cantidad) || 0).toFixed(2) + '</td><td>' + p.valorVenta.toFixed(2) + '</td><td><span class="stock-dot stock-' + (p.estadoStock === 'OK' ? 'ok' : p.estadoStock === 'AJ' ? 'aj' : 'agotado') + '" title="' + p.estadoStock + '"></span> ' + p.estadoStock + '</td></tr>').join('')}
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3" class="tf-label">TOTALES (${productosCalculados.length} productos)</td><td>${productosCalculados.reduce((s, p) => s + p.cantidad, 0)}</td><td></td><td></td><td></td><td></td><td></td><td class="tf-value">S/ ${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td><td></td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="footer">
+      G360 Order System — Generado el ${now.toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} — ${cliente || 'Pedido'}
+    </div>
+  </div>
+</body>
+</html>`
+    
+    const blob = new Blob([htmlContent], { type: 'text/html' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = nombreArchivo
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const handlePrint = () => {
+    window.print()
+  }
+
+  if (loading) {
+    return <div className="loading">Cargando...</div>
+  }
+
+  if (!pedidoData || !pedidoData.productos || pedidoData.productos.length === 0) {
+    return (
+      <div className="distribution-page">
+        <div className="empty-state">
+          <h2>No hay datos del pedido</h2>
+          <p>Primero carga los datos del RPE en la página principal</p>
+          <button onClick={() => navigate('/')} className="btn-primary">
+            Ir a Página Principal
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const cliente = getCliente()
+  const ruc = getRuc()
+  const numeroPedido = getNumeroPedido()
+  const vendedor = getVendedor()
+  const emailVendedor = getEmailVendedor()
+  const telefonoVendedor = getTelefonoVendedor()
+  const productos = getProductos()
+
+  const productosCalculados = productos.map(calcularProducto)
+
+  const subtotal = productosCalculados.reduce((sum, p) => sum + p.valorVenta, 0)
+  const totales = {
+    subtotal,
+    totalIGV: subtotal * IVA,
+    totalDisponible: productosCalculados
+      .filter(p => p.estadoStock !== 'Agotado')
+      .reduce((sum, p) => sum + p.precioVenta, 0)
+  }
+
+  const datosLinea = Object.entries(
+    productosCalculados.reduce((acc, p) => {
+      const prodCatalogo = catalogoMap.get(p.codigo)
+      const categoria = prodCatalogo?.categoria || 'SIN CATEGORÍA'
+      if (!acc[p.linea]) {
+        acc[p.linea] = { monto: 0, cajas: 0, peso: 0, categoria }
+      }
+      acc[p.linea].monto += p.valorVenta
+      acc[p.linea].cajas += Math.ceil(p.cantidad / (p.unBx || 1))
+      acc[p.linea].peso += p.cantidad * (p.pesoKg || 0)
+      return acc
+    }, {})
+  ).map(([linea, data], index) => ({
+    linea,
+    monto: data.monto,
+    cajas: data.cajas,
+    peso: data.peso,
+    categoria: data.categoria,
+    porcentaje: subtotal > 0 ? (data.monto / subtotal) * 100 : 0,
+    color: CHART_COLORS[index % CHART_COLORS.length]
+  })).sort((a, b) => b.monto - a.monto)
+
+  const datosCategoria = Object.entries(
+    productosCalculados.reduce((acc, p) => {
+      const prodCatalogo = catalogoMap.get(p.codigo)
+      const categoria = prodCatalogo?.categoria || 'SIN CATEGORÍA'
+      if (!acc[categoria]) {
+        acc[categoria] = { monto: 0, lineas: {}, cajas: 0, peso: 0 }
+      }
+      acc[categoria].monto += p.valorVenta
+      acc[categoria].cajas += Math.ceil(p.cantidad / (p.unBx || 1))
+      acc[categoria].peso += p.cantidad * (p.pesoKg || 0)
+      
+      if (!acc[categoria].lineas[p.linea]) {
+        acc[categoria].lineas[p.linea] = { monto: 0, cajas: 0, peso: 0 }
+      }
+      acc[categoria].lineas[p.linea].monto += p.valorVenta
+      acc[categoria].lineas[p.linea].cajas += Math.ceil(p.cantidad / (p.unBx || 1))
+      acc[categoria].lineas[p.linea].peso += p.cantidad * (p.pesoKg || 0)
+      return acc
+    }, {})
+  ).map(([categoria, data]) => ({
+    categoria,
+    monto: data.monto,
+    cajas: data.cajas,
+    peso: data.peso,
+    porcentaje: subtotal > 0 ? (data.monto / subtotal) * 100 : 0,
+    lineas: Object.entries(data.lineas).map(([linea, ld], idx) => ({
+      linea,
+      monto: ld.monto,
+      cajas: ld.cajas,
+      peso: ld.peso,
+      porcentaje: data.monto > 0 ? (ld.monto / data.monto) * 100 : 0,
+      color: CHART_COLORS[idx % CHART_COLORS.length]
+    })).sort((a, b) => b.monto - a.monto)
+  })).sort((a, b) => b.monto - a.monto)
+
+  const categoriaColors = {}
+  datosCategoria.forEach((cat, idx) => {
+    categoriaColors[cat.categoria] = CHART_COLORS[idx % CHART_COLORS.length]
+  })
+
+  const totalGeneral = {
+    cajas: datosLinea.reduce((sum, d) => sum + d.cajas, 0),
+    peso: datosLinea.reduce((sum, d) => sum + d.peso, 0)
+  }
+
+  const generarSegmentos = (datos) => {
+    const radius = 90
+    const cx = 110
+    const cy = 110
+
+    return datos.reduce((acc, d, idx) => {
+      const angle = (d.porcentaje / 100) * 360
+      const prevAngle = idx === 0 ? -90 : acc[idx - 1].endAngle
+      const startAngle = prevAngle
+      const endAngle = startAngle + angle
+
+      const x1 = cx + radius * Math.cos(startAngle * Math.PI / 180)
+      const y1 = cy + radius * Math.sin(startAngle * Math.PI / 180)
+      const x2 = cx + radius * Math.cos(endAngle * Math.PI / 180)
+      const y2 = cy + radius * Math.sin(endAngle * Math.PI / 180)
+
+      const largeArc = angle > 180 ? 1 : 0
+
+      const path = `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`
+
+      return [...acc, { path, color: d.color, endAngle, ...d }]
+    }, [])
+  }
+
+  const segmentos = generarSegmentos(datosLinea)
+
+  const formatSoles = (n) => 'S/ ' + Math.round(n).toLocaleString('es-PE')
+  const formatSolesDec = (n) => 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+  return (
+    <div className={`distribution-page ${darkTheme ? 'dark-mode' : 'light-mode'}`}>
+      <div className="distribution-header">
+        <button onClick={handleVolver} className="back-btn">
+          ← Volver
+        </button>
+        <h1>📊 Distribución y Cuotas</h1>
+        <div style={{display: 'flex', gap: '8px'}}>
+          <button onClick={toggleTheme} className="back-btn" style={{background: isDark ? '#f59e0b' : '#374151'}}>
+            {isDark ? '☀️' : '🌙'}
+          </button>
+          <button onClick={handlePrint} className="back-btn" style={{background: '#3b82f6'}}>
+            🖨️ Imprimir
+          </button>
+          <button onClick={handleDownloadXLSX} className="back-btn" style={{background: '#22c55e'}}>
+            📊 Excel
+          </button>
+          <button onClick={handleDownloadHTML} className="back-btn" style={{background: '#8b5cf6'}}>
+            📤 HTML
+          </button>
+          <button onClick={handleFinalizar} className="btn-primary">
+            ✓ Finalizar
+          </button>
+        </div>
+      </div>
+
+      <div className="distribution-content">
+        <div className="preview-client-section">
+          <h3>📋 Datos del Cliente</h3>
+          <div className="client-info-grid">
+            <div className="info-item">
+              <label>Cliente:</label>
+              <span>{cliente || 'No especificado'}</span>
+            </div>
+            <div className="info-item">
+              <label>RUC/DNI:</label>
+              <span>{ruc || 'No especificado'}</span>
+            </div>
+            <div className="info-item">
+              <label>N° Pedido:</label>
+              <span>{numeroPedido || 'No especificado'}</span>
+            </div>
+            <div className="info-item">
+              <label>Vendedor:</label>
+              <span>{vendedor || 'No especificado'}</span>
+            </div>
+            {emailVendedor && (
+              <div className="info-item">
+                <label>Email:</label>
+                <span>{emailVendedor}</span>
+              </div>
+            )}
+            {telefonoVendedor && (
+              <div className="info-item">
+                <label>Teléfono:</label>
+                <span>{telefonoVendedor}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="preview-totals-section">
+          <h3>💰 Totales del Pedido</h3>
+          <div className="totals-cards-preview">
+            <SubtotalCard subtotal={totales.subtotal} />
+            <TotalIGVCard totalIGV={totales.totalIGV} />
+            <AvailableTotalCard totalDisponible={totales.totalDisponible} totalIGV={totales.totalIGV} />
+          </div>
+        </div>
+
+        <PaymentSplit totalAmount={totales.totalIGV} onChange={handleCuotasChange} />
+
+        <div className="preview-analytics-section">
+          <h3>📈 Análisis por Línea de Productos</h3>
+          
+          <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 140px', background: 'var(--g360-surface)', borderRadius: '8px', padding: '10px 14px', border: '1px solid var(--g360-border)', textAlign: 'center' }}>
+              <div style={{ fontSize: 'var(--text-2xs)', color: 'var(--g360-muted)', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: 'var(--ls-wide)' }}>💰 Ventas Totales</div>
+              <div style={{ fontSize: 'var(--text-xl)', color: 'var(--g360-accent)', fontWeight: 'var(--fw-bold)' }}>S/ {Math.round(subtotal).toLocaleString()}</div>
+            </div>
+            <div style={{ flex: '1 1 140px', background: 'var(--g360-surface)', borderRadius: '8px', padding: '10px 14px', border: '1px solid var(--g360-border)', textAlign: 'center' }}>
+              <div style={{ fontSize: 'var(--text-2xs)', color: 'var(--g360-muted)', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: 'var(--ls-wide)' }}>📦 Cajas Totales</div>
+              <div style={{ fontSize: 'var(--text-xl)', color: 'var(--g360-accent)', fontWeight: 'var(--fw-bold)' }}>{totalGeneral.cajas}</div>
+            </div>
+            <div style={{ flex: '1 1 140px', background: 'var(--g360-surface)', borderRadius: '8px', padding: '10px 14px', border: '1px solid var(--g360-border)', textAlign: 'center' }}>
+              <div style={{ fontSize: 'var(--text-2xs)', color: 'var(--g360-muted)', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: 'var(--ls-wide)' }}>⚖️ Peso Total</div>
+              <div style={{ fontSize: 'var(--text-xl)', color: 'var(--g360-accent)', fontWeight: 'var(--fw-bold)' }}>{totalGeneral.peso.toFixed(0)} kg</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', marginTop: '10px', flexWrap: 'wrap', maxWidth: '1200px' }}>
+            <div style={{ flex: '0 0 240px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ background: 'var(--g360-surface)', borderRadius: '10px', padding: '16px', border: '1px solid var(--g360-border)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <h4 style={{ margin: '0 0 12px 0', fontSize: 'var(--text-base)', color: 'var(--g360-muted)' }}>📊 Distribución (Ventas)</h4>
+                <svg viewBox="0 0 220 220" style={{ width: '180px', height: '180px' }}>
+                  <defs>
+                    <filter id="shadowDonut" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.3"/>
+                    </filter>
+                  </defs>
+                  {segmentos.map((s, idx) => (
+                    <path key={idx} d={s.path} fill={s.color} stroke="var(--g360-bg)" strokeWidth="2" filter="url(#shadowDonut)"/>
+                  ))}
+                  <circle cx="110" cy="110" r="55" fill="var(--g360-surface)"/>
+                  <text x="110" y="105" textAnchor="middle" fill="var(--g360-text)" fontSize="24" fontWeight="var(--fw-bold)">{datosLinea.length}</text>
+                  <text x="110" y="122" textAnchor="middle" fill="var(--g360-muted)" fontSize="10">Líneas</text>
+                </svg>
+                <div style={{ marginTop: '16px', fontSize: 'var(--text-base)', color: 'var(--g360-accent)', fontWeight: 'var(--fw-semibold)' }}>
+                  Total: {totalGeneral.cajas} bx / {totalGeneral.peso.toFixed(0)} kg
+                </div>
+              </div>
+            </div>
+
+            <div style={{ flex: '1 1 400px' }}>
+              <div style={{ background: 'var(--g360-surface)', borderRadius: '10px', padding: '16px', border: '1px solid var(--g360-border)' }}>
+                <h4 style={{ margin: '0 0 12px 0', fontSize: 'var(--text-base)', color: 'var(--g360-muted)' }}>🏆 Ranking por Cajas</h4>
+                {(() => {
+                  const sortedByCajas = [...datosLinea].sort((a, b) => b.cajas - a.cajas)
+                  const maxCajas = Math.max(...datosLinea.map(d => d.cajas), 1)
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {sortedByCajas.map((d, idx) => (
+                        <div key={d.linea} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <span style={{ width: '20px', fontSize: 'var(--text-sm)', color: 'var(--g360-muted)', textAlign: 'right', fontWeight: idx < 3 ? 'var(--fw-bold)' : 'var(--fw-normal)' }}>{idx + 1}</span>
+                          <span style={{ width: '100px', fontSize: 'var(--text-sm)', color: 'var(--g360-text)', fontWeight: 'var(--fw-semibold)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{d.linea}</span>
+                          <div style={{ flex: 1, height: '20px', background: 'var(--g360-border)', borderRadius: '4px', overflow: 'hidden' }}>
+                            <div style={{ width: `${(d.cajas / maxCajas) * 100}%`, height: '100%', background: d.color, borderRadius: '4px' }}></div>
+                          </div>
+                          <span style={{ width: '40px', fontSize: 'var(--text-sm)', color: 'var(--g360-accent)', fontWeight: 'var(--fw-bold)', textAlign: 'right' }}>{d.cajas}</span>
+                          <span style={{ width: '50px', fontSize: 'var(--text-xs)', color: 'var(--g360-muted)', textAlign: 'right' }}>{d.peso.toFixed(0)} kg</span>
+                        </div>
+                      ))}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderTop: '2px solid var(--g360-border)', paddingTop: '10px', marginTop: '4px' }}>
+                        <span style={{ width: '20px' }}></span>
+                        <span style={{ width: '100px', fontSize: 'var(--text-sm)', color: 'var(--g360-text)', fontWeight: 'var(--fw-bold)' }}>TOTAL</span>
+                        <div style={{ flex: 1 }}></div>
+                        <span style={{ width: '40px', fontSize: 'var(--text-sm)', color: 'var(--g360-accent)', fontWeight: 'var(--fw-bold)', textAlign: 'right' }}>{totalGeneral.cajas}</span>
+                        <span style={{ width: '50px', fontSize: 'var(--text-xs)', color: 'var(--g360-text)', fontWeight: 'var(--fw-semibold)', textAlign: 'right' }}>{totalGeneral.peso.toFixed(0)} kg</span>
+                      </div>
+                    </div>
+                  )
+                })()}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '12px', maxWidth: '1200px', background: 'var(--g360-surface)', borderRadius: '10px', padding: '14px 18px', border: '1px solid var(--g360-border)' }}>
+            <h4 style={{ margin: '0 0 12px 0', fontSize: 'var(--text-sm)', color: 'var(--g360-muted)' }}>📂 Totales por Categoría</h4>
+            {(() => {
+              const maxCajasCat = Math.max(...datosCategoria.map(c => c.cajas), 1)
+              const maxPesoCat = Math.max(...datosCategoria.map(c => c.peso), 1)
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {datosCategoria.map((cat, idx) => {
+                    const color = CHART_COLORS[idx % CHART_COLORS.length]
+                    return (
+                      <div key={cat.categoria} style={{ display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '180px' }}>
+                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: color }}></span>
+                          <span style={{ fontSize: 'var(--text-base)', color: 'var(--g360-text)', fontWeight: 'var(--fw-semibold)' }}>{cat.categoria}</span>
+                        </div>
+                        <div style={{ flex: '1 1 200px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--g360-muted)', width: '40px' }}>Cajas</span>
+                            <div style={{ flex: 1, height: '14px', background: 'var(--g360-border)', borderRadius: '3px', overflow: 'hidden' }}>
+                              <div style={{ width: `${(cat.cajas / maxCajasCat) * 100}%`, height: '100%', background: color, borderRadius: '3px' }}></div>
+                            </div>
+                            <span style={{ fontSize: 'var(--text-sm)', color: color, fontWeight: 'var(--fw-bold)', width: '40px', textAlign: 'right' }}>{cat.cajas}</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--g360-muted)', width: '40px' }}>Peso</span>
+                            <div style={{ flex: 1, height: '14px', background: 'var(--g360-border)', borderRadius: '3px', overflow: 'hidden' }}>
+                              <div style={{ width: `${(cat.peso / maxPesoCat) * 100}%`, height: '100%', background: color + '80', borderRadius: '3px' }}></div>
+                            </div>
+                            <span style={{ fontSize: 'var(--text-sm)', color: color, fontWeight: 'var(--fw-bold)', width: '60px', textAlign: 'right' }}>{cat.peso.toFixed(0)} kg</span>
+                          </div>
+                        </div>
+                        <div style={{ fontSize: 'var(--text-base)', color: color, fontWeight: 'var(--fw-semibold)', width: '50px', textAlign: 'right' }}>{cat.porcentaje.toFixed(0)}%</div>
+                      </div>
+                    )
+                  })}
+                  <div style={{ display: 'flex', gap: '24px', alignItems: 'center', borderTop: '2px solid var(--g360-border)', paddingTop: '12px', marginTop: '4px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '180px' }}>
+                      <span style={{ fontSize: 'var(--text-base)', color: 'var(--g360-text)', fontWeight: 'var(--fw-bold)' }}>TOTAL</span>
+                    </div>
+                    <div style={{ flex: '1 1 200px' }}></div>
+                    <div style={{ fontSize: 'var(--text-base)', color: 'var(--g360-text)', fontWeight: 'var(--fw-bold)', width: '50px', textAlign: 'right' }}>
+                      {totalGeneral.cajas}c / {totalGeneral.peso.toFixed(0)}kg
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
+          </div>
+        </div>
+
+        <div className="preview-table-section">
+          <h3>📦 Detalle de Productos ({productosCalculados.length})</h3>
+          <div className="table-wrapper">
+            <ProductTable productos={productosCalculados} totales={totales} />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

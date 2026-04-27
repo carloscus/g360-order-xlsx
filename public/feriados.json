@@ -1,0 +1,16 @@
+[
+  {"date": "2026-01-01", "name": "Año Nuevo", "type": "feriado"},
+  {"date": "2026-04-17", "name": "Semana Santa", "type": "feriado"},
+  {"date": "2026-04-18", "name": "Semana Santa", "type": "feriado"},
+  {"date": "2026-04-19", "name": "Semana Santa", "type": "feriado"},
+  {"date": "2026-04-20", "name": "Semana Santa", "type": "feriado"},
+  {"date": "2026-05-01", "name": "Día del Trabajo", "type": "feriado"},
+  {"date": "2026-06-29", "name": "San Pedro y San Pablo", "type": "feriado"},
+  {"date": "2026-07-28", "name": "Fiestas Patrias", "type": "feriado"},
+  {"date": "2026-07-29", "name": "Fiestas Patrias", "type": "feriado"},
+  {"date": "2026-08-30", "name": "Santa Rosa de Lima", "type": "feriado"},
+  {"date": "2026-10-08", "name": "Batalla de Angamos", "type": "feriado"},
+  {"date": "2026-11-01", "name": "Todos los Santos", "type": "feriado"},
+  {"date": "2026-12-08", "name": "Inmaculada Concepción", "type": "feriado"},
+  {"date": "2026-12-25", "name": "Navidad", "type": "feriado"}
+]
