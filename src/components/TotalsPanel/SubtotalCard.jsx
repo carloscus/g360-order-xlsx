@@ -1,14 +1,13 @@
-import React from 'react'
 import { formatNumero } from '../../utils/formatters'
 
-export const SubtotalCard = ({ subtotal }) => {
+export const SubtotalCard = (props) => {
   return (
-    <div className="total-card subtotal-card">
-      <div className="total-card-header">
-        <span className="total-card-icon">💵</span>
-        <h3>Subtotal</h3>
+    <div class="total-card subtotal-card">
+      <div class="total-card-header">
+        <span class="total-card-icon">💵</span>
+        <h3>SUBTOTAL</h3>
       </div>
-      <div className="total-value">S/ {formatNumero(subtotal)}</div>
+      <div class="total-value">S/ {formatNumero(props.subtotal)}</div>
     </div>
   )
 }

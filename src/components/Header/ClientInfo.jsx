@@ -1,103 +1,88 @@
-import React from 'react'
-
-export const ClientInfo = ({ 
-  cliente, 
-  documento, // DNI o RUC
-  numeroPedido, 
-  vendedor, 
-  emailVendedor, 
-  telefonoVendedor,
-  onClienteChange, 
-  onDocumentoChange,
-  onNumeroPedidoChange,
-  onVendedorChange,
-  onEmailVendedorChange,
-  onTelefonoVendedorChange
-}) => {
-  const isRuc = documento?.length > 8;
+export const ClientInfo = (props) => {
+  const isRuc = () => props.documento?.length > 8;
 
   return (
-    <div className="client-form-grid">
-      <div className="form-group span-2">
-        <label htmlFor="cliente">Cliente / Razón Social:</label>
+    <div class="client-form-grid">
+      <div class="form-group span-2">
+        <label for="cliente">Cliente / Razón Social:</label>
         <input
           id="cliente"
           name="cliente"
           type="text"
-          className="high-contrast-input"
-          value={cliente}
-          onChange={(e) => onClienteChange(e.target.value)}
+          class="high-contrast-input"
+          value={props.cliente}
+          onInput={(e) => props.onClienteChange(e.currentTarget.value)}
           placeholder="Ej: Inversiones Globales S.A.C."
         />
       </div>
-      <div className="form-group">
-        <label htmlFor="documento">
-          Documento ({isRuc ? 'RUC' : 'DNI'}):
+      <div class="form-group">
+        <label for="documento">
+          Documento ({isRuc() ? 'RUC' : 'DNI'}):
         </label>
-        <div className="input-with-badge">
+        <div class="input-with-badge">
           <input
             id="documento"
             name="documento"
             type="text"
             maxLength="11"
-            className="high-contrast-input"
-            value={documento}
-            onChange={(e) => onDocumentoChange(e.target.value.replace(/\D/g, ''))}
+            class="high-contrast-input"
+            value={props.documento}
+            onInput={(e) => props.onDocumentoChange(e.currentTarget.value.replace(/\D/g, ''))}
             placeholder="8 o 11 dígitos"
           />
-          <span className={`doc-badge ${isRuc ? 'ruc' : 'dni'}`}>
-            {isRuc ? 'RUC' : 'DNI'}
+          <span class={`doc-badge ${isRuc() ? 'ruc' : 'dni'}`}>
+            {isRuc() ? 'RUC' : 'DNI'}
           </span>
         </div>
       </div>
-      <div className="form-group">
-        <label htmlFor="numeroPedido">N° Pedido RPE:</label>
+      <div class="form-group">
+        <label for="numeroPedido">N° Pedido RPE:</label>
         <input
           id="numeroPedido"
           name="numeroPedido"
           type="text"
-          className="high-contrast-input"
-          value={numeroPedido}
-          onChange={(e) => onNumeroPedidoChange(e.target.value)}
+          class="high-contrast-input"
+          value={props.numeroPedido}
+          onInput={(e) => props.onNumeroPedidoChange(e.currentTarget.value)}
           placeholder="Ej: 882145"
         />
       </div>
-      <div className="form-group">
-        <label htmlFor="vendedor">Vendedor Responsable:</label>
+      <div class="form-group">
+        <label for="vendedor">Vendedor Responsable:</label>
         <input
           id="vendedor"
           name="vendedor"
           type="text"
-          className="high-contrast-input"
-          value={vendedor}
-          onChange={(e) => onVendedorChange(e.target.value)}
+          class="high-contrast-input"
+          value={props.vendedor}
+          onInput={(e) => props.onVendedorChange(e.currentTarget.value)}
           placeholder="Nombre del Vendedor"
         />
       </div>
-      <div className="form-group">
-        <label htmlFor="emailVendedor">Email Corporativo:</label>
+      <div class="form-group">
+        <label for="emailVendedor">Email Corporativo:</label>
         <input
           id="emailVendedor"
           name="emailVendedor"
           type="email"
-          className="high-contrast-input"
-          value={emailVendedor}
-          onChange={(e) => onEmailVendedorChange(e.target.value)}
+          class="high-contrast-input"
+          value={props.emailVendedor}
+          onInput={(e) => props.onEmailVendedorChange(e.currentTarget.value)}
           placeholder="vendedor@cipsa.com"
         />
       </div>
-      <div className="form-group">
-        <label htmlFor="telefonoVendedor">Contacto Directo:</label>
+      <div class="form-group">
+        <label for="telefonoVendedor">Contacto Directo:</label>
         <input
           id="telefonoVendedor"
           name="telefonoVendedor"
           type="tel"
-          className="high-contrast-input"
-          value={telefonoVendedor}
-          onChange={(e) => onTelefonoVendedorChange(e.target.value)}
+          class="high-contrast-input"
+          value={props.telefonoVendedor}
+          onInput={(e) => props.onTelefonoVendedorChange(e.currentTarget.value)}
           placeholder="+51 9XX XXX XXX"
         />
       </div>
     </div>
   )
-}
+}

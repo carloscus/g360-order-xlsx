@@ -9,6 +9,8 @@
  * =====================================================================
  */
 
+import { calcularEstadoStock, calcularCoberturaStock, getNivelRiesgo, getRecomendacionSustituto } from '../core/g360-skill-agentes'
+
 // Configuración de validaciones
 export const VALIDACIONES = {
   precioCero: { 
@@ -47,12 +49,9 @@ export const VALIDACIONES = {
 export const CONSTANTS = {
   IVA: 1.18,
   IGV_PORCENTAJE: 0.18,
-  
-  // Estados de stock
-  STOCK_OK: 'OK',
-  STOCK_AJ: 'AJ',
-  STOCK_AGOTADO: 'Agotado',
-  
+
+  // Estados de stock (referenciar desde g360-skill-agentes.js si es necesario)
+
   // LocalStorage keys
   STORAGE_KEY: 'g360_pedido_actual',
   PENDIENTE_KEY: 'g360_tarea_pendiente',
@@ -60,13 +59,7 @@ export const CONSTANTS = {
   // Configuración de tabla
   ITEMS_PER_PAGE: 75,
   
-  // Colores para gráficos
-  CHART_COLORS: [
-    '#00d084', '#f43f5e', '#8b5cf6', '#f59e0b', '#06b6d4',
-    '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
-    '#eab308', '#a855f7', '#ef4444', '#22c55e', '#3b82f6'
-  ],
-  
+  // Colores para gráficos (importar de sharedConstants)
   // Feriados Perú
   FERIADOS_PERU: {
     '01-01': 'Año Nuevo',
@@ -162,44 +155,6 @@ export const getResumenValidaciones = (productos) => {
     productosConErrores: [...new Set(errores.map(e => e.producto))].length,
     productosConAdvertencias: [...new Set(advertencias.map(a => a.producto))].length
   }
-}
-
-// Calcular estado de stock
-export const calcularEstadoStock = (stock, cantidad) => {
-  if (!stock || stock === 0) return CONSTANTS.STOCK_AGOTADO
-  if (stock >= cantidad * 1.1) return CONSTANTS.STOCK_OK
-  if (stock >= cantidad * 0.9) return CONSTANTS.STOCK_AJ
-  return CONSTANTS.STOCK_AGOTADO
-}
-
-// Calcular cobertura de stock
-export const calcularCoberturaStock = (stock, cantidad) => {
-  if (!cantidad || cantidad === 0) return 0
-  return stock / cantidad
-}
-
-// Determinar nivel de riesgo
-export const getNivelRiesgo = (cobertura) => {
-  if (cobertura >= 1.5) return 'bajo'
-  if (cobertura >= 1) return 'medio'
-  if (cobertura >= 0.5) return 'alto'
-  return 'critico'
-}
-
-// Generar recomendación de sustitución
-export const getRecomendacionSustituto = (producto, catalogo) => {
-  if (!catalogo || !catalogo.productos) return null
-  
-  const mismaLinea = catalogo.productos.filter(p => 
-    p.linea === producto.linea && 
-    p.sku !== producto.codigo &&
-    p.stock > 0
-  )
-  
-  if (mismaLinea.length === 0) return null
-  
-  // Devolver primer producto disponible en misma línea
-  return mismaLinea[0]
 }
 
 // Exportar todo

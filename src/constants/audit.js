@@ -9,6 +9,7 @@
  * =====================================================================
  */
 
+import { calcularEstadoStock } from '../core/g360-skill-agentes'
 import { createSignal, createMemo } from 'solid-js'
 
 // =====================================================================
@@ -56,8 +57,8 @@ export const REGLAS_AUDITORIA = {
     id: 'STOCK_BAJO',
     tipo: TIPO_AUDITORIA.WARNING,
     categoria: CATEGORIA_AUDITORIA.STOCK,
-    mensaje: 'Stock bajo (menor al 110% de cantidad)',
-    evaluar: (p) => p.estadoStock === 'AJ'
+    mensaje: 'Stock bajo (menor al 110% de la cantidad pedida)',
+    evaluar: (p) => calcularEstadoStock(p.stock, p.cantidad) === 'AJ'
   },
   
   // Precio

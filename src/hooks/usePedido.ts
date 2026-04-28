@@ -1,13 +1,15 @@
 /**
- * Hook usePedido - Estado global del pedido
+ * Hook usePedido - Estado global del pedido con soporte de distribución
  * 
- * ✅ Migrado a SolidJS - Logica 100% IDENTICA al original
- * ✅ Todos los calculos, formulas, localStorage, parseo exactamente iguales
+ * + Soporte para distribución pendiente/en proceso
+ * + Historial de distribuciones guardadas
+ * + Texto original del ERP preservado
  */
 
 import { createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import catalogoData from '../data/catalogo_productos.json'
+import { ERPParserService } from '../services/erpParser.js'
 
 // Tipos
 interface ProductoPedido {
@@ -36,8 +38,29 @@ interface DatosPedido {
   productos: ProductoPedido[]
 }
 
+interface Distribucion {
+  id: string
+  timestamp: number
+  cliente: string
+  ruc: string
+  numeroPedido: string
+  vendedor: string
+  total: number
+  cuotas: Array<{
+    numero: number
+    fecha: string
+    monto: number
+    estado: 'pendiente' | 'pagado'
+  }>
+}
+
+// Storage Keys
 const STORAGE_KEY = 'g360_pedido_actual'
 const PENDIENTE_KEY = 'g360_tarea_pendiente'
+const ERP_TEXTO_KEY = 'g360_erp_texto'
+const DIST_ACTIVA_KEY = 'g360_dist_activa'
+const DIST_FLAG_KEY = 'g360_dist_flag'
+const DIST_HISTORIAL_KEY = 'g360_dist_historial'
 
 // Mapa de productos del catálogo: sku -> linea
 const productosMap = new Map<string, string>()
@@ -53,6 +76,7 @@ const calcularEstadoStock = (stock: number, cantidad: number): 'OK' | 'AJ' | 'Ag
   return 'Agotado'
 }
 
+// Storage helpers
 const saveToStorage = (data: DatosPedido) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
@@ -61,7 +85,7 @@ const saveToStorage = (data: DatosPedido) => {
   }
 }
 
-export const loadFromStorage = (): DatosPedido | null => {
+const loadFromStorage = (): DatosPedido | null => {
   try {
     const data = localStorage.getItem(STORAGE_KEY)
     return data ? JSON.parse(data) : null
@@ -70,6 +94,8 @@ export const loadFromStorage = (): DatosPedido | null => {
     return null
   }
 }
+
+export { loadFromStorage }
 
 const getTareaPendiente = (): boolean => {
    try {
@@ -87,8 +113,84 @@ export const setTareaPendiente = (valor: boolean) => {
   }
 }
 
+// Distribución helpers
+const saveDistActiva = (dist: Distribucion | null) => {
+  try {
+    if (dist) {
+      localStorage.setItem(DIST_ACTIVA_KEY, JSON.stringify(dist))
+    } else {
+      localStorage.removeItem(DIST_ACTIVA_KEY)
+    }
+  } catch (e) {
+    console.error('Error guardando distribución activa:', e)
+  }
+}
+
+const loadDistActiva = (): Distribucion | null => {
+  try {
+    const data = localStorage.getItem(DIST_ACTIVA_KEY)
+    return data ? JSON.parse(data) : null
+  } catch {
+    return null
+  }
+}
+
+const getDistFlag = (): boolean => {
+  try {
+    return localStorage.getItem(DIST_FLAG_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export const setDistFlag = (valor: boolean) => {
+  try {
+    localStorage.setItem(DIST_FLAG_KEY, valor ? '1' : '0')
+  } catch (e) {
+    console.error('Error guardando dist flag:', e)
+  }
+}
+
+const saveDistHistorial = (historial: Distribucion[]) => {
+  try {
+    localStorage.setItem(DIST_HISTORIAL_KEY, JSON.stringify(historial))
+  } catch (e) {
+    console.error('Error guardando historial:', e)
+  }
+}
+
+const loadDistHistorial = (): Distribucion[] => {
+  try {
+    const data = localStorage.getItem(DIST_HISTORIAL_KEY)
+    return data ? JSON.parse(data) : []
+  } catch {
+    return []
+  }
+}
+
+export const saveErpTexto = (texto: string) => {
+  try {
+    if (texto) {
+      localStorage.setItem(ERP_TEXTO_KEY, texto)
+    } else {
+      localStorage.removeItem(ERP_TEXTO_KEY)
+    }
+  } catch (e) {
+    console.error('Error guardando texto ERP:', e)
+  }
+}
+
+export const loadErpTexto = (): string => {
+  try {
+    return localStorage.getItem(ERP_TEXTO_KEY) || ''
+  } catch {
+    return ''
+  }
+}
+
 export const usePedido = () => {
   const savedData = loadFromStorage()
+  const savedDistActiva = loadDistActiva()
   
   const [state, setState] = createStore<DatosPedido & { tareaPendiente: boolean }>({
     cliente: savedData?.cliente || '',
@@ -100,6 +202,10 @@ export const usePedido = () => {
     productos: savedData?.productos || [],
     tareaPendiente: getTareaPendiente()
   })
+
+  // Distribución state
+  const [distActiva, setDistActiva] = createSignal<Distribucion | null>(savedDistActiva)
+  const [distHistorial, setDistHistorial] = createSignal<Distribucion[]>(loadDistHistorial())
 
   createEffect(() => {
     const data = {
@@ -118,39 +224,25 @@ export const usePedido = () => {
     setTareaPendiente(state.tareaPendiente)
   })
 
-  const parseDataPegada = (textoPegado: string): ProductoPedido[] => {
-    if (!textoPegado.trim()) return []
-    const lineas = textoPegado.trim().split('\n')
-    const productosParseados: ProductoPedido[] = []
+  // Sync distribución activa con storage
+  createEffect(() => {
+    const dist = distActiva()
+    saveDistActiva(dist)
+    setDistFlag(!!dist)
+  })
 
-    lineas.forEach((linea, index) => {
-      // Soporte para TABs o múltiples espacios (común al pegar de RPE/SAP)
-      const columnas = linea.trim().split(/\t| {2,}/)
-      
-      if (columnas.length >= 8) {
-        const producto = {
-          id: index + 1,
-          codigo: columnas[1]?.trim() || '',
-          descripcion: columnas[2]?.trim() || '',
-          // Limpieza de números (maneja comas de miles y puntos decimales)
-          cantidad: parseFloat(columnas[3]?.replace(/,/g, '')) || 0,
-          stock: parseFloat(columnas[4]?.replace(/,/g, '')) || 0,
-          unidadMedida: columnas[5]?.trim() || '',
-          precioUnitario: parseFloat(columnas[6]?.replace(/,/g, '')) || 0,
-          descuento1: parseFloat(columnas[7]?.replace(/,/g, '')) || 0,
-          descuento2: parseFloat(columnas[8]?.replace(/,/g, '')) || 0,
-        } as ProductoPedido
-        productosParseados.push(producto)
-      }
-    })
-    return productosParseados
+  const actualizarProductosDesdeTexto = (texto: string) => {
+    const productos = ERPParserService.parseDataPegada(texto)
+    setState('productos', productos)
+    // Guardar texto original
+    saveErpTexto(texto)
   }
 
   const productosCalculados = createMemo(() => {
     return state.productos.map(p => {
       const subtotal = p.cantidad * p.precioUnitario
-      const valorVenta = subtotal * (1 - p.descuento1 / 100) * (1 - p.descuento2 / 100)
-      const linea = productosMap.get(p.codigo) || p.descripcion.split(' ')[0]
+      const valorVenta = (subtotal * (1 - p.descuento1 / 100) * (1 - p.descuento2 / 100)) || 0
+      const linea = productosMap.get(p.codigo) || p.descripcion?.split(' ')[0]
 
       return {
         ...p,
@@ -184,6 +276,64 @@ export const usePedido = () => {
       productos: [],
       tareaPendiente: false
     })
+    // Limpiar texto original
+    saveErpTexto('')
+  }
+
+  // Distribución functions
+  const iniciarDistribucion = () => {
+    const dist: Distribucion = {
+      id: `dist_${Date.now()}`,
+      timestamp: Date.now(),
+      cliente: state.cliente,
+      ruc: state.ruc,
+      numeroPedido: state.numeroPedido,
+      vendedor: state.vendedor,
+      total: totales().totalIGV,
+      cuotas: []
+    }
+    setDistActiva(dist)
+  }
+
+  const guardarDistribucion = () => {
+    const dist = distActiva()
+    if (!dist) return
+
+    const historial = [...distHistorial(), dist]
+    setDistHistorial(historial)
+    saveDistHistorial(historial)
+    
+    // Limpiar activa
+    setDistActiva(null)
+    setState('tareaPendiente', false)
+  }
+
+  const continuarDistribucion = () => {
+    // Ya está activa, solo retornar true
+    return distActiva() !== null
+  }
+
+  const nuevaDistribucion = () => {
+    setDistActiva(null)
+    setState('tareaPendiente', false)
+  }
+
+  const cargarDistribucion = (id: string) => {
+    const historial = distHistorial()
+    const dist = historial.find(d => d.id === id)
+    if (dist) {
+      setDistActiva(dist)
+    }
+  }
+
+  const eliminarDistribucion = (id: string) => {
+    const historial = distHistorial().filter(d => d.id !== id)
+    setDistHistorial(historial)
+    saveDistHistorial(historial)
+  }
+
+  const tieneDistPendiente = (): boolean => {
+    return getDistFlag()
   }
 
   return {
@@ -204,7 +354,17 @@ export const usePedido = () => {
     setVendedor: (v: string) => setState('vendedor', v),
     setEmailVendedor: (v: string) => setState('emailVendedor', v),
     setTelefonoVendedor: (v: string) => setState('telefonoVendedor', v),
-    actualizarProductosDesdeTexto: (t: string) => setState('productos', parseDataPegada(t)),
-    resetearPedido
+    actualizarProductosDesdeTexto,
+    resetearPedido,
+
+    // Distribución
+    get distActiva() { return distActiva() },
+    get distHistorial() { return distHistorial() },
+    iniciarDistribucion,
+    guardarDistribucion,
+    nuevaDistribucion,
+    cargarDistribucion,
+    eliminarDistribucion,
+    tieneDistPendiente
   }
 }

@@ -1,14 +1,13 @@
-import React from 'react'
 import { formatNumero } from '../../utils/formatters'
 
-export const TotalIGVCard = ({ totalIGV }) => {
+export const TotalIGVCard = (props) => {
   return (
-    <div className="total-card total-igv-card">
-      <div className="total-card-header">
-        <span className="total-card-icon">🧾</span>
-        <h3>Total + IGV</h3>
+    <div class="total-card total-igv-card">
+      <div class="total-card-header">
+        <span class="total-card-icon">🧾</span>
+        <h3>SUBTOTAL + IGV</h3>
       </div>
-      <div className="total-value total-highlight">S/ {formatNumero(totalIGV)}</div>
+      <div class="total-value total-highlight">S/ {formatNumero(props.totalIGV)}</div>
     </div>
   )
 }

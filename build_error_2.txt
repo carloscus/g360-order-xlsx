@@ -1,0 +1,65 @@
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+transforming...
+[32m✓[39m 4 modules transformed.
+[31mx[39m Build failed in 286ms
+[31merror during build:
+[31m[solid] C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\src\pages\HomePage.jsx: Expected corresponding JSX closing tag for <>. (345:6)
+
+[0m [90m 343 |[31m           [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 344 |[31m         [33m<[31m[33m/[31m[33mShow[31m[33m>[31m
+[31m[1m>[22m[31m[90m 345 |[31m       [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m     |[31m       [31m[1m^[22m[31m
+ [90m 346 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m 347 |[31m   )
+ [90m 348 |[31m }[0m[31m
+file: [36mC:/Users/ccusi/Documents/Proyect_Coder/G360-ecosystem/projects/g360-order-xlsx/src/pages/HomePage.jsx:345:6[31m
+    at constructor (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:365:19)
+    at JSXParserMixin.raise (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:6599:19)
+    at JSXParserMixin.jsxParseElementAt (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:4720:14)
+    at JSXParserMixin.jsxParseElement (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:4749:17)
+    at JSXParserMixin.parseExprAtom (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:4759:19)
+    at JSXParserMixin.parseExprSubscripts (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11081:23)
+    at JSXParserMixin.parseUpdate (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11066:21)
+    at JSXParserMixin.parseMaybeUnary (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11046:23)
+    at JSXParserMixin.parseMaybeUnaryOrPrivate (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10899:61)
+    at JSXParserMixin.parseExprOps (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10904:23)
+    at JSXParserMixin.parseMaybeConditional (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10881:23)
+    at JSXParserMixin.parseMaybeAssign (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10831:21)
+    at C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10800:39
+    at JSXParserMixin.allowInAnd (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:12426:12)
+    at JSXParserMixin.parseMaybeAssignAllowIn (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10800:17)
+    at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:12493:17)
+    at JSXParserMixin.parseParenAndDistinguishExpression (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11675:28)
+    at JSXParserMixin.parseExprAtom (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11331:23)
+    at JSXParserMixin.parseExprAtom (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:4764:20)
+    at JSXParserMixin.parseExprSubscripts (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11081:23)
+    at JSXParserMixin.parseUpdate (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11066:21)
+    at JSXParserMixin.parseMaybeUnary (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11046:23)
+    at JSXParserMixin.parseMaybeUnaryOrPrivate (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10899:61)
+    at JSXParserMixin.parseExprOps (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10904:23)
+    at JSXParserMixin.parseMaybeConditional (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10881:23)
+    at JSXParserMixin.parseMaybeAssign (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10831:21)
+    at JSXParserMixin.parseExpressionBase (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10784:23)
+    at C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10780:39
+    at JSXParserMixin.allowInAnd (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:12421:16)
+    at JSXParserMixin.parseExpression (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10780:17)
+    at JSXParserMixin.parseReturnStatement (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:13142:28)
+    at JSXParserMixin.parseStatementContent (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:12798:21)
+    at JSXParserMixin.parseStatementLike (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:12767:17)
+    at JSXParserMixin.parseStatementListItem (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:12747:17)
+    at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:13316:61)
+    at JSXParserMixin.parseBlockBody (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:13309:10)
+    at JSXParserMixin.parseBlock (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:13297:10)
+    at JSXParserMixin.parseFunctionBody (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:12100:24)
+    at JSXParserMixin.parseArrowExpression (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:12075:10)
+    at JSXParserMixin.parseParenAndDistinguishExpression (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11687:12)
+    at JSXParserMixin.parseExprAtom (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11331:23)
+    at JSXParserMixin.parseExprAtom (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:4764:20)
+    at JSXParserMixin.parseExprSubscripts (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11081:23)
+    at JSXParserMixin.parseUpdate (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11066:21)
+    at JSXParserMixin.parseMaybeUnary (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:11046:23)
+    at JSXParserMixin.parseMaybeUnaryOrPrivate (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10899:61)
+    at JSXParserMixin.parseExprOps (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10904:23)
+    at JSXParserMixin.parseMaybeConditional (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10881:23)
+    at JSXParserMixin.parseMaybeAssign (C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10831:21)
+    at C:\Users\ccusi\Documents\Proyect_Coder\G360-ecosystem\projects\g360-order-xlsx\node_modules\@babel\parser\lib\index.js:10800:39[39m

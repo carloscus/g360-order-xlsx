@@ -1,12 +1,30 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="overflow-x: hidden;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>G360 Order XLSX</title>
+    <meta name="theme-color" content="#00d084" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>CIPSA OrderX | Inteligencia ERP</title>
+    <meta name="description" content="Micro-herramienta de apoyo ERP/CRM para procesamiento inteligente de cotizaciones ERP." />
+    <style>
+      html, body { overflow-x: hidden; margin: 0; padding: 0; }
+    </style>
   </head>
-  <body>
+  <body style="overflow-x: hidden;">
     <div id="root"></div>
+    <script>
+      // Test básico para verificar que JS funciona
+      window.testHTML = () => {
+        console.log('✅ HTML JavaScript funcionando')
+        return 'HTML OK'
+      }
+      console.log('🌐 HTML cargado')
+    </script>
     <script type="module" src="/src/index.jsx"></script>
   </body>
 </html>
