@@ -185,7 +185,19 @@ Para soporte técnico o preguntas, contactar al equipo de desarrollo de G360.
 
 ---
 
+## 🌐 Ecosistema G360
+
+Este proyecto forma parte del **ecosistema G360**, un conjunto de herramientas y aplicaciones para gestión empresarial. Implementa los lineamientos de marca G360 y utiliza componentes compartidos para asegurar consistencia.
+
+### 🔗 Proyectos Relacionados
+- **g360-order-form**: Sistema de gestión de pedidos con interfaz móvil
+- **g360-signature**: Componente de branding G360 para web
+- **g360-cli**: Herramienta CLI para bootstrapping de proyectos G360
+
+---
+
 **Desarrollado por**: G360 Ecosystem  
 **Versión**: 1.0.0  
-**Última actualización**: Abril 2026</content>
+**Última actualización**: Abril 2026  
+**Powered by G360**</content>
 <parameter name="filePath">README.md
