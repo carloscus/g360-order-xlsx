@@ -1,53 +1,39 @@
-// Utilidades de formateo para números y monedas peruanas
+// Utilidades de formateo para n�meros y monedas peruanas
 
-/**
- * Formatear números como moneda peruana (S/)
- * @param valor Valor numérico a formatear
- * @returns String con formato de moneda PEN
- */
 export const formatMoneda = (valor: number): string => {
+  const num = Number(valor)
+  if (isNaN(num)) return 'S/ 0.00'
   return new Intl.NumberFormat('es-PE', {
     style: 'currency',
     currency: 'PEN',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  }).format(valor)
+  }).format(num)
 }
 
-/**
- * Formatear números con separadores de miles
- * @param valor Valor numérico a formatear
- * @param decimales Cantidad de decimales a mostrar
- * @returns String con número formateado
- */
 export const formatNumero = (valor: number, decimales = 2): string => {
+  const num = Number(valor)
+  if (isNaN(num)) return '0.00'
   return new Intl.NumberFormat('es-PE', {
     minimumFractionDigits: decimales,
     maximumFractionDigits: decimales
-  }).format(valor)
+  }).format(num)
 }
 
-/**
- * Formatear porcentajes
- * @param valor Valor porcentual (ej: 18 para 18%)
- * @returns String con formato de porcentaje
- */
 export const formatPorcentaje = (valor: number): string => {
+  const num = Number(valor)
+  if (isNaN(num)) return '0.00%'
   return new Intl.NumberFormat('es-PE', {
     style: 'percent',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  }).format(valor / 100)
+  }).format(num / 100)
 }
 
-/**
- * Función para limpiar nombre de archivo
- * @param nombre Nombre original del archivo
- * @returns Nombre limpio seguro para sistemas de archivos
- */
 export const limpiarNombreArchivo = (nombre: string): string => {
-  return nombre
-    .replace(/[<>:"/\\|?*]/g, '_')
-    .replace(/\s+/g, '-')
+  return (nombre || "")
+    .replace(/[<>:"/\X|?*]/g, "_")
+    .replace(/\s+/g, "-")
     .toLowerCase()
 }
+

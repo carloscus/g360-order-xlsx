@@ -9,6 +9,7 @@
  * =====================================================================
  */
 
+import dataEstatica from '../data/catalogo_productos.json'
 import { createSignal, createMemo, onMount } from 'solid-js'
 
 const CATALOGO_PATH = '/catalogo_productos.json'
@@ -36,6 +37,7 @@ const crearMapaCatalogo = (productos) => {
 }
 
 export const useCatalogo = () => {
+  // Señales para el estado del catálogo
   const [catalogo, setCatalogo] = createSignal({})
   const [cargando, setCargando] = createSignal(true)
   const [error, setError] = createSignal(null)
@@ -50,13 +52,16 @@ export const useCatalogo = () => {
   // Cargar catálogo al inicio
   onMount(async () => {
     try {
-      const res = await fetch('/catalogo_productos.json')
-      if (!res.ok) throw new Error('Error cargando catálogo')
-      const data = await res.json()
-      setCatalogo(data)
+      // Intentar fetch (requiere archivo en /public), si falla usar data estática de /src/data
+      const res = await fetch(CATALOGO_PATH)
+      if (res.ok) {
+        const data = await res.json()
+        setCatalogo(data)
+      } else {
+        setCatalogo(dataEstatica)
+      }
     } catch (e) {
-      console.error('Error cargando catálogo:', e)
-      setError(e.message)
+      setCatalogo(dataEstatica)
     } finally {
       setCargando(false)
     }

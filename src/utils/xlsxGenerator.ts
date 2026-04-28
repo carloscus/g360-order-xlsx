@@ -8,7 +8,9 @@
  */
 
 import * as XLSX from 'xlsx'
-import { limpiarNombreArchivo } from './formatters.js'
+import { limpiarNombreArchivo, formatNumero } from './formatters.js'
+import { getAgentesSkill } from '../core/g360-skill-agentes'
+import { IVA } from '../constants/sharedConstants'
 import catalogoData from '../data/catalogo_productos.json'
 
 // Tipos
@@ -41,11 +43,13 @@ interface DatosPedido {
   tipo?: 'cotizacion' | string
 }
 
-// Crear mapa de productos por SKU para búsqueda rápida
+// Crear mapa de productos por SKU para búsqueda rápida (idealmente esto vendría de useCatalogo)
 const catalogoMap = new Map<string, ProductoCatalogo>()
 catalogoData.productos.forEach(p => {
   catalogoMap.set(p.sku, p as ProductoCatalogo)
 })
+
+const { calculos } = getAgentesSkill()
 
 /**
  * Función helper para buscar producto en catálogo
@@ -59,6 +63,27 @@ const getProductoCatalogo = (sku: string): ProductoCatalogo | null => {
 // =====================================================================
 // GENERAR HOJA 2 - ANÁLISIS POR LÍNEA Y CATEGORÍA
 // =====================================================================
+
+interface ProductoCalculadoXLSX extends ProductoPedido {
+  linea: string
+  categoria: string
+  pesoKg: number
+  unBx: number
+  valorVenta: number
+  precioVenta: number
+  estadoStock: string
+  cajas: number
+  pesoTotal: number
+}
+
+// Helper para procesar productos para el análisis
+const procesarProductosParaAnalisis = (productos: ProductoPedido[]): ProductoCalculadoXLSX[] => {
+  return productos.map(p => {
+    const prodCatalogo = getProductoCatalogo(p.codigo)
+    return { ...p, ...prodCatalogo, linea: prodCatalogo?.linea || 'SIN LÍNEA', categoria: prodCatalogo?.categoria || 'SIN CATEGORÍA', pesoKg: prodCatalogo?.peso_kg || 0, unBx: prodCatalogo?.un_bx || 1, valorVenta: calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2), precioVenta: calculos.basic.precioVenta(calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)), estadoStock: calculos.stock.estado(p.stock, p.cantidad), cajas: calculos.logistica.cajas(p.cantidad, prodCatalogo?.un_bx || 1), pesoTotal: calculos.logistica.pesoTotal(p.cantidad, prodCatalogo?.peso_kg || 0) }
+  })
+}
+
 const generarHojaAnalisis = (wb: XLSX.WorkBook, productos: ProductoPedido[]) => {
   const ws = XLSX.utils.aoa_to_sheet([[]])
 
@@ -73,27 +98,24 @@ const generarHojaAnalisis = (wb: XLSX.WorkBook, productos: ProductoPedido[]) => 
     pesoTotal: number
   }>>> = {}
 
-  productos.forEach((p, i) => {
-    const prodCatalogo = getProductoCatalogo(p.codigo)
-    const categoria = prodCatalogo?.categoria || 'SIN CATEGORÍA'
-    const linea = prodCatalogo?.linea || 'SIN LÍNEA'
-    const pesoKg = prodCatalogo?.peso_kg || 0
-    const unBx = prodCatalogo?.un_bx || 1
+  const productosAnalisis = procesarProductosParaAnalisis(productos)
+
+  productosAnalisis.forEach((p, i) => {
+    const categoria = p.categoria
+    const linea = p.linea
 
     if (!resumen[categoria]) resumen[categoria] = {}
     if (!resumen[categoria][linea]) resumen[categoria][linea] = []
 
-    const pesoTotal = p.cantidad * pesoKg
-    const cajas = Math.ceil(p.cantidad / unBx)
-
+    // Usar los valores ya calculados en procesarProductosParaAnalisis
     resumen[categoria][linea].push({
       n: i + 1,
       sku: p.codigo,
       nombre: p.descripcion,
       cantidad: p.cantidad || 0,
-      pesoUnit: pesoKg,
-      cajas: cajas,
-      pesoTotal: pesoTotal
+      pesoUnit: p.pesoKg,
+      cajas: p.cajas,
+      pesoTotal: p.pesoTotal
     })
   })
 
@@ -101,11 +123,11 @@ const generarHojaAnalisis = (wb: XLSX.WorkBook, productos: ProductoPedido[]) => 
    const contenido: unknown[][] = []
 
    // Título
-   contenido.push(['ANÁLISIS POR LÍNEA DE PRODUCTOS'])
-   contenido.push(['', '', '', '', ''])
+   contenido.push(['ANÁLISIS CONSOLIDADO DE DISPONIBILIDAD POR LÍNEA', '', '', '', '', '', ''])
+   contenido.push(['', '', '', '', '', '', ''])
 
    // Headers tabla
-   contenido.push(['N°', 'SKU', 'PRODUCTO', 'CANT', 'PESO UNIT (kg)', 'CAJAS', 'PESO TOTAL (kg)'])
+   contenido.push(['N°', 'SKU', 'PARTIDA / PRODUCTO', 'CANT', 'MASA UNIT (kg)', 'CAJAS', 'MASA TOTAL (kg)'])
 
    // Función para agregar línea de datos
   const agregarLinea = (data: {n?: number, sku?: string, nombre?: string, cantidad?: number, pesoUnit?: number, cajas?: number, pesoTotal?: number}) => {
@@ -283,7 +305,7 @@ const generarHojaAnalisis = (wb: XLSX.WorkBook, productos: ProductoPedido[]) => 
 // =====================================================================
 // ESTILOS G360 - Colores para Excel
 // =====================================================================
-const G360_ACCENT = "00D084"      // Verde G360
+const G360_ACCENT = "00D084"      // Verde G360 (mantener aquí o mover a sharedConstants)
 const G360_LIGHT = "E8F5E9"       // Verde claro
 const G360_OK = "22C55E"          // Verde stock OK
 const G360_AJ = "F59E0B"          // Naranja stock AJ
@@ -331,6 +353,8 @@ export const generarXLSX = async (data: DatosPedido) => {
   // =====================================================================
   // XLSX TIPO COTIZACIÓN - Formato completo con headers
   // =====================================================================
+  const productosCalculados = productos ? productos.map(p => ({ ...p, valorVenta: calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2), precioVenta: calculos.basic.precioVenta(calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)), estadoStock: calculos.stock.estado(p.stock, p.cantidad) })) : [];
+
   if (tipo === 'cotizacion') {
     // Encabezados de la hoja - Estilo VBA
     const headers = [
@@ -375,7 +399,7 @@ export const generarXLSX = async (data: DatosPedido) => {
     // Fila 4: Headers | Fila 5: Valores | Fila 6: Vacío
     
     const totalsHeaders = [
-      ['', '', '', '', '', '', '', '', 'Subtotal:', 'Total + IGV:', 'Total Disponible:', '', '', '', '', '']
+      ['', '', '', '', '', '', '', '', 'VALOR NETO:', 'TOTAL + IGV:', 'TOTAL ATENDIBLE (CON STOCK):', '', '', '', '', '']
     ]
     XLSX.utils.sheet_add_aoa(ws, totalsHeaders, { origin: 4 })
     
@@ -399,7 +423,7 @@ export const generarXLSX = async (data: DatosPedido) => {
     
     // Encabezados tabla - 16 columnas (A-P) con separadoras H, N, O
     const tableHeaders = [
-      ['N°', 'CANT.', 'U/M', 'SKU', 'DESCRIPCIÓN', 'ESTADO', 'P. LISTA (S/.)', '', 'DESC 01', 'DESC 02', 'P. NETO (S/.)', 'PRECIO UNIT.', 'PRECIO VENTA', '', '', '']
+      ['N°', 'CANT.', 'U/M', 'SKU', 'DESCRIPCIÓN', 'ESTADO', 'P. LISTA (S/.)', '', 'DESC 01 (%)', 'DESC 02 (%)', 'P. NETO (S/.)', 'PRECIO UNIT.', 'PRECIO VENTA', '', '', '']
     ]
     
     // Agregar headers de tabla
@@ -424,7 +448,7 @@ export const generarXLSX = async (data: DatosPedido) => {
     const dataStartRow = tableStartRow + 1
     
     if (productos && productos.length > 0) {
-      productos.forEach((p, i) => {
+      productosCalculados.forEach((p, i) => { // Usar productosCalculados
         const row = dataStartRow + i
         
         // Datos directos - 16 columnas (A-P) con separadoras
@@ -437,10 +461,10 @@ export const generarXLSX = async (data: DatosPedido) => {
           p.descripcion || '',            // E: DESCRIPCIÓN
           p.estadoStock || '',             // F: ESTADO
           p.precioUnitario || 0,          // G: P. LISTA
-          '',                              // H: separador
+          '',                             // H: separador
           p.descuento1 || 0,              // I: DESC 01
           p.descuento2 || 0,              // J: DESC 02
-          0,                               // K: P. NETO (fórmula)
+          0,                              // K: P. NETO (fórmula)
           0,                               // L: PRECIO UNIT. (fórmula)
           0,                               // M: PRECIO VENTA (fórmula)
           '',                              // N: separador
@@ -451,12 +475,12 @@ export const generarXLSX = async (data: DatosPedido) => {
         // Fórmulas - Excel usa 1-based y las filas empiezan en dataStartRow
         const excelRow = row + 1
         
-        // Fórmula: CANT * P.LISTA * (1-DESC1/100) * (1-DESC2/100)
-        const formulaValor = `B${excelRow}*G${excelRow}*(1-I${excelRow}/100)*(1-J${excelRow}/100)`
-        // Precio Unitario: (P.Neto / CANT) * 1.18
-        const formulaPrecioUnit = `IFERROR(K${excelRow}/B${excelRow}*1.18,0)`
+        // Fórmula: CANT * P.LISTA * (1-DESC1/100) * (1-DESC2/100) (Calculado en el backend, pero se puede dejar la fórmula si se quiere que sea editable)
+        const formulaValor = `B${excelRow}*G${excelRow}*(1-I${excelRow}/100)*(1-J${excelRow}/100)` // Mantener fórmula para que sea editable en Excel
+        // Precio Unitario: (P.Neto / CANT) * IVA
+        const formulaPrecioUnit = `IFERROR(K${excelRow}/B${excelRow}*${IVA},0)`
         // Precio Venta: P.Neto * 1.18
-        const formulaPrecioVenta = `K${excelRow}*1.18`
+        const formulaPrecioVenta = `K${excelRow}*${IVA}`
         
         // Color de fila zebra y según estado de stock
         const rowColor = i % 2 === 0 ? G360_ROW_EVEN : G360_ROW_ODD
@@ -535,17 +559,19 @@ export const generarXLSX = async (data: DatosPedido) => {
     // Fila 4: Headers (ya configurados), Fila 5: Valores
     const totalsValuesRow = 5 // Fila 5 (índice 4)
     
-    // Columnas: F=ESTADO (col 5), K=PRECIO_VENTA (col 12), J=VALOR_VENTA (col 10)
-    // Fila datos: dataStartRow (=8) a lastDataRow
-    const firstDataExcelRow = dataStartRow
-    const lastDataExcelRow = dataStartRow + (productos?.length || 0) - 1
+    // Calcular totales usando el skill agent
+    const totalesPedido = calculos.pedido.totales(productosCalculados)
+
+    // Las fórmulas en Excel se refieren a las celdas de la tabla de productos
+    const firstDataExcelRow = dataStartRow + 1 // Fila 8 en Excel
+    const lastDataExcelRow = dataStartRow + (productosCalculados.length || 0) // Última fila de datos en Excel
     
     // Agregar fila de valores de totales - Estilo VBA optimizado
     // K=P.Neto (col 10), M=PRECIO VENTA (col 12)
-    XLSX.utils.sheet_add_aoa(ws, [
-      ['', '', '', '', '', '', '', '', 'SUBTOTAL:', `=SUM(K${firstDataExcelRow}:K${lastDataExcelRow})`, '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', '', 'Total + IGV:', `=IFERROR(K${totalsValuesRow}*1.18,0)`, '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', '', 'Total Disponible:', `=IFERROR(SUMPRODUCT(((F${firstDataExcelRow}:F${lastDataExcelRow}="OK")+(F${firstDataExcelRow}:F${lastDataExcelRow}="AJ"))*M${firstDataExcelRow}:M${lastDataExcelRow}),0)`, '', '', '', '', '', '']
+    XLSX.utils.sheet_add_aoa(ws, [ // Actualizar las fórmulas para usar los rangos correctos
+      ['', '', '', '', '', '', '', '', 'VALOR NETO:', `=SUM(K${firstDataExcelRow}:K${lastDataExcelRow})`, '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', 'Total + IGV:', `=IFERROR(K${totalsValuesRow}*${IVA},0)`, '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', 'TOTAL ATENDIBLE (CON STOCK):', `=IFERROR(SUMPRODUCT(((F${firstDataExcelRow}:F${lastDataExcelRow}="OK")+(F${firstDataExcelRow}:F${lastDataExcelRow}="AJ"))*M${firstDataExcelRow}:M${lastDataExcelRow}),0)`, '', '', '', '', '', '']
     ], { origin: totalsValuesRow })
     
     // Estilos para totales - VBA Style
@@ -632,7 +658,7 @@ export const generarXLSX = async (data: DatosPedido) => {
     // =====================================================================
     // HOJA 2 - ANÁLISIS POR LÍNEA Y CATEGORÍA
     // =====================================================================
-    generarHojaAnalisis(wb, productos || [])
+    generarHojaAnalisis(wb, productosCalculados) // Pasar productos ya calculados
   }
 
   // =====================================================================

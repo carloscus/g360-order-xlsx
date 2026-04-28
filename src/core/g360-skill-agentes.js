@@ -23,10 +23,10 @@ import { createMemo, createSignal } from 'solid-js'
 export const CALC_CONFIG = {
   IVA: 1.18,
   IGV_PORCENTAJE: 0.18,
-  
+
   // Configuración de stock
-  STOCK_OK: 1.1,      // Stock >= 110% de cantidad
-  STOCK_AJ: 0.9,      // Stock >= 90% de cantidad
+  STOCK_OK_RATIO: 1.1,      // Stock >= 110% de cantidad
+  STOCK_AJ_RATIO: 0.9,      // Stock >= 90% de cantidad
   STOCK_AGOTADO: 0,   // Stock < 90%
   
   // Configuración de descuentos
@@ -34,7 +34,7 @@ export const CALC_CONFIG = {
   DESC_MUY_ALTO: 70,
   
   // Configuración de márgenes
-  MARGEN_MINIMO: 5,
+  MARGEN_MINIMO: 0.05, // Usar como ratio
   MARGEN_ÓPTIMO: 20,
   MARGEN_EXCELENTE: 30
 }
@@ -63,8 +63,8 @@ export const calcularTotalIGV = (subtotal) => subtotal * CALC_CONFIG.IVA
 export const calcularEstadoStock = (stock, cantidad) => {
   if (!stock || stock === 0) return 'Agotado'
   const ratio = stock / cantidad
-  if (ratio >= CALC_CONFIG.STOCK_OK) return 'OK'
-  if (ratio >= CALC_CONFIG.STOCK_AJ) return 'AJ'
+  if (ratio >= CALC_CONFIG.STOCK_OK_RATIO) return 'OK'
+  if (ratio >= CALC_CONFIG.STOCK_AJ_RATIO) return 'AJ'
   return 'Agotado'
 }
 
@@ -96,6 +96,29 @@ export const calcularPesoTotal = (cantidad, pesoKg) => {
 
 export const calcularVolumenCaja = (largo, ancho, alto) => {
   return (largo || 0) * (ancho || 0) * (alto || 0)
+}
+
+// =====================================================================
+// CÁLCULOS DE RIESGO Y RECOMENDACIONES
+// =====================================================================
+
+export const getNivelRiesgo = (cobertura) => {
+  if (cobertura >= 1.5) return 'bajo'
+  if (cobertura >= 1) return 'medio'
+  if (cobertura >= 0.5) return 'alto'
+  return 'critico'
+}
+
+export const getRecomendacionSustituto = (producto, catalogo) => {
+  if (!catalogo || !catalogo.productos) return null
+  
+  const mismaLinea = catalogo.productos.filter(p => 
+    p.linea === producto.linea && 
+    p.sku !== producto.codigo &&
+    p.stock > 0
+  )
+  
+  return mismaLinea.length > 0 ? mismaLinea[0] : null
 }
 
 // =====================================================================
@@ -147,11 +170,16 @@ export const calcularTotalesPedido = (productos) => {
   const disponibles = productos.filter(p => p.estadoStock !== 'Agotado')
   const totalDisponible = disponibles.reduce((sum, p) => sum + (p.precioVenta || 0), 0)
   
+  const totalCajas = productos.reduce((sum, p) => sum + (p.cajas || 0), 0)
+  const totalPeso = productos.reduce((sum, p) => sum + (p.pesoTotal || 0), 0)
+
   return {
     subtotal,
     igv,
     totalIGV,
     totalDisponible,
+    totalCajas,
+    totalPeso,
     productosTotal: productos.length,
     productosDisponibles: disponibles.length,
     productosAgotados: productos.length - disponibles.length
@@ -300,6 +328,8 @@ export const getAgentesSkill = () => ({
     stock: {
       estado: calcularEstadoStock,
       cobertura: calcularCoberturaStock,
+      nivelRiesgo: getNivelRiesgo,
+      recomendacionSustituto: getRecomendacionSustituto,
       riesgo: calcularRiesgoRuptura
     },
     logistica: {
