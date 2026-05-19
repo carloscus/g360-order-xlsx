@@ -1,36 +1,37 @@
 import { formatNumero } from '../../utils/formatters'
 
 export const ProductRow = (props) => {
-  const precioLista = () => props.producto.precioUnitario || 0
-  const desc01 = () => props.producto.descuento1 || 0
-  const desc02 = () => props.producto.descuento2 || 0
-  const cantidad = () => props.producto.cantidad || 0
-  const stock = () => props.producto.stock || 0
-  
-  const precioNeto = () => precioLista() * (1 - desc01() / 100) * (1 - desc02() / 100)
-  const totalNeto = () => precioNeto() * cantidad()
+  const p = props.producto
 
-  const getStockStatus = () => {
-    if (stock() === 0) return 'empty'
-    if (stock() <= cantidad()) return 'low'
-    return 'ok'
+  const stockStatus = () => {
+    const s = p.stock || 0
+    const c = p.cantidad || 0
+    if (s === 0) return 'agotado'
+    if (s <= c * 0.9) return 'aj'
+    if (s >= c * 1.1) return 'ok'
+    return 'warning'
+  }
+
+  const stockClass = () => {
+    const status = stockStatus()
+    return `stock-badge stock-${status}`
   }
 
   return (
     <tr>
-      <td class="text-center font-mono">{props.producto.id}</td>
-      <td class="text-left font-mono">{props.producto.codigo}</td>
-      <td class="text-left">{props.producto.descripcion}</td>
-      <td class="text-right">
-        {cantidad().toLocaleString('es-PE', { minimumFractionDigits: 0 })}
-        <span class={`stock-indicator stock-${getStockStatus()}`} style={{ "margin-left": '8px' }}></span>
+      <td class="row-num">{p.id}</td>
+      <td class="row-sku">{p.codigo}</td>
+      <td class="row-desc" title={p.descripcion}>{p.descripcion}</td>
+      <td class="row-cant">
+        {Math.round(p.cantidad || 0).toLocaleString('es-PE')}
+        <span class={stockClass()} title={p.estadoStock || stockStatus()}></span>
       </td>
-      <td class="text-left">{props.producto.unidadMedida || 'UN'}</td>
-      <td class="text-right">{precioLista().toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-      <td class="text-right">{desc01().toFixed(2)}</td>
-      <td class="text-right">{desc02().toFixed(2)}</td>
-      <td class="text-right">{precioNeto().toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-      <td class="text-right font-bold" style={{ color: 'var(--g360-accent)' }}>{totalNeto().toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+      <td>{p.unidadMedida || 'UN'}</td>
+      <td class="number">{formatNumero(p.precioUnitario || 0)}</td>
+      <td class="number d1">{p.descuento1?.toFixed(2) || '0.00'}</td>
+      <td class="number d2">{p.descuento2?.toFixed(2) || '0.00'}</td>
+      <td class="number">{formatNumero(p.valorVenta ? p.valorVenta / p.cantidad : 0)}</td>
+      <td class="number row-total">{formatNumero(p.valorVenta || 0)}</td>
     </tr>
   )
 }

@@ -423,7 +423,7 @@ export const generarXLSX = async (data: DatosPedido) => {
     
     // Encabezados tabla - 16 columnas (A-P) con separadoras H, N, O
     const tableHeaders = [
-      ['N°', 'CANT.', 'U/M', 'SKU', 'DESCRIPCIÓN', 'ESTADO', 'P. LISTA (S/.)', '', 'DESC 01 (%)', 'DESC 02 (%)', 'P. NETO (S/.)', 'PRECIO UNIT.', 'PRECIO VENTA', '', '', '']
+      ['N°', 'CANT.', 'U/M', 'SKU', 'DESCRIPCIÓN', 'ESTADO', 'P. LISTA (S/.)', '', 'DESC 01 (%)', 'DESC 02 (%)', 'VALOR VENTA', 'PRECIO UNIT.', 'PRECIO VENTA', '', '', '']
     ]
     
     // Agregar headers de tabla

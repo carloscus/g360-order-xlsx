@@ -21,10 +21,9 @@ import { formatNumero } from '../utils/formatters' // Assuming formatNumero is a
 import { getAgentesSkill } from '../core/g360-skill-agentes'
 import { CHART_COLORS } from '../constants/sharedConstants'
 
-const [hoverData, setHoverData] = createSignal(null)
-const [tooltipPos, setTooltipPos] = createSignal({ x: 0, y: 0 })
-
 export const ChartModal = (props) => {
+  const [hoverData, setHoverData] = createSignal(null)
+  const [tooltipPos, setTooltipPos] = createSignal({ x: 0, y: 0 })
   const show = () => props.show
   const onClose = () => props.onClose?.()
   const productos = () => props.productos || []

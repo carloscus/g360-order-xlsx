@@ -1,6 +1,6 @@
 import { createSignal, createEffect, createMemo, onCleanup, For, Show } from 'solid-js'
 import { useNavigate, useLocation } from '@solidjs/router'
-import { usePedido } from '../../hooks/usePedido'
+import { usePedido, setTareaPendiente } from '../../hooks/usePedido'
 import { useTheme } from '../../context/ThemeContext'
 import { HistoryModal } from '../HistoryModal'
 
@@ -16,55 +16,11 @@ const sidebarActions = [
 const STORAGE_FULL_KEY = 'g360_save_full'
 const STORAGE_HISTORIAL_KEY = 'g360_historial'
 
-const guardarEstado = () => {
-  try {
-    const pedido = usePedido()
-    const data = {
-      cliente: pedido.cliente,
-      ruc: pedido.ruc,
-      numeroPedido: pedido.numeroPedido,
-      vendedor: pedido.vendedor,
-      emailVendedor: pedido.emailVendedor,
-      telefonoVendedor: pedido.telefonoVendedor,
-      productos: JSON.parse(localStorage.getItem('g360_pedido_actual') || '{}').productos || [],
-      distActiva: pedido.distActiva,
-      distHistorial: pedido.distHistorial,
-      timestamp: Date.now()
-    }
-    localStorage.setItem(STORAGE_FULL_KEY, JSON.stringify(data))
-    const historial = JSON.parse(localStorage.getItem(STORAGE_HISTORIAL_KEY) || '[]')
-    historial.unshift({ id: 'save_' + Date.now(), fecha: new Date().toLocaleString('es-PE'), cliente: data.cliente || 'Sin cliente', numeroPedido: data.numeroPedido || 'Sin número', productos: data.productos.length, total: data.productos.reduce((sum, p) => sum + (p.cantidad * p.precioUnitario), 0), data: data })
-    if (historial.length > 10) historial.pop()
-    localStorage.setItem(STORAGE_HISTORIAL_KEY, JSON.stringify(historial))
-    return true
-  } catch (e) { console.error('Error guardando:', e); return false }
-}
-
-const obtenerHistorial = () => {
-  try { return JSON.parse(localStorage.getItem(STORAGE_HISTORIAL_KEY) || '[]') } catch { return [] }
-}
-
-const cargarDesdeHistorial = function (item) {
-  try {
-    var pedido = usePedido()
-    var data = item.data
-    pedido.setCliente(data.cliente)
-    pedido.setRuc(data.ruc)
-    pedido.setNumeroPedido(data.numeroPedido)
-    pedido.setVendedor(data.vendedor)
-    pedido.setEmailVendedor(data.emailVendedor)
-    pedido.setTelefonoVendedor(data.telefonoVendedor)
-    pedido.setState('productos', data.productos)
-    pedido.setState('distActiva', data.distActiva)
-    pedido.setState('distHistorial', data.distHistorial)
-    return true
-  } catch (e) { console.error('Error cargando:', e); return false }
-}
-
+// ---------- ExportMenuInline (componente interno, usa hooks) ----------
 const ExportMenuInline = function (props) {
-  var location = useLocation()
-  var pedido = usePedido()
-  var isDistPage = function () { return location.pathname === '/distribucion' }
+  const location = useLocation()
+  const pedido = usePedido()
+  const isDistPage = function () { return location.pathname === '/distribucion' }
 
   var exportXLSX = function () {
     try {
@@ -115,6 +71,7 @@ const ExportMenuInline = function (props) {
   )
 }
 
+// ---------- Sidebar component ----------
 export var Sidebar = function () {
   var navigate = useNavigate()
   var location = useLocation()
@@ -122,6 +79,56 @@ export var Sidebar = function () {
   var theme = useTheme()
   var toggleTheme = theme.toggleTheme
   var darkTheme = theme.darkTheme
+
+  // --- Helpers de guardado/restauración (usan pedido, dentro del componente) ---
+  const STORAGE_FULL_KEY_SB = 'g360_save_full'
+  const STORAGE_HISTORIAL_KEY_SB = 'g360_historial'
+
+  const guardarEstado = function () {
+    try {
+      var data = {
+        cliente: pedido.cliente,
+        ruc: pedido.ruc,
+        numeroPedido: pedido.numeroPedido,
+        vendedor: pedido.vendedor,
+        emailVendedor: pedido.emailVendedor,
+        telefonoVendedor: pedido.telefonoVendedor,
+        productos: JSON.parse(localStorage.getItem('g360_pedido_actual') || '{}').productos || [],
+        distActiva: pedido.distActiva,
+        distHistorial: pedido.distHistorial,
+        timestamp: Date.now()
+      }
+      localStorage.setItem(STORAGE_FULL_KEY_SB, JSON.stringify(data))
+      var historial = JSON.parse(localStorage.getItem(STORAGE_HISTORIAL_KEY_SB) || '[]')
+      historial.unshift({ id: 'save_' + Date.now(), fecha: new Date().toLocaleString('es-PE'), cliente: data.cliente || 'Sin cliente', numeroPedido: data.numeroPedido || 'Sin número', productos: data.productos.length, total: data.productos.reduce(function (sum, p) { return sum + (p.cantidad * p.precioUnitario) }, 0), data: data })
+      if (historial.length > 10) historial.pop()
+      localStorage.setItem(STORAGE_HISTORIAL_KEY_SB, JSON.stringify(historial))
+      return true
+    } catch (e) { console.error('Error guardando:', e); return false }
+  }
+
+  const obtenerHistorial = function () {
+    try { return JSON.parse(localStorage.getItem(STORAGE_HISTORIAL_KEY_SB) || '[]') } catch { return [] }
+  }
+
+  const cargarDesdeHistorial = function (item) {
+    try {
+      var data = item.data
+      pedido.setCliente(data.cliente)
+      pedido.setRuc(data.ruc)
+      pedido.setNumeroPedido(data.numeroPedido)
+      pedido.setVendedor(data.vendedor)
+      pedido.setEmailVendedor(data.emailVendedor)
+      pedido.setTelefonoVendedor(data.telefonoVendedor)
+      pedido.actualizarProductosDesdeTexto(
+        (data.productos || []).map(function (p) {
+          return (p.codigo || '') + '\t' + (p.descripcion || '') + '\t' + (p.cantidad || 0) + '\t' + (p.precioUnitario || 0) + '\t' + (p.stock || 0)
+        }).join('\n')
+      )
+      if (data.distActiva) pedido.iniciarDistribucion()
+      return true
+    } catch (e) { console.error('Error cargando:', e); return false }
+  }
 
   var isDistributionPage = function () { return location.pathname === '/distribucion' }
   var showExport = createSignal(false)

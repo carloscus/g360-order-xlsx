@@ -1,5 +1,28 @@
 # G360 Order XLSX
 
+> Aplicación web desarrollada en SolidJS para el procesamiento inteligente de cotizaciones ERP/CRM. Forma parte de la familia de microherramientas G360 para apoyo CRM y gestión de datos en escritorio.
+
+[![npm version](https://img.shields.io/npm/v/g360-order-xlsx)](https://www.npmjs.com/package/g360-order-xlsx)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+## Tabla de Contenidos
+
+- [Descripción](#descripción)
+- [Características](#características)
+- [Tecnologías](#tecnologías)
+- [Instalación](# instalación)
+- [Uso](#uso)
+- [Estructura](#estructura)
+- [Scripts](#scripts)
+- [Testing](#testing)
+- [Contribución](#contribución)
+- [Licencia](#licencia)
+- [Familia G360](#familia-g360)
+
+---
+
 ## Descripción
 
 **G360 Order XLSX** es una aplicación web desarrollada en **SolidJS** para el procesamiento inteligente de cotizaciones ERP/CRM. Forma parte del ecosistema G360 y proporciona una interfaz intuitiva para gestionar pedidos, distribuir productos, calcular totales, generar reportes en formato XLSX y más. Diseñada como una micro-herramienta de apoyo ERP, facilita el flujo de trabajo en entornos corporativos.
@@ -185,19 +208,20 @@ Para soporte técnico o preguntas, contactar al equipo de desarrollo de G360.
 
 ---
 
-## 🌐 Ecosistema G360
+## Familia G360
 
-Este proyecto forma parte del **ecosistema G360**, un conjunto de herramientas y aplicaciones para gestión empresarial. Implementa los lineamientos de marca G360 y utiliza componentes compartidos para asegurar consistencia.
+Este proyecto forma parte de la familia de microherramientas **G360** para apoyo CRM y gestión de datos en escritorio, enfocadas en áreas como ventas, finanzas y logística.
 
-### 🔗 Proyectos Relacionados
-- **g360-order-form**: Sistema de gestión de pedidos con interfaz móvil
-- **g360-signature**: Componente de branding G360 para web
-- **g360-cli**: Herramienta CLI para bootstrapping de proyectos G360
+### Herramientas Relacionadas
+
+- **[g360-cli](https://github.com/carloscus/g360-cli)**: Bootstrap de proyectos G360
+- **[g360-signature](https://github.com/carloscus/g360-signature)**: Web component de branding G360
+- **[g360-order-form](https://github.com/carloscus/g360-order-form)**: Sistema de gestión de pedidos con interfaz móvil
 
 ---
-
-**Desarrollado por**: G360 Ecosystem  
-**Versión**: 1.0.0  
-**Última actualización**: Abril 2026  
-**Powered by G360**</content>
+**Marca**: G360
+**Isotipo**: 3 puntos verticales paralelos (gris-verde-gris) + chevron `>`
+**Autor**: Carlos Cusi
+**Desarrollo**: Con asistencia de herramientas de código IA (Vibe Code)
+**Powered by**: [g360-signature](https://github.com/carloscus/g360-signature)</content>
 <parameter name="filePath">README.md

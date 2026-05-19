@@ -2,6 +2,7 @@ import { createSignal, createMemo, For, Show } from 'solid-js'
 import { TableHeader } from './TableHeader'
 import { ProductRow } from './ProductRow'
 import { TableFooter } from './TableFooter'
+import { formatNumero } from '../../utils/formatters'
 
 const Pagination = (props) => {
   const totalPages = () => props.totalPages
@@ -70,7 +71,7 @@ const Pagination = (props) => {
 }
 
 const LineaGroup = (props) => {
-  const totalMonto = () => props.productos.reduce((sum, p) => sum + p.valorVenta, 0)
+  const totalMonto = () => props.productos.reduce((sum, p) => sum + (p.valorVenta || 0), 0)
   const totalCajas = () => props.productos.reduce((sum, p) => sum + Math.ceil(p.cantidad / (p.unBx || 1)), 0)
   const totalPeso = () => props.productos.reduce((sum, p) => sum + (p.cantidad * (p.pesoKg || 0)), 0)
 
@@ -93,7 +94,7 @@ const LineaGroup = (props) => {
             </span>
             <div style={{ display: 'flex', gap: '16px', "font-size": 'var(--text-base)', color: 'var(--g360-muted)' }}>
               <span>{props.productos.length} productos</span>
-              <span>S/ {totalMonto().toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+              <span>S/ {formatNumero(totalMonto())}</span>
               <span>{totalCajas()} cajas</span>
               <span>{totalPeso().toFixed(2)} kg</span>
             </div>
@@ -105,7 +106,6 @@ const LineaGroup = (props) => {
           {(producto) => (
             <ProductRow
               producto={producto}
-              totalIGV={props.totalIGV}
             />
           )}
         </For>
@@ -119,8 +119,12 @@ export const ProductTable = (props) => {
   const [expandedLineas, setExpandedLineas] = createSignal({})
   const itemsPerPage = 75
 
+  const productos = () => props.productos || []
+  const totales = () => props.totales || { subtotal: 0, totalIGV: 0, totalDisponible: 0 }
+
   // Agrupar productos por línea
    const productosPorLinea = createMemo(() => {
+     if (!props.productos) return {}
      return props.productos.reduce((acc, p) => {
        const linea = p.linea || 'Sin Línea'
        if (!acc[linea]) acc[linea] = []
@@ -129,7 +133,7 @@ export const ProductTable = (props) => {
      }, {})
    })
 
-   // Toggle línea
+  // Toggle línea
   const toggleLinea = (linea) => {
     setExpandedLineas(prev => ({
       ...prev,
@@ -172,7 +176,6 @@ export const ProductTable = (props) => {
                     <LineaGroup
                       linea={linea}
                       productos={prods}
-                      totalIGV={props.totales.totalIGV}
                       isExpanded={expandedLineas()[linea] !== false}
                       onToggle={() => toggleLinea(linea)}
                     />
@@ -194,7 +197,6 @@ export const ProductTable = (props) => {
               {(producto) => (
                 <ProductRow
                   producto={producto}
-                  totalIGV={props.totales.totalIGV}
                 />
               )}
             </For>

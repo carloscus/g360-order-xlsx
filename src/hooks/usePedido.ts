@@ -8,8 +8,9 @@
 
 import { createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import catalogoData from '../data/catalogo_productos.json'
 import { ERPParserService } from '../services/erpParser.js'
+import { getAgentesSkill } from '../core/g360-skill-agentes'
+import { useCatalogo } from '../hooks/useCatalogo'
 
 // Tipos
 interface ProductoPedido {
@@ -26,6 +27,8 @@ interface ProductoPedido {
   estadoStock?: 'OK' | 'AJ' | 'Agotado'
   valorVenta?: number
   precioVenta?: number
+  cajas?: number
+  pesoTotal?: number
 }
 
 interface DatosPedido {
@@ -61,20 +64,6 @@ const ERP_TEXTO_KEY = 'g360_erp_texto'
 const DIST_ACTIVA_KEY = 'g360_dist_activa'
 const DIST_FLAG_KEY = 'g360_dist_flag'
 const DIST_HISTORIAL_KEY = 'g360_dist_historial'
-
-// Mapa de productos del catálogo: sku -> linea
-const productosMap = new Map<string, string>()
-catalogoData.productos.forEach(p => {
-  productosMap.set(p.sku, p.linea)
-})
-
-const IVA = 1.18
-
-const calcularEstadoStock = (stock: number, cantidad: number): 'OK' | 'AJ' | 'Agotado' => {
-  if (stock >= cantidad * 1.1) return 'OK'
-  if (stock >= cantidad * 0.9) return 'AJ'
-  return 'Agotado'
-}
 
 // Storage helpers
 const saveToStorage = (data: DatosPedido) => {
@@ -192,6 +181,9 @@ export const usePedido = () => {
   const savedData = loadFromStorage()
   const savedDistActiva = loadDistActiva()
   
+  const { enriquecerProducto } = useCatalogo()
+  const { calculos } = getAgentesSkill()
+  
   const [state, setState] = createStore<DatosPedido & { tareaPendiente: boolean }>({
     cliente: savedData?.cliente || '',
     ruc: savedData?.ruc || '',
@@ -234,35 +226,33 @@ export const usePedido = () => {
   const actualizarProductosDesdeTexto = (texto: string) => {
     const productos = ERPParserService.parseDataPegada(texto)
     setState('productos', productos)
-    // Guardar texto original
     saveErpTexto(texto)
   }
 
   const productosCalculados = createMemo(() => {
     return state.productos.map(p => {
-      const subtotal = p.cantidad * p.precioUnitario
-      const valorVenta = (subtotal * (1 - p.descuento1 / 100) * (1 - p.descuento2 / 100)) || 0
-      const linea = productosMap.get(p.codigo) || p.descripcion?.split(' ')[0]
+      const enriched = enriquecerProducto(p)
+      const valorVenta = calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)
+      const precioVenta = calculos.basic.precioVenta(valorVenta)
+      const estadoStock = calculos.stock.estado(p.stock, p.cantidad)
+      const cajas = calculos.logistica.cajas(p.cantidad, enriched.unBx)
+      const pesoTotal = calculos.logistica.pesoTotal(p.cantidad, enriched.pesoKg)
 
       return {
         ...p,
-        linea,
-        estadoStock: calcularEstadoStock(p.stock, p.cantidad),
+        ...enriched,
         valorVenta,
-        precioVenta: valorVenta * IVA
+        precioVenta,
+        estadoStock,
+        cajas,
+        pesoTotal
       }
     })
   })
 
   const totales = createMemo(() => {
-    const subtotal = productosCalculados().reduce((sum, p) => sum + p.valorVenta, 0)
-    return {
-      subtotal,
-      totalIGV: subtotal * IVA,
-      totalDisponible: productosCalculados()
-        .filter(p => p.estadoStock !== 'Agotado')
-        .reduce((sum, p) => sum + p.precioVenta, 0)
-    }
+    const productos = productosCalculados()
+    return calculos.pedido.totales(productos)
   })
 
   const resetearPedido = () => {
@@ -276,7 +266,6 @@ export const usePedido = () => {
       productos: [],
       tareaPendiente: false
     })
-    // Limpiar texto original
     saveErpTexto('')
   }
 
@@ -303,13 +292,11 @@ export const usePedido = () => {
     setDistHistorial(historial)
     saveDistHistorial(historial)
     
-    // Limpiar activa
     setDistActiva(null)
     setState('tareaPendiente', false)
   }
 
   const continuarDistribucion = () => {
-    // Ya está activa, solo retornar true
     return distActiva() !== null
   }
 
@@ -357,7 +344,6 @@ export const usePedido = () => {
     actualizarProductosDesdeTexto,
     resetearPedido,
 
-    // Distribución
     get distActiva() { return distActiva() },
     get distHistorial() { return distHistorial() },
     iniciarDistribucion,
