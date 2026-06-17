@@ -1,5 +1,5 @@
 import { render } from 'solid-js/web'
-import { Router, Route } from '@solidjs/router'
+import { HashRouter, Route } from '@solidjs/router'
 import App from './App'
 import HomePage from './pages/HomePage'
 import { DistributionPage } from './components/DistributionPage'
@@ -111,9 +111,9 @@ if (!customElements.get('g360-signature')) {
 
 render(() => (
   <ThemeProvider>
-    <Router root={App}>
+    <HashRouter root={App}>
       <Route path="/" component={HomePage} />
       <Route path="/distribucion" component={DistributionPage} />
-    </Router>
+    </HashRouter>
   </ThemeProvider>
 ), document.getElementById('root'))
