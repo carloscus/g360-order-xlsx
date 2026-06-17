@@ -55,7 +55,7 @@ const TOTALS_FILL = "F0F0F0"     // Gris claro para totales
  */
 const agregarLogoExcelJS = async (workbook: ExcelJS.Workbook, worksheet: ExcelJS.Worksheet) => {
   try {
-    const response = await fetch('/logo-cipsa.png')
+    const response = await fetch(`${import.meta.env.BASE_URL}logo-cipsa.png`)
     const blob = await response.blob()
     const arrayBuffer = await blob.arrayBuffer()
     

@@ -53,7 +53,7 @@ export const generarCartaCorporativa = (datos) => {
       <h1 style="margin:0; color: var(--secondary);">COTIZACIÓN CORPORATIVA</h1>
       <p style="margin:5px 0; color: var(--primary); font-weight: bold;">CIPSA OrderX | Inteligencia ERP</p>
     </div>
-    <img src="/logo-cipsa.svg" class="logo" alt="CIPSA Logo">
+    <img src="${import.meta.env.BASE_URL}logo-cipsa.svg" class="logo" alt="CIPSA Logo">
   </div>
 
   <div class="info-section">

@@ -19,7 +19,7 @@ export const Navbar = (props) => {
     <nav class="g360-navbar">
       <div class="navbar-container">
         <div class="navbar-brand">
-          <img src="/logo-cipsa.svg" alt="CIPSA Logo" class="navbar-logo" />
+          <img src={`${import.meta.env.BASE_URL}logo-cipsa.svg`} alt="CIPSA Logo" class="navbar-logo" />
           <div class="navbar-text-group">
             <h1 class="navbar-title">CIPSA OrderX</h1>
             <span class="navbar-subtitle">INTELIGENCIA ERP | APOYO ERP/CRM</span>

@@ -41,7 +41,7 @@ const CELL_MARGINS = {
  */
 const getLogoBuffer = async () => {
   try {
-    const response = await fetch('/logo-cipsa.png');
+    const response = await fetch(`${import.meta.env.BASE_URL}logo-cipsa.png`);
     const blob = await response.blob();
     return await blob.arrayBuffer();
   } catch (e) {
