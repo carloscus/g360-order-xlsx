@@ -4,6 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [solidPlugin()],
+  base: '/g360-order-xlsx/',
   server: {
     port: 3001,
     open: true,
