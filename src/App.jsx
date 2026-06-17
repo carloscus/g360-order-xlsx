@@ -1,5 +1,6 @@
-import { createEffect, createSignal } from 'solid-js'
-import { G360_ENGINE } from './core/g360-engine.ts'
+import { createEffect } from 'solid-js'
+import { G360_ENGINE } from './core/g360-engine'
+import { getActiveSkill } from './core/g360-skill-config'
 import { usePedido } from './hooks/usePedido'
 import { Navbar } from './components/Header/Navbar'
 import { Footer } from './components/Footer/Footer'
@@ -18,7 +19,7 @@ function App(props) {
   });
 
   return (
-    <div class={`app skill-marca ${darkTheme() ? '' : 'light'}`}>
+    <div class={`app skill-${getActiveSkill()} ${darkTheme() ? '' : 'light'}`}>
       <Sidebar />
       
       <Navbar hayProductos={pedido.productos.length > 0} tareaPendiente={pedido.tareaPendiente} />

@@ -37,7 +37,13 @@ export const generarCartaCorporativa = (datos) => {
     .total-row.grand { border-top: 2px solid var(--primary); margin-top: 10px; padding-top: 10px; font-weight: bold; font-size: 18px; color: var(--primary); }
     .footer { margin-top: 50px; font-size: 12px; color: #94a3b8; text-align: center; border-top: 1px solid var(--border); padding-top: 20px; }
     .btn-print { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
-    @media print { .btn-print { display: none; } }
+    @media print {
+      @page { size: A4; margin: 15mm 15mm 15mm 15mm; }
+      .btn-print { display: none; }
+      body { padding: 0; color: #000; }
+      .header { border-bottom-color: #000; }
+      .total-row.grand { color: #000; }
+    }
   </style>
 </head>
 <body>

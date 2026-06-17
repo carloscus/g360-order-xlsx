@@ -1,30 +1,25 @@
 import { formatNumero } from '../../utils/formatters'
 
+const stockToClass = (status) => {
+  if (status === 'OK') return 'ok'
+  if (status === 'AJ') return 'aj'
+  if (status === 'Agotado') return 'agotado'
+  return 'warning'
+}
+
 export const ProductRow = (props) => {
   const p = props.producto
-
-  const stockStatus = () => {
-    const s = p.stock || 0
-    const c = p.cantidad || 0
-    if (s === 0) return 'agotado'
-    if (s <= c * 0.9) return 'aj'
-    if (s >= c * 1.1) return 'ok'
-    return 'warning'
-  }
-
-  const stockClass = () => {
-    const status = stockStatus()
-    return `stock-badge stock-${status}`
-  }
+  const estado = () => p.estadoStock || 'OK'
+  const stockClass = () => `stock-badge stock-${stockToClass(estado())}`
 
   return (
-    <tr>
+    <tr class="fade-in-up">
       <td class="row-num">{p.id}</td>
       <td class="row-sku">{p.codigo}</td>
       <td class="row-desc" title={p.descripcion}>{p.descripcion}</td>
       <td class="row-cant">
         {Math.round(p.cantidad || 0).toLocaleString('es-PE')}
-        <span class={stockClass()} title={p.estadoStock || stockStatus()}></span>
+        <span class={stockClass()} title={estado()}></span>
       </td>
       <td>{p.unidadMedida || 'UN'}</td>
       <td class="number">{formatNumero(p.precioUnitario || 0)}</td>

@@ -1,277 +1,157 @@
 import { createSignal, createMemo, For, Show } from 'solid-js'
 import { formatNumero } from '../../utils/formatters'
 
+const NOMBRES_MESES = [
+  'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
+  'JULIO', 'AGOSTO', 'SETIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+]
+const DIAS_POR_MES = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+const DIAS_LAB = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
+
 const FERIADOS_PERU = {
-  '01-01': 'Año Nuevo',
-  '05-01': 'Día del Trabajo',
-  '06-29': 'San Pedro y San Pablo',
-  '07-28': 'Día de la Independencia',
-  '07-29': 'Día de la Independencia',
-  '08-30': 'Santa Rosa de Lima',
-  '10-08': 'Combate de Angamos',
-  '11-01': 'Todos los Santos',
-  '12-08': 'Inmaculada Concepción',
-  '12-25': 'Navidad',
+  '01-01': 'Año Nuevo', '05-01': 'Día del Trabajo', '06-29': 'San Pedro y San Pablo',
+  '07-28': 'Independencia', '07-29': 'Independencia', '08-30': 'Santa Rosa',
+  '10-08': 'Angamos', '11-01': 'Todos los Santos', '12-08': 'Inmaculada',
+  '12-25': 'Navidad'
 }
 
 const calcularSemanaSanta = (anio) => {
-  const a = anio % 19
-  const b = Math.floor(anio / 100)
-  const c = anio % 100
-  const d = Math.floor(b / 4)
-  const e = b % 4
-  const f = Math.floor((b + 8) / 25)
-  const g = Math.floor((b - f + 1) / 3)
-  const h = (19 * a + b - d - g + 15) % 30
-  const i = Math.floor(c / 4)
-  const k = c % 4
-  const l = (32 + 2 * e + 2 * i - h - k) % 7
+  const a = anio % 19, b = Math.floor(anio / 100), c = anio % 100
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25)
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7
   const m = Math.floor((a + 11 * h + 22 * l) / 451)
-  
   const mes = Math.floor((h + l - 7 * m + 114) / 31)
   const dia = ((h + l - 7 * m + 114) % 31) + 1
-  
-  const domResurreccion = new Date(anio, mes - 1, dia)
-  const viernesSanto = new Date(domResurreccion)
-  viernesSanto.setDate(viernesSanto.getDate() - 2)
-  
+  const domingo = new Date(anio, mes - 1, dia)
+  const viernes = new Date(domingo); viernes.setDate(viernes.getDate() - 2)
   return {
-    viernesSanto: viernesSanto.toISOString().split('T')[0],
-    domingoResurreccion: domResurreccion.toISOString().split('T')[0]
+    [viernes.toISOString().slice(5, 10)]: 'Viernes Santo',
+    [domingo.toISOString().slice(5, 10)]: 'Domingo Resurrección'
   }
 }
 
-const NOMBRES_MESES = {
-  0: 'ENERO', 1: 'FEBRERO', 2: 'MARZO', 3: 'ABRIL',
-  4: 'MAYO', 5: 'JUNIO', 6: 'JULIO', 7: 'AGOSTO',
-  8: 'SEPTIEMBRE', 9: 'OCTUBRE', 10: 'NOVIEMBRE', 11: 'DICIEMBRE'
-}
-
-const getDayType = (dateStr, feriadosAnio) => {
-  if (!dateStr) return 'normal'
-  
-  let fechaObj
-  if (dateStr.includes('/')) {
-    const [dia, mes, anio] = dateStr.split('/')
-    fechaObj = new Date(`${anio}-${mes}-${dia}T00:00:00`)
-  } else {
-    fechaObj = new Date(dateStr + 'T00:00:00')
-  }
-  
-  const day = fechaObj.getDay()
-  
-  if (day === 0) return 'domingo'
-  if (day === 6) return 'sabado'
-  
-  const mesDia = dateStr.slice(5)
-  if (feriadosAnio[mesDia]) return 'feriado'
-  
+const obtenerDiaTipo = (anio, mes, dia) => {
+  const fecha = new Date(anio, mes, dia)
+  const d = fecha.getDay()
+  if (d === 0) return 'domingo'
+  if (d === 6) return 'sabado'
+  const mm = String(mes + 1).padStart(2, '0')
+  const dd = String(dia).padStart(2, '0')
+  const feriados = { ...FERIADOS_PERU, ...calcularSemanaSanta(anio) }
+  if (feriados[`${mm}-${dd}`]) return 'feriado'
   return 'normal'
 }
 
-const parsearFechaObj = (fecha) => {
-  if (!fecha) return null
-  if (!fecha.includes('/')) {
-    return new Date(fecha + 'T00:00:00')
-  }
-  const [dia, mes, anio] = fecha.split('/')
-  return new Date(`${anio}-${mes}-${dia}T00:00:00`)
-}
-
-const formatearFechaMostrar = (fecha) => {
-  if (!fecha) return '-'
-  if (fecha.includes('/')) return fecha
-  const fechaObj = new Date(fecha + 'T00:00:00')
-  if (isNaN(fechaObj.getTime())) return fecha
-  const dia = String(fechaObj.getDate()).padStart(2, '0')
-  const mesNum = String(fechaObj.getMonth() + 1).padStart(2, '0')
-  const anio = fechaObj.getFullYear()
-  return `${dia}/${mesNum}/${anio}`
-}
-
-const formatearFechaInput = (valor) => {
-  if (!valor) return ''
-  
-  const numeros = valor.replace(/\D/g, '')
-  
-  if (!numeros || numeros.length === 0) return ''
-  
-  let dia = numeros.substring(0, 2)
-  let mes = numeros.length > 2 ? numeros.substring(2, 4) : ''
-  let anio = numeros.length > 4 ? numeros.substring(4, 8) : ''
-  
-  let resultado = dia
-  if (mes) resultado += '/' + mes
-  if (anio) resultado += '/' + anio
-  
-  return resultado
-}
-
-const obtenerFechaISO = (texto) => {
-  const match = texto.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
-  if (match) {
-    const [, dia, mes, anio] = match
-    const fecha = new Date(`${anio}-${mes}-${dia}T00:00:00`)
-    if (!isNaN(fecha.getTime())) {
-      return `${anio}-${mes}-${dia}`
-    }
-  }
-  return texto
+const esBisiesto = (anio) => (anio % 4 === 0 && anio % 100 !== 0) || anio % 400 === 0
+const diasEnMes = (mes, anio) => mes === 1 && esBisiesto(anio) ? 29 : DIAS_POR_MES[mes]
+const obtenerAnioMes = (val) => val ? (([a, m]) => ({ anio: Number(a), mes: Number(m) - 1 }))(val.split('-')) : null
+const key = (anio, mes, dia) => `${anio}-${mes}-${dia}`
+const formatearFecha = (anio, mes, dia) => {
+  const dd = String(dia).padStart(2, '0')
+  const mm = String(mes + 1).padStart(2, '0')
+  return `${dd}/${mm}/${anio}`
 }
 
 export const PaymentSplit = (props) => {
-  const [cuotas, setCuotas] = createSignal([
-    { id: 1, fecha: '', fechaText: '', monto: '' }
-  ])
-
-  const currentYear = new Date().getFullYear()
-  const feriadosAnio = createMemo(() => ({ ...FERIADOS_PERU, ...calcularSemanaSanta(currentYear) }))
+  const [startMonth, setStartMonth] = createSignal('')
+  const [endMonth, setEndMonth] = createSignal('')
+  const [cuotasMap, setCuotasMap] = createSignal({})
 
   const totalAmount = () => props.totalAmount || 0
-  const numeroCuotas = () => cuotas().length
-  const montoEquitativo = () => numeroCuotas() > 0 ? totalAmount() / numeroCuotas() : 0
 
-  const totalIngresado = createMemo(() => {
-    return cuotas().reduce((sum, c) => sum + (parseFloat(c.monto) || 0), 0)
-  })
-
-  const totalPendiente = () => totalAmount() - totalIngresado()
-  const diferencia = () => Math.abs(totalPendiente())
-
-  const cuotasPorMes = createMemo(() => {
-    const porMes = {}
-    
-    cuotas().forEach(cuota => {
-      if (!cuota.fecha) return
-      
-      const fecha = parsearFechaObj(cuota.fecha)
-      if (!fecha || isNaN(fecha.getTime())) return
-      
-      const mes = fecha.getMonth()
-      const anio = fecha.getFullYear()
-      const key = `${anio}-${mes}`
-      
-      if (!porMes[key]) {
-        porMes[key] = {
-          nombre: NOMBRES_MESES[mes],
-          mes,
-          anio,
-          cuotas: [],
-          total: 0
-        }
-      }
-      
-      porMes[key].cuotas.push({
-        ...cuota,
-        dayType: getDayType(cuota.fecha, feriadosAnio()),
-        dayLabel: getDayType(cuota.fecha, feriadosAnio()) === 'feriado' 
-          ? feriadosAnio()[cuota.fecha.includes('/') ? cuota.fecha.slice(5) : cuota.fecha.slice(5)]
-          : getDayType(cuota.fecha, feriadosAnio()) === 'domingo' 
-            ? 'Domingo'
-            : getDayType(cuota.fecha, feriadosAnio()) === 'sabado'
-              ? 'Sábado'
-              : null
-      })
-      porMes[key].total += parseFloat(cuota.monto) || 0
-    })
-    
-    return Object.values(porMes).sort((a, b) => {
-      if (a.anio !== b.anio) return a.anio - b.anio
-      return a.mes - b.mes
-    })
-  })
-
-  const agregarCuota = () => {
-    const nuevas = [...cuotas(), { id: Date.now(), fecha: '', fechaText: '', monto: '' }]
-    setCuotas(nuevas)
-    props.onChange?.(nuevas)
-  }
-
-  const eliminarCuota = (id) => {
-    if (cuotas().length <= 1) return
-    const nuevas = cuotas().filter(c => c.id !== id)
-    setCuotas(nuevas)
-    props.onChange?.(nuevas)
-  }
-
-  const validarFecha = (fechaISO) => {
-    if (!fechaISO || !fechaISO.includes('-')) return null
-    
-    const fechaObj = new Date(fechaISO + 'T00:00:00')
-    if (isNaN(fechaObj.getTime())) return null
-    
-    const day = fechaObj.getDay()
-    if (day === 0) return 'domingo'
-    
-    const mesDia = fechaISO.slice(5)
-    if (FERIADOS_PERU[mesDia]) return 'feriado'
-    
-    return 'valida'
-  }
-
-  const actualizarCuota = (id, campo, valor) => {
-    let actualizaciones = { [campo]: valor }
-    
-    if (campo === 'fechaText') {
-      actualizaciones.fecha = obtenerFechaISO(valor)
-      
-      const validacion = validarFecha(obtenerFechaISO(valor))
-      if (validacion === 'domingo') {
-        alert('⚠️ La fecha seleccionada es domingo. Por favor seleccione un día válido (lunes a sábado).')
-      } else if (validacion === 'feriado') {
-        alert('⚠️ La fecha seleccionada es un feriado en Perú. Por favor seleccione un día válido.')
-      }
+  const meses = createMemo(() => {
+    const s = obtenerAnioMes(startMonth())
+    const e = obtenerAnioMes(endMonth())
+    if (!s || !e) return []
+    const lista = []
+    let { anio, mes } = s
+    while (anio < e.anio || (anio === e.anio && mes <= e.mes)) {
+      lista.push({ anio, mes, dias: diasEnMes(mes, anio) })
+      mes++
+      if (mes > 11) { mes = 0; anio++ }
     }
-    
-    const nuevas = cuotas().map(c => 
-      c.id === id ? { ...c, ...actualizaciones } : c
-    )
-    setCuotas(nuevas)
-    props.onChange?.(nuevas)
+    return lista
+  })
+
+  const cuotasArray = createMemo(() => Object.values(cuotasMap()).sort((a, b) =>
+    a.anio !== b.anio ? a.anio - b.anio : a.mes !== b.mes ? a.mes - b.mes : a.dia - b.dia
+  ))
+
+  const toggleDia = (anio, mes, dia) => {
+    const k = key(anio, mes, dia)
+    const actual = { ...cuotasMap() }
+    if (actual[k]) {
+      delete actual[k]
+    } else {
+      actual[k] = { id: k, anio, mes, dia, monto: '' }
+    }
+    setCuotasMap(actual)
+    props.onChange?.(Object.values(actual))
+  }
+
+  const actualizarMonto = (k, valor) => {
+    const actual = { ...cuotasMap() }
+    if (actual[k]) actual[k] = { ...actual[k], monto: valor }
+    setCuotasMap(actual)
+    props.onChange?.(Object.values(actual))
   }
 
   const aplicarEquitativo = () => {
-    const fechasInvalidas = []
-    
-    const nuevas = cuotas().map(c => {
-      const validacion = validarFecha(c.fecha)
-      if (validacion === 'domingo' || validacion === 'feriado') {
-        fechasInvalidas.push(c.fecha)
-      }
-      return {
-        ...c,
-        monto: montoEquitativo().toFixed(2)
-      }
-    })
-    
-    if (fechasInvalidas.length > 0) {
-      alert(`⚠️ Hay ${fechasInvalidas.length} fecha(s) inválida(s) (domingo o feriado). Por favor corríjalas.`)
-    }
-    
-    setCuotas(nuevas)
-    props.onChange?.(nuevas)
+    const arr = cuotasArray()
+    const n = arr.length
+    if (n === 0) return
+    const eq = (totalAmount() / n).toFixed(2)
+    const actual = {}
+    arr.forEach(c => { actual[c.id] = { ...c, monto: eq } })
+    setCuotasMap(actual)
+    props.onChange?.(Object.values(actual))
   }
 
-  const obtenerClaseBalance = () => {
-    if (Math.abs(totalPendiente()) < 0.01) return 'balance-ok'
-    if (totalPendiente() > 0) return 'balance-pending'
-    return 'balance-excess'
-  }
+  const totalIngresado = createMemo(() =>
+    cuotasArray().reduce((s, c) => s + (parseFloat(c.monto) || 0), 0)
+  )
+  const totalPendiente = () => totalAmount() - totalIngresado()
 
-  const obtenerMensajeBalance = () => {
-    if (Math.abs(totalPendiente()) < 0.01) return '✓ Distribución exacta'
-    if (totalPendiente() > 0) return `Falta: S/ ${formatNumero(totalPendiente())}`
-    return `Exceso: S/ ${formatNumero(diferencia())}`
+  const claseBalance = () => {
+    const d = totalPendiente()
+    if (Math.abs(d) < 0.01) return 'balance-ok'
+    return d > 0 ? 'balance-pending' : 'balance-excess'
   }
-
+  const textoBalance = () => {
+    const d = totalPendiente()
+    if (Math.abs(d) < 0.01) return '✓ Letras cuadradas'
+    return d > 0 ? `Faltante: S/ ${formatNumero(d)}` : `Excedente: S/ ${formatNumero(Math.abs(d))}`
+  }
   const progreso = () => totalAmount() > 0 ? (totalIngresado() / totalAmount()) * 100 : 0
+  const montoEq = () => { const n = cuotasArray().length; return n > 0 ? totalAmount() / n : 0 }
+
+  const cuotasPorMes = createMemo(() => {
+    const map = {}
+    cuotasArray().forEach(c => {
+      const k = key(c.anio, c.mes, 0)
+      if (!map[k]) map[k] = { anio: c.anio, mes: c.mes, nombre: NOMBRES_MESES[c.mes], cuotas: [], total: 0 }
+      map[k].cuotas.push(c)
+      map[k].total += parseFloat(c.monto) || 0
+    })
+    return Object.values(map).sort((a, b) => a.anio !== b.anio ? a.anio - b.anio : a.mes - b.mes)
+  })
+
+  const totalPorMes = createMemo(() => {
+    const r = {}
+    cuotasArray().forEach(c => {
+      const k = key(c.anio, c.mes, 0)
+      r[k] = (r[k] || 0) + (parseFloat(c.monto) || 0)
+    })
+    return r
+  })
 
   return (
     <div class="payment-split-form">
       <div class="psf-header">
         <div class="psf-title">
-          <h3>Fraccionamiento de Pago</h3>
-          <span class="psf-subtitle">Fechas coordinadas con el cliente</span>
+          <h3>Programación de Letras</h3>
+          <span class="psf-subtitle">Selecciona las fechas de vencimiento</span>
         </div>
         <div class="psf-summary">
           <div class="psf-summary-item">
@@ -279,108 +159,80 @@ export const PaymentSplit = (props) => {
             <span class="psf-value">S/ {formatNumero(totalAmount())}</span>
           </div>
           <div class="psf-summary-item">
-            <span class="psf-label">Cuotas</span>
-            <span class="psf-value">{numeroCuotas()}</span>
+            <span class="psf-label">Días</span>
+            <span class="psf-value">{cuotasArray().length}</span>
           </div>
-          <div class="psf-summary-item">
-            <span class="psf-label">x Cuota</span>
-            <span class="psf-value eq">S/ {formatNumero(montoEquitativo())}</span>
-          </div>
+          <Show when={cuotasArray().length > 0}>
+            <div class="psf-summary-item">
+              <span class="psf-label">x Letra</span>
+              <span class="psf-value eq">S/ {formatNumero(montoEq())}</span>
+            </div>
+          </Show>
         </div>
       </div>
 
-      <div class="psf-actions">
-        <button onClick={agregarCuota} class="psf-btn psf-btn-add">
-          + Agregar Fecha
-        </button>
-        <Show when={numeroCuotas() > 0}>
-          <button onClick={aplicarEquitativo} class="psf-btn psf-btn-equal">
-            ⇄ Equitativo
-          </button>
-        </Show>
+      <div class="psf-rango-meses">
+        <div class="psf-rango-input">
+          <label class="psf-rango-label">Mes inicio</label>
+          <input type="month" value={startMonth()} onInput={e => setStartMonth(e.currentTarget.value)} class="psf-input psf-month-input" />
+        </div>
+        <span class="psf-rango-sep">→</span>
+        <div class="psf-rango-input">
+          <label class="psf-rango-label">Mes fin</label>
+          <input type="month" value={endMonth()} onInput={e => setEndMonth(e.currentTarget.value)} class="psf-input psf-month-input" />
+        </div>
       </div>
 
-      <div class="psf-cuotas-list">
-        <For each={cuotas()}>
-          {(cuota, index) => {
-            const dayType = () => getDayType(cuota.fecha, feriadosAnio())
-            const dayLabel = () => dayType() === 'feriado' 
-              ? feriadosAnio()[cuota.fecha?.slice(5)]
-              : dayType() === 'domingo' ? 'Domingo'
-              : dayType() === 'sabado' ? 'Sábado' : null
-            
-            return (
-              <div class={`psf-cuota-row ${dayType() !== 'normal' ? `day-${dayType()}` : ''}`}>
-                <span class="psf-cuota-num">{index() + 1}</span>
-                
-                <div class="psf-cuota-inputs">
-                  <input
-                    type="text"
-                    value={cuota.fechaText || ''}
-                    onInput={(e) => actualizarCuota(cuota.id, 'fechaText', formatearFechaInput(e.currentTarget.value))}
-                    onFocus={(e) => e.currentTarget.select()}
-                    placeholder="dd/mm/yyyy"
-                    class={`psf-input psf-fecha day-${dayType()}`}
-                    maxLength={10}
-                  />
-                  
-                  <div class="psf-monto-wrapper">
-                    <span class="psf-monto-simbolo">S/.</span>
-                    <input
-                      type="number"
-                      value={cuota.monto}
-                      onInput={(e) => actualizarCuota(cuota.id, 'monto', e.currentTarget.value)}
-                      class="psf-input psf-monto"
-                      placeholder={montoEquitativo().toFixed(2)}
-                      step="0.01"
-                    />
-                  </div>
-                </div>
+      <Show when={meses().length > 0}>
+        <div class="psf-calendarios">
+          <For each={meses()}>
+            {(m) => {
+              const primerDia = new Date(m.anio, m.mes, 1).getDay()
+              const primerDiaLocal = primerDia === 0 ? 6 : primerDia - 1
+              const celdasVacia = primerDiaLocal
+              const map = cuotasMap()
+              const totalMes = totalPorMes()[key(m.anio, m.mes, 0)] || 0
+              const pct = totalAmount() > 0 ? (totalMes / totalAmount()) * 100 : 0
 
-                <Show when={dayLabel()}>
-                  <span class={`psf-day-badge day-${dayType()}`}>
-                    {dayLabel()}
-                  </span>
-                </Show>
-
-                <button 
-                  onClick={() => eliminarCuota(cuota.id)}
-                  class="psf-btn-remove"
-                  disabled={cuotas().length <= 1}
-                >
-                  ×
-                </button>
-              </div>
-            )
-          }}
-        </For>
-      </div>
-
-      <Show when={cuotasPorMes().length > 0}>
-        <div class="psf-meses-grid">
-          <For each={cuotasPorMes()}>
-            {(mes) => {
-              const porcentaje = () => (mes.total / totalAmount()) * 100
               return (
-                <div class="psf-mes-card">
-                  <div class="psf-mes-header">
-                    <span class="psf-mes-nombre">{mes.nombre}</span>
-                      <span class="psf-mes-pct">{porcentaje().toFixed(2)}%</span>
+                <div class="psf-cal-mes">
+                  <div class="psf-cal-header">
+                    <span class="psf-cal-titulo">{NOMBRES_MESES[m.mes]} {m.anio}</span>
+                    <span class="psf-cal-total">S/ {formatNumero(totalMes)} ({pct.toFixed(1)}%)</span>
                   </div>
-                  <div class="psf-mes-cuotas">
-                    <For each={mes.cuotas}>
-                      {(c) => (
-                        <div class="psf-mes-cuota">
-                          <span class="psf-mes-fecha">
-                            {formatearFechaMostrar(c.fecha)}
-                          </span>
-                          <span class="psf-mes-monto">S/ {formatNumero(c.monto)}</span>
-                        </div>
-                      )}
+                  <div class="psf-cal-grid">
+                    <For each={DIAS_LAB}>
+                      {(dl) => <div class="psf-cal-dia-label">{dl}</div>}
                     </For>
-                  </div>
-                  <div class="psf-mes-total">
-                    Total: S/ {formatNumero(mes.total)}
+                    <For each={Array.from({ length: celdasVacia })}>
+                      {() => <div class="psf-cal-celda psf-cal-vacia"></div>}
+                    </For>
+                    <For each={Array.from({ length: m.dias }, (_, i) => i + 1)}>
+                      {(dia) => {
+                        const k = key(m.anio, m.mes, dia)
+                        const sel = map[k]
+                        const tipo = obtenerDiaTipo(m.anio, m.mes, dia)
+                        return (
+                          <div
+                            class={`psf-cal-celda${sel ? ' psf-cal-seleccionado' : ''} psf-cal-${tipo}`}
+                            onClick={() => toggleDia(m.anio, m.mes, dia)}
+                          >
+                            <span class="psf-cal-num">{dia}</span>
+                            <Show when={sel}>
+                              <input
+                                type="number"
+                                value={sel.monto}
+                                onInput={(e) => { e.stopPropagation(); actualizarMonto(k, e.currentTarget.value) }}
+                                onClick={(e) => e.stopPropagation()}
+                                class="psf-cal-monto-input"
+                                step="0.01"
+                                placeholder="0.00"
+                              />
+                            </Show>
+                          </div>
+                        )
+                      }}
+                    </For>
                   </div>
                 </div>
               )
@@ -389,28 +241,64 @@ export const PaymentSplit = (props) => {
         </div>
       </Show>
 
-      <div class="psf-totales">
-        <div class="psf-total-row">
-          <span>Ingresado:</span>
-          <span class="psf-total-value">S/ {formatNumero(totalIngresado())}</span>
+      <Show when={cuotasPorMes().length > 0}>
+        <div class="psf-resumen-cards">
+          <For each={cuotasPorMes()}>
+            {(g) => (
+              <div class="psf-res-card">
+                <div class="psf-res-header">
+                  <span class="psf-res-titulo">{g.nombre} {g.anio}</span>
+                  <span class="psf-res-total">S/ {formatNumero(g.total)}</span>
+                </div>
+                <div class="psf-res-lista">
+                  <For each={g.cuotas}>
+                    {(c) => (
+                      <div class="psf-res-item">
+                        <span class="psf-res-dia">{formatearFecha(c.anio, c.mes, c.dia)}</span>
+                        <div class="psf-res-monto-wrap">
+                          <span class="psf-monto-simbolo">S/.</span>
+                          <input
+                            type="number"
+                            value={c.monto}
+                            onInput={(e) => actualizarMonto(c.id, e.currentTarget.value)}
+                            class="psf-res-input"
+                            step="0.01"
+                            placeholder="0.00"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </For>
+                </div>
+              </div>
+            )}
+          </For>
         </div>
-        <div class="psf-total-row">
-          <span>Pendiente:</span>
-          <span class={`psf-total-value ${obtenerClaseBalance()}`}>
-            S/ {formatNumero(totalPendiente())}
-          </span>
-        </div>
-      </div>
+      </Show>
 
-      <div class={`psf-progress ${obtenerClaseBalance()}`}>
-        <div class="psf-progress-bar">
-          <div 
-            class="psf-progress-fill"
-            style={{ width: `${Math.min(progreso(), 100)}%` }}
-          ></div>
+      <Show when={cuotasArray().length > 0}>
+        <div class="psf-actions">
+          <button onClick={aplicarEquitativo} class="psf-btn psf-btn-equal">⇄ Distribuir equitativamente</button>
         </div>
-        <span class="psf-progress-text">{obtenerMensajeBalance()}</span>
-      </div>
+
+        <div class="psf-totales">
+          <div class="psf-total-row">
+            <span>Asignado:</span>
+            <span class="psf-total-value">S/ {formatNumero(totalIngresado())}</span>
+          </div>
+          <div class="psf-total-row">
+            <span>Saldo:</span>
+            <span class={`psf-total-value ${claseBalance()}`}>S/ {formatNumero(totalPendiente())}</span>
+          </div>
+        </div>
+
+        <div class={`psf-progress ${claseBalance()}`}>
+          <div class="psf-progress-bar">
+            <div class="psf-progress-fill" style={{ width: `${Math.min(progreso(), 100)}%` }}></div>
+          </div>
+          <span class="psf-progress-text">{textoBalance()}</span>
+        </div>
+      </Show>
     </div>
   )
 }

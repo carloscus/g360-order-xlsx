@@ -10,9 +10,7 @@
  */
 
 import dataEstatica from '../data/catalogo_productos.json'
-import { createSignal, createMemo, onMount } from 'solid-js'
-
-const CATALOGO_PATH = '/catalogo_productos.json'
+import { createSignal, createMemo } from 'solid-js'
 
 // Crear mapa de productos del catálogo: sku -> datos completos
 const crearMapaCatalogo = (productos) => {
@@ -23,12 +21,8 @@ const crearMapaCatalogo = (productos) => {
         mapa.set(p.codigo || p.sku, {
           linea: p.linea || 'SIN LÍNEA',
           categoria: p.categoria || 'SIN CATEGORÍA',
-          grupo: p.grupo || '',
-          familia: p.familia || '',
           pesoKg: p.peso_kg || p.can_kg_um || 0,
           unBx: p.un_bx || p.u_por_caja || 1,
-          precioLista: p.precio_lista || p.precio || 0,
-          stock: p.stock || p.stock_referencial || 0,
         })
       }
     })
@@ -37,9 +31,8 @@ const crearMapaCatalogo = (productos) => {
 }
 
 export const useCatalogo = () => {
-  // Señales para el estado del catálogo
-  const [catalogo, setCatalogo] = createSignal({})
-  const [cargando, setCargando] = createSignal(true)
+  const [catalogo, setCatalogo] = createSignal(dataEstatica)
+  const [cargando, setCargando] = createSignal(false)
   const [error, setError] = createSignal(null)
 
   // Mapa de productos para búsqueda rápida
@@ -47,24 +40,6 @@ export const useCatalogo = () => {
     const data = catalogo()
     const prods = data.productos || data
     return crearMapaCatalogo(prods)
-  })
-
-  // Cargar catálogo al inicio
-  onMount(async () => {
-    try {
-      // Intentar fetch (requiere archivo en /public), si falla usar data estática de /src/data
-      const res = await fetch(CATALOGO_PATH)
-      if (res.ok) {
-        const data = await res.json()
-        setCatalogo(data)
-      } else {
-        setCatalogo(dataEstatica)
-      }
-    } catch (e) {
-      setCatalogo(dataEstatica)
-    } finally {
-      setCargando(false)
-    }
   })
 
   // Buscar producto en catálogo
@@ -81,23 +56,19 @@ export const useCatalogo = () => {
         ...productoRPE,
         linea: info.linea,
         categoria: info.categoria,
-        grupo: info.grupo,
-        familia: info.familia,
         pesoKg: info.pesoKg,
         unBx: info.unBx,
-        precioLista: info.precioLista,
         tieneDatosCatalogo: true
       }
     }
     
-    // Si no está en catálogo, inferir desde descripción
+    // Si no está en catálogo, asignar SIN LÍNEA
     return {
       ...productoRPE,
-      linea: productoRPE.descripcion?.split(' ')[0] || 'SIN LÍNEA',
+      linea: 'SIN LÍNEA',
       categoria: 'SIN CATEGORÍA',
       pesoKg: 0,
       unBx: 1,
-      precioLista: 0,
       tieneDatosCatalogo: false
     }
   }

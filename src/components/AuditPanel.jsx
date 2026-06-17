@@ -16,10 +16,6 @@ export const AuditPanel = (props) => {
   const hallazgosPorTipo = createMemo(() => getHallazgosPorTipo(resultadosAudit().hallazgos))
   
   const [mostrarInfos, setMostrarInfos] = createSignal(false)
-  
-  const tieneProblemas = () => 
-    resultadosAudit().resumen.errores > 0 || 
-    resultadosAudit().resumen.advertencias > 0
 
   return (
     <Show when={resultadosAudit().resumen.totalProductos > 0}>

@@ -5,7 +5,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [solidPlugin()],
   server: {
-    port: 3000,
+    port: 3001,
     open: true,
     watch: {
       usePolling: true, // Útil si los cambios no se reflejan en sistemas de archivos en red o WSL

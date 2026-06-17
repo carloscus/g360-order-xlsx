@@ -6,11 +6,8 @@ export const AvailableTotalCard = (props) => {
   return (
     <div class='total-card available-total-card'>
       <div class='total-card-header'>
-        <span class='total-card-icon'>??</span>
-        <div class='flex flex-col'>
-          <h3>TOTAL A ATENDER</h3>
-          <span class='total-card-subtitle'>Disponible con Stock</span>
-        </div>
+        <span class='total-card-icon'>📦</span>
+        <h3>TOTAL A ATENDER</h3>
       </div>
       <div class='total-value'>S/ {formatNumero(props.totalDisponible)}</div>
       <div class='total-pending'>

@@ -1,9 +1,7 @@
 import { Show } from 'solid-js'
 
 export const AlertPendiente = (props) => {
-  const show = () => props.show !== false
-  const onConfirm = () => props.onConfirm
-  const onDiscard = () => props.onDiscard
+  const show = () => props.show // Simplified show condition
 
   return (
     <Show when={show()}>
@@ -13,10 +11,10 @@ export const AlertPendiente = (props) => {
           <h3>¿Tienes un cálculo pendiente?</h3>
           <p>Ya tienes un pedido con distribución de cuotas. ¿Qué deseas hacer?</p>
           <div class="alert-buttons">
-            <button onClick={onConfirm} class="btn-alert btn-danger">
-              🗑️ Eliminar y cargar nuevo
+            <button onClick={props.onConfirm} class="btn-alert btn-danger">
+              Eliminar y cargar nuevo
             </button>
-            <button onClick={onDiscard} class="btn-alert btn-secondary">
+            <button onClick={props.onDiscard} class="btn-alert btn-secondary">
               Mantener actual
             </button>
           </div>

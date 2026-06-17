@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@solidjs/router": "^0.16.1",
+    "docx": "^9.7.1",
+    "exceljs": "^4.4.0",
     "solid-js": "^1.8.0",
     "xlsx": "^0.18.5"
   },

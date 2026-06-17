@@ -64,15 +64,23 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 - Validaciones configurables de negocio
 - Alertas y notificaciones de errores
 
-### Exportación XLSX
-- Generación de archivos Excel desde pedidos
-- Formateo automático de datos
-- Exportación de reportes corporativos
+### Exportaciones
+- **XLSX**: Generación de archivos Excel con logo corporativo
+- **DOCX**: Cartas corporativas en Word con formato A4, logo y márgenes profesionales
+- **HTML**: Descarga de cronograma en HTML con tema oscuro/claro seleccionable
+- **Impresión A4**: Botón de impresión directa desde la página de distribución con tema claro forzado via `@media print`
+
+### Distribución y Programación de Letras
+- Programación de letras (promissory notes) con calendario interactivo
+- Selección de fechas de vencimiento por día
+- Cálculo automático de montos equitativos por letra
+- Balance en tiempo real (asignado vs saldo)
+- KPIs de valor neto, unidades por caja, masa logística y total a financiar
 
 ### UI/UX Avanzada
-- Tema oscuro/claro automático
-- Sidebar navegable
-- Componentes modales para detalles
+- Tema oscuro/claro automático con persistencia en localStorage
+- Sidebar navegable con acceso rápido a exportación
+- Componentes modales para detalles y gráficos
 - Diseño responsivo para móviles y desktop
 - Branding G360 integrado
 
@@ -114,14 +122,14 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 ## Uso
 
 ### Navegación
-- **/**: Página principal con gestión de pedidos
-- **/distribucion**: Página de distribución de productos
+- **/**: Página principal con gestión del pedido (carga RPE, catálogo, edición de productos)
+- **/distribucion**: Página de programación de letras con calendario, KPIs, tablas y exportaciones
 
 ### Flujo Básico
-1. Agregar productos al pedido desde el catálogo
-2. Configurar cantidades, precios y descuentos
-3. Revisar totales en los paneles de resumen
-4. Exportar a XLSX cuando esté listo
+1. Cargar datos del RPE o ingresar manualmente en la página principal
+2. Revisar y editar productos, precios y descuentos
+3. Navegar a **Distribución** para programar letras (fechas de vencimiento y montos)
+4. Exportar a XLSX, Word, HTML o imprimir en A4
 
 ### Temas
 La aplicación detecta automáticamente el tema del sistema (oscuro/claro). También se puede forzar desde el contexto de tema.
@@ -136,14 +144,17 @@ src/
 │   ├── Footer/         # Footer con firma G360
 │   ├── ProductTable/   # Tabla de productos
 │   ├── TotalsPanel/    # Paneles de totales
-│   └── ...
+│   ├── PaymentSplit/   # Calendario de programación de letras
+│   ├── Sidebar/        # Sidebar con exportación y navegación
+│   └── DistributionPage.jsx  # Página de distribución y letras
 ├── hooks/              # Hooks personalizados (usePedido, useCatalogo)
-├── constants/          # Constantes y configuraciones
-├── utils/              # Utilidades (xlsxGenerator, formatters)
+├── constants/          # Constantes y configuraciones compartidas
+├── utils/              # Utilidades (xlsxGenerator, docxGenerator, htmlExportBuilder, etc.)
 ├── context/            # Contextos (ThemeContext)
-├── pages/              # Páginas principales
-├── core/               # Lógica central (G360_ENGINE)
-└── styles/             # CSS global
+├── pages/              # Páginas principales (HomePage)
+├── services/           # Servicios (erpParser)
+├── core/               # Lógica central (G360_ENGINE y skills)
+└── styles/             # CSS global con variables de tema
 ```
 
 ### Scripts Disponibles

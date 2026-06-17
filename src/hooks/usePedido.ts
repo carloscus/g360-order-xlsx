@@ -8,7 +8,7 @@
 
 import { createEffect, createMemo, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { ERPParserService } from '../services/erpParser.js'
+import { ERPParserService } from '../services/erpParser'
 import { getAgentesSkill } from '../core/g360-skill-agentes'
 import { useCatalogo } from '../hooks/useCatalogo'
 
@@ -17,6 +17,7 @@ interface ProductoPedido {
   id: number
   codigo: string
   descripcion: string
+  marca: string
   cantidad: number
   stock: number
   unidadMedida: string

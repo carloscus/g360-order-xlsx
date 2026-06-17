@@ -14,22 +14,20 @@
  * =====================================================================
  */
 
-import { createMemo, createSignal } from 'solid-js'
-
 // =====================================================================
 // CONSTANTES DE CÁLCULO
 // =====================================================================
 
+import { IVA } from '../constants/sharedConstants'
+
 export const CALC_CONFIG = {
-  IVA: 1.18,
+  IVA,
   IGV_PORCENTAJE: 0.18,
 
   // Configuración de stock
   STOCK_OK_RATIO: 1.1,      // Stock >= 110% de cantidad
   STOCK_AJ_RATIO: 0.9,      // Stock >= 90% de cantidad
-  STOCK_AGOTADO: 0,   // Stock < 90%
-  
-  // Configuración de descuentos
+
   DESC_ALTO: 50,
   DESC_MUY_ALTO: 70,
   
@@ -88,6 +86,13 @@ export const calcularRiesgoRuptura = (stock, cantidad) => {
 export const calcularCajas = (cantidad, unPorCaja) => {
   const unBx = unPorCaja || 1
   return Math.ceil(cantidad / unBx)
+}
+
+export const calcularCajasDetalle = (cantidad, unPorCaja) => {
+  const unBx = unPorCaja || 1
+  const cajasCompletas = Math.floor(cantidad / unBx)
+  const unidadesSobrantes = cantidad % unBx
+  return `${cajasCompletas}/${unidadesSobrantes}`
 }
 
 export const calcularPesoTotal = (cantidad, pesoKg) => {
@@ -199,9 +204,8 @@ export const calcularMetricasPorLinea = (productos) => {
         valorTotal: 0,
         pesoTotal: 0,
         cajasEstimadas: 0,
-        productosAgotados: 0,
-        productosOK: 0,
-        productosAJ: 0
+        cajasCompletas: 0,
+        unidadesSueltas: 0
       }
     }
     
@@ -210,10 +214,8 @@ export const calcularMetricasPorLinea = (productos) => {
     lineas[linea].valorTotal += p.precioVenta || 0
     lineas[linea].pesoTotal += p.pesoTotal || 0
     lineas[linea].cajasEstimadas += p.cajas || 0
-    
-    if (p.estadoStock === 'Agotado') lineas[linea].productosAgotados++
-    else if (p.estadoStock === 'OK') lineas[linea].productosOK++
-    else lineas[linea].productosAJ++
+    lineas[linea].cajasCompletas += Math.floor((p.cantidad || 0) / (p.unBx || 1))
+    lineas[linea].unidadesSueltas += (p.cantidad || 0) % (p.unBx || 1)
   })
   
   return Object.values(lineas).sort((a, b) => b.valorTotal - a.valorTotal)
@@ -250,12 +252,16 @@ export const calcularDistribucionPorLinea = (productos) => {
   productos.forEach(p => {
     const linea = p.linea || 'SIN LÍNEA'
     if (!lineas[linea]) {
-      lineas[linea] = { monto: 0, cajas: 0, peso: 0 }
+      lineas[linea] = { monto: 0, cajas: 0, peso: 0, cajasCompletas: 0, unidadesSueltas: 0 }
     }
     lineas[linea].monto += p.valorVenta || 0
     lineas[linea].cajas += p.cajas || 0
     lineas[linea].peso += p.pesoTotal || 0
     totalValor += p.valorVenta || 0
+    
+    // Desglose logístico
+    lineas[linea].cajasCompletas += Math.floor((p.cantidad || 0) / (p.unBx || 1))
+    lineas[linea].unidadesSueltas += (p.cantidad || 0) % (p.unBx || 1)
   })
   
   return Object.entries(lineas).map(([linea, data]) => ({
@@ -263,8 +269,41 @@ export const calcularDistribucionPorLinea = (productos) => {
     monto: data.monto,
     cajas: data.cajas,
     peso: data.peso,
+    cajasCompletas: data.cajasCompletas,
+    unidadesSueltas: data.unidadesSueltas,
     porcentaje: totalValor > 0 ? (data.monto / totalValor) * 100 : 0
   })).sort((a, b) => b.monto - a.monto)
+}
+
+export const calcularMetricasPorCategoria = (productos) => {
+  const categorias = {}
+  const subtotalTotal = productos.reduce((sum, p) => sum + (p.valorVenta || 0), 0)
+
+  productos.forEach(p => {
+    const cat = p.categoria || 'SIN CATEGORÍA'
+    if (!categorias[cat]) categorias[cat] = { categoria: cat, monto: 0, cajas: 0, peso: 0, cajasCompletas: 0, unidadesSueltas: 0 }
+    categorias[cat].monto += p.valorVenta || 0
+    categorias[cat].cajas += p.cajas || 0
+    categorias[cat].peso += p.pesoTotal || 0
+    categorias[cat].cajasCompletas += Math.floor((p.cantidad || 0) / (p.unBx || 1))
+    categorias[cat].unidadesSueltas += (p.cantidad || 0) % (p.unBx || 1)
+  })
+
+  return Object.values(categorias).map(c => ({
+    ...c,
+    porcentaje: subtotalTotal > 0 ? (c.monto / subtotalTotal) * 100 : 0
+  })).sort((a, b) => b.monto - a.monto)
+}
+
+export const calcularConsolidadoPedido = (productos) => {
+  const totales = calcularTotalesPedido(productos)
+  return {
+    subtotal: totales.subtotal,
+    totales: totales,
+    datosLinea: calcularDistribucionPorLinea(productos),
+    datosCategoria: calcularMetricasPorCategoria(productos),
+    totalGeneral: { cajas: totales.totalCajas, peso: totales.totalPeso }
+  }
 }
 
 // =====================================================================
@@ -329,11 +368,15 @@ export const getAgentesSkill = () => ({
       estado: calcularEstadoStock,
       cobertura: calcularCoberturaStock,
       nivelRiesgo: getNivelRiesgo,
+      riesgo: calcularRiesgoRuptura,
       recomendacionSustituto: getRecomendacionSustituto,
-      riesgo: calcularRiesgoRuptura
+    },
+    comparaciones: {
+      conCatalogo: compararConCatalogo
     },
     logistica: {
       cajas: calcularCajas,
+      cajasDetalle: calcularCajasDetalle,
       pesoTotal: calcularPesoTotal,
       volumen: calcularVolumenCaja
     },
@@ -351,7 +394,9 @@ export const getAgentesSkill = () => ({
       totales: calcularTotalesPedido,
       metricasLinea: calcularMetricasPorLinea,
       metricasGenerales: calcularMetricasGenerales,
-      distribucion: calcularDistribucionPorLinea
+      distribucion: calcularDistribucionPorLinea,
+      metricasCategoria: calcularMetricasPorCategoria,
+      consolidado: calcularConsolidadoPedido
     },
     proyecciones: {
       venta: proyectarVenta,

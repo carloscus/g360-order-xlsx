@@ -4,34 +4,28 @@
  * =====================================================================
  * Genera archivos Excel con fórmulas para edición manual
  * 
- * ✅ Migrado a Typescript - Logica 100% IDENTICA al original
+ * ✅ Migrado a Typescript - Formato alineado con archivo de referencia
+ * ✅ Optimizado: Una sola hoja "viva" con fórmulas y estilos de tabla.
  */
 
-import * as XLSX from 'xlsx'
-import { limpiarNombreArchivo, formatNumero } from './formatters.js'
-import { getAgentesSkill } from '../core/g360-skill-agentes'
+import ExcelJS from 'exceljs'
+import { limpiarNombreArchivo } from './formatters'
 import { IVA } from '../constants/sharedConstants'
-import catalogoData from '../data/catalogo_productos.json'
+import initialData from '../data/initialData.json'
 
 // Tipos
-interface ProductoCatalogo {
-  sku: string
-  nombre: string
-  categoria: string
-  linea: string
-  peso_kg: number
-  un_bx: number
-}
-
 interface ProductoPedido {
   codigo: string
   descripcion: string
   cantidad: number
+  stock?: number
   unidadMedida?: string
   precioUnitario?: number
   descuento1?: number
   descuento2?: number
   estadoStock?: 'OK' | 'AJ' | 'Agotado' | string
+  linea?: string
+  categoria?: string
 }
 
 interface DatosPedido {
@@ -43,627 +37,181 @@ interface DatosPedido {
   tipo?: 'cotizacion' | string
 }
 
-// Crear mapa de productos por SKU para búsqueda rápida (idealmente esto vendría de useCatalogo)
-const catalogoMap = new Map<string, ProductoCatalogo>()
-catalogoData.productos.forEach(p => {
-  catalogoMap.set(p.sku, p as ProductoCatalogo)
-})
-
-const { calculos } = getAgentesSkill()
-
-/**
- * Función helper para buscar producto en catálogo
- * @param sku Código SKU del producto
- * @returns Producto del catalogo o null
- */
-const getProductoCatalogo = (sku: string): ProductoCatalogo | null => {
-  return catalogoMap.get(sku) || null
-}
-
 // =====================================================================
-// GENERAR HOJA 2 - ANÁLISIS POR LÍNEA Y CATEGORÍA
+// ESTILOS G360 - Colores para Excel (referencia)
 // =====================================================================
-
-interface ProductoCalculadoXLSX extends ProductoPedido {
-  linea: string
-  categoria: string
-  pesoKg: number
-  unBx: number
-  valorVenta: number
-  precioVenta: number
-  estadoStock: string
-  cajas: number
-  pesoTotal: number
-}
-
-// Helper para procesar productos para el análisis
-const procesarProductosParaAnalisis = (productos: ProductoPedido[]): ProductoCalculadoXLSX[] => {
-  return productos.map(p => {
-    const prodCatalogo = getProductoCatalogo(p.codigo)
-    return { ...p, ...prodCatalogo, linea: prodCatalogo?.linea || 'SIN LÍNEA', categoria: prodCatalogo?.categoria || 'SIN CATEGORÍA', pesoKg: prodCatalogo?.peso_kg || 0, unBx: prodCatalogo?.un_bx || 1, valorVenta: calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2), precioVenta: calculos.basic.precioVenta(calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)), estadoStock: calculos.stock.estado(p.stock, p.cantidad), cajas: calculos.logistica.cajas(p.cantidad, prodCatalogo?.un_bx || 1), pesoTotal: calculos.logistica.pesoTotal(p.cantidad, prodCatalogo?.peso_kg || 0) }
-  })
-}
-
-const generarHojaAnalisis = (wb: XLSX.WorkBook, productos: ProductoPedido[]) => {
-  const ws = XLSX.utils.aoa_to_sheet([[]])
-
-  // Agrupar productos por categoría → línea
-  const resumen: Record<string, Record<string, Array<{
-    n: number
-    sku: string
-    nombre: string
-    cantidad: number
-    pesoUnit: number
-    cajas: number
-    pesoTotal: number
-  }>>> = {}
-
-  const productosAnalisis = procesarProductosParaAnalisis(productos)
-
-  productosAnalisis.forEach((p, i) => {
-    const categoria = p.categoria
-    const linea = p.linea
-
-    if (!resumen[categoria]) resumen[categoria] = {}
-    if (!resumen[categoria][linea]) resumen[categoria][linea] = []
-
-    // Usar los valores ya calculados en procesarProductosParaAnalisis
-    resumen[categoria][linea].push({
-      n: i + 1,
-      sku: p.codigo,
-      nombre: p.descripcion,
-      cantidad: p.cantidad || 0,
-      pesoUnit: p.pesoKg,
-      cajas: p.cajas,
-      pesoTotal: p.pesoTotal
-    })
-  })
-
-   // Construir contenido de la hoja
-   const contenido: unknown[][] = []
-
-   // Título
-   contenido.push(['ANÁLISIS CONSOLIDADO DE DISPONIBILIDAD POR LÍNEA', '', '', '', '', '', ''])
-   contenido.push(['', '', '', '', '', '', ''])
-
-   // Headers tabla
-   contenido.push(['N°', 'SKU', 'PARTIDA / PRODUCTO', 'CANT', 'MASA UNIT (kg)', 'CAJAS', 'MASA TOTAL (kg)'])
-
-   // Función para agregar línea de datos
-  const agregarLinea = (data: {n?: number, sku?: string, nombre?: string, cantidad?: number, pesoUnit?: number, cajas?: number, pesoTotal?: number}) => {
-    contenido.push([
-      data.n || '',
-      data.sku || '',
-      data.nombre || '',
-      data.cantidad || 0,
-      data.pesoUnit || 0,
-      data.cajas || 0,
-      data.pesoTotal || 0
-    ])
-  }
-
-  // Función para agregar total de línea
-  const agregarTotalLinea = (linea: string, items: Array<{cajas: number, pesoTotal: number}>) => {
-    const totalCajas = items.reduce((sum, item) => sum + item.cajas, 0)
-    const totalPeso = items.reduce((sum, item) => sum + item.pesoTotal, 0)
-    contenido.push([
-      '',
-      '',
-      `TOTAL ${linea}:`,
-      '',
-      '',
-      totalCajas,
-      totalPeso
-    ])
-  }
-
-  // Función para agregar total de categoría
-  const agregarTotalCategoria = (categoria: string, lineasData: Array<Array<{cajas: number, pesoTotal: number}>>) => {
-    const totalCajas = lineasData.reduce((sum, items) => sum + items.reduce((s, i) => s + i.cajas, 0), 0)
-    const totalPeso = lineasData.reduce((sum, items) => sum + items.reduce((s, i) => s + i.pesoTotal, 0), 0)
-    contenido.push([
-      '',
-      '',
-      `TOTAL ${categoria}:`,
-      '',
-      '',
-      totalCajas,
-      totalPeso
-    ])
-    contenido.push(['', '', '', '', '', '', ''])
-  }
-
-  // Recorrer categorías y líneas
-  const categoriasOrden = ['VINIBALL', 'VINIFAN', 'REPRESENTADAS', 'SIN CATEGORÍA']
-  const categorias = Object.keys(resumen).sort((a, b) => {
-    const idxA = categoriasOrden.indexOf(a)
-    const idxB = categoriasOrden.indexOf(b)
-    if (idxA !== -1 && idxB !== -1) return idxA - idxB
-    if (idxA !== -1) return -1
-    if (idxB !== -1) return 1
-    return a.localeCompare(b)
-  })
-
-  let granTotalCajas = 0
-  let granTotalPeso = 0
-
-   categorias.forEach(cat => {
-     const lineas = resumen[cat]
-     const lineasKeys = Object.keys(lineas).sort()
-
-     // Título categoría
-     contenido.push([`===== ${cat} =====`, '', '', '', '', '', ''])
-
-     let catTotalCajas = 0
-     let catTotalPeso = 0
-
-     lineasKeys.forEach(linea => {
-       const items = lineas[linea]
-
-       // Datos de productos
-       items.forEach(item => {
-         agregarLinea(item)
-       })
-
-       // Total línea
-       agregarTotalLinea(linea, items)
-
-       catTotalCajas += items.reduce((sum, i) => sum + i.cajas, 0)
-       catTotalPeso += items.reduce((sum, i) => sum + i.pesoTotal, 0)
-     })
-
-     // Total categoría
-     agregarTotalCategoria(cat, Object.values(lineas))
-
-     granTotalCajas += catTotalCajas
-     granTotalPeso += catTotalPeso
-   })
-
-  // Total general
-  contenido.push(['', '', '', '', '', '', ''])
-  contenido.push(['===== TOTAL GENERAL =====', '', '', '', '', granTotalCajas, granTotalPeso])
-
-  // Escribir contenido a la hoja
-  XLSX.utils.sheet_add_aoa(ws, contenido, { origin: 0 })
-
-  // Estilos
-  ws['!cols'] = [
-    { wch: 5 },   // N°
-    { wch: 12 },  // SKU
-    { wch: 40 },  // PRODUCTO
-    { wch: 8 },   // CANT
-    { wch: 14 },  // PESO UNIT
-    { wch: 8 },   // CAJAS
-    { wch: 14 }   // PESO TOTAL
-  ]
-
-  // Aplicar estilos a celdas
-  const applyStyles = (row: number, isBold = false, isHeader = false, bgColor: string | null = null) => {
-    const cols = 7
-    for (let c = 0; c < cols; c++) {
-      const cell = XLSX.utils.encode_cell({ r: row, c })
-      if (!ws[cell]) continue
-      ws[cell].s = {
-        font: { bold: isBold, sz: isHeader ? 12 : 10 },
-        fill: bgColor ? { fgColor: { rgb: bgColor } } : undefined,
-        border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } },
-        alignment: { vertical: "center" }
-      }
-    }
-  }
-
-  // Estilar headers (fila 2)
-  for (let c = 0; c < 7; c++) {
-    const cell = XLSX.utils.encode_cell({ r: 2, c })
-    if (ws[cell]) {
-      ws[cell].s = {
-        font: { bold: true, color: { rgb: "FFFFFF" }, sz: 10 },
-        fill: { fgColor: { rgb: "333333" } },
-        border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } },
-        alignment: { horizontal: "center" }
-      }
-    }
-  }
-
-  // Estilar filas de datos
-  let currentRow = 3
-  categorias.forEach(cat => {
-    const lineas = resumen[cat]
-    const lineasKeys = Object.keys(lineas).sort()
-
-    // Categoría (fila de título)
-    applyStyles(currentRow, true, false, "E8F5E9")
-    currentRow++
-
-    lineasKeys.forEach(linea => {
-      const items = lineas[linea]
-
-      // Productos
-      items.forEach(() => {
-        applyStyles(currentRow, false, false, null)
-        currentRow++
-      })
-
-      // Total línea
-      applyStyles(currentRow, true, false, "F0F0F0")
-      currentRow++
-    })
-
-    // Total categoría
-    applyStyles(currentRow, true, true, "333333")
-    currentRow++
-    applyStyles(currentRow, false, false, null) // vacío
-    currentRow++
-  })
-
-  // Total general
-  applyStyles(currentRow, true, true, "22C55E")
-
-  XLSX.utils.book_append_sheet(wb, ws, 'ANÁLISIS')
-}
-
-// =====================================================================
-// ESTILOS G360 - Colores para Excel
-// =====================================================================
-const G360_ACCENT = "00D084"      // Verde G360 (mantener aquí o mover a sharedConstants)
-const G360_LIGHT = "E8F5E9"       // Verde claro
-const G360_OK = "22C55E"          // Verde stock OK
-const G360_AJ = "F59E0B"          // Naranja stock AJ
-const G360_AGOTADO = "EF4444"     // Rojo stock Agotado
-const G360_ROW_EVEN = "F8FAFC"     // Gris claro fila par
-const G360_ROW_ODD = "FFFFFF"      // Blanco fila impar
+const DARK_BG = "333333"         // Gris oscuro (headers, labels)
+const ROW_EVEN = "F8FAFC"        // Gris muy claro para filas pares
+const ROW_ODD = "FFFFFF"         // Blanco para filas impares
+const VALOR_VENTA_FILL = "F0F0F0" // Gris claro para VALOR VENTA
+const STOCK_OK = "22C55E"        // Verde stock OK (Badge)
+const STOCK_AJ = "F59E0B"        // Naranja stock Ajustado (Badge)
+const STOCK_AGOTADO = "EF4444"   // Rojo stock Agotado (Badge)
+const PRECIO_UNIT_FILL = "C8E6C9" // Verde claro para PRECIO UNIT.
+const TOTALS_FILL = "F0F0F0"     // Gris claro para totales
 
 /**
  * Función auxiliar para cargar logo como base64
- * @param worksheet Hoja de excel donde agregar el logo
  */
-const agregarLogoBase64 = async (worksheet: XLSX.WorkSheet) => {
+const agregarLogoExcelJS = async (workbook: ExcelJS.Workbook, worksheet: ExcelJS.Worksheet) => {
   try {
     const response = await fetch('/logo-cipsa.png')
     const blob = await response.blob()
-    return new Promise<void>((resolve) => {
-      const reader = new FileReader()
-      reader.onload = () => {
-        worksheet['!images'] = [{
-          x: 0,
-          y: 0,
-          w: 2,
-          h: 3,
-          path: reader.result as string
-        }]
-        resolve()
-      }
-      reader.readAsDataURL(blob)
+    const arrayBuffer = await blob.arrayBuffer()
+    
+    const imageId = workbook.addImage({
+      buffer: arrayBuffer,
+      extension: 'png',
+    })
+
+    worksheet.addImage(imageId, {
+      tl: { col: 0, row: 0 },
+      ext: { width: 120, height: 60 }
     })
   } catch (e) {
     console.log('Logo no agregado:', (e as Error).message)
   }
-}
-
+  }
 /**
  * Generar archivo XLSX completo con formato G360
- * @param data Datos completos del pedido
+ * Formato alineado con el archivo de referencia: pedido-cc000103-chopers-distribuciones.xlsx
+ * 
+ * Estructura de la hoja PEDIDO (14 columnas A-N):
+ *   Fila 1: Nombre empresa (C1)
+ *   Fila 2: CLIENTE (C2-D2), PEDIDO (G2-H2)
+ *   Fila 3: (vacía)
+ *   Fila 4: Subtotal, Total+IGV, C/STOCK CONF. (labels)
+ *   Fila 5: Fórmulas de totales
+ *   Fila 6-7: (vacías)
+ *   Fila 8: Encabezados de tabla
+ *   Fila 9+: Datos con fórmulas
  */
 export const generarXLSX = async (data: DatosPedido) => {
-  const { cliente, documento, numeroPedido, vendedor, productos, tipo } = data
+  const { cliente, numeroPedido, productos, tipo } = data
+  if (!productos || productos.length === 0) return
+
+  const workbook = new ExcelJS.Workbook()
+  const worksheet = workbook.addWorksheet('PEDIDO')
+  const { empresa } = initialData.config
   
-  // Crear workbook
-  const wb = XLSX.utils.book_new()
+  // Configurar columnas (Anchos)
+  worksheet.columns = [
+    { width: 5 }, { width: 10 }, { width: 12 }, { width: 14 }, { width: 35 }, // A-E
+    { width: 10 }, { width: 14 }, { width: 10 }, { width: 10 }, { width: 15 }, // F-J
+    { width: 15 }, { width: 15 }, { width: 5 } // K-M
+  ]
+
+  // Cabecera Empresa e Info
+  worksheet.mergeCells('C1:E1')
+  const titleCell = worksheet.getCell('C1')
+  titleCell.value = empresa.nombre
+  titleCell.font = { bold: true, size: 16 }
+
+  worksheet.addRow([]) // Fila 2
+  const clientRow = worksheet.addRow(['', '', 'CLIENTE:', cliente, '', '', 'PEDIDO:', numeroPedido])
+  clientRow.getCell(3).font = { bold: true }
+  clientRow.getCell(7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DARK_BG } }
+  clientRow.getCell(7).font = { color: { argb: 'FFFFFF' }, bold: true }
+
+  // Panel de Totales
+  worksheet.addRow([]) // Fila 4
+  const totalLabels = ['Subtotal:', 'Total + IGV:', 'C/STOCK CONF.:']
+  const labelRow = worksheet.getRow(5)
+  totalLabels.forEach((l, i) => {
+    const cell = labelRow.getCell(i + 3)
+    cell.value = l
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DARK_BG } }
+    cell.font = { color: { argb: 'FFFFFF' }, bold: true }
+  })
+
+  const dataStart = 9
+  const dataEnd = dataStart + productos.length - 1
+
+  const valueRow = worksheet.getRow(6)
   
-  // =====================================================================
-  // XLSX TIPO COTIZACIÓN - Formato completo con headers
-  // =====================================================================
-  const productosCalculados = productos ? productos.map(p => ({ ...p, valorVenta: calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2), precioVenta: calculos.basic.precioVenta(calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)), estadoStock: calculos.stock.estado(p.stock, p.cantidad) })) : [];
+  const subtotalCell = valueRow.getCell(3)
+  subtotalCell.value = { formula: `SUM(J${dataStart}:J${dataEnd})` }
+  subtotalCell.numFmt = '"S/" #,##0.00'
 
-  if (tipo === 'cotizacion') {
-    // Encabezados de la hoja - Estilo VBA
-    const headers = [
-      ['CORPORACIÓN DE INDUSTRIAS PLÁSTICAS S.A.', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'PEDIDO'],
-      ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-      ['CLIENTE:', cliente || '', '', '', '', '', '', '', '', 'RUC:', documento || '', '', '', 'PEDIDO:', numeroPedido || '', 'VENDEDOR:', vendedor || ''],
-      ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ]
-    
-    // Título empresa
-    const ws = XLSX.utils.aoa_to_sheet(headers)
-    
-    // Estilos para título empresa (fila 1)
-    const titleCell = XLSX.utils.encode_cell({ r: 0, c: 0 })
-    ws[titleCell].s = { font: { bold: true, sz: 16, color: { rgb: "333333" } } }
-    
-    // Badge PEDIDO (columna O = índice 14, ajustar)
-    const badgeCell = XLSX.utils.encode_cell({ r: 0, c: 14 })
-    ws[badgeCell].s = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "333333" } }, alignment: { horizontal: "center" } }
-    ws[badgeCell].v = 'PEDIDO'
-    
-    // Info cliente (fila 3) - Estilo VBA
-    for (let c = 0; c <= 14; c++) {
-      const cell = XLSX.utils.encode_cell({ r: 2, c })
-      if (ws[cell] && ws[cell].v) {
-        ws[cell].s = { 
-          font: { 
-            bold: c % 3 === 0, 
-            color: { rgb: c === 9 || c === 13 ? "FFFFFF" : "000000" } 
-          }, 
-          fill: { fgColor: { rgb: c === 9 || c === 13 ? "333333" : G360_LIGHT } },
-          border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } }
-        }
-      }
-    }
-    
-    // Ajuste: fila 3 alto de fila
-    ws['!rows'] = ws['!rows'] || []
-    ws['!rows'][2] = { hpt: 22 }
-    
-    // ===== PANEL DE TOTALES (filas 4-6) - Estilo VBA =====
-    // Fila 4: Headers | Fila 5: Valores | Fila 6: Vacío
-    
-    const totalsHeaders = [
-      ['', '', '', '', '', '', '', '', 'VALOR NETO:', 'TOTAL + IGV:', 'TOTAL ATENDIBLE (CON STOCK):', '', '', '', '', '']
-    ]
-    XLSX.utils.sheet_add_aoa(ws, totalsHeaders, { origin: 4 })
-    
-    // Estilos headers totales (fila 4) - Fondo gris oscuro
-    for (let c = 8; c <= 10; c++) {
-      const cell = XLSX.utils.encode_cell({ r: 3, c })
-      ws[cell].s = { 
-        font: { bold: true, color: { rgb: "FFFFFF" }, sz: 10 }, 
-        fill: { fgColor: { rgb: "333333" } },
-        alignment: { horizontal: "right" }
-      }
-    }
-    
-    // Fila 4 altura
-    ws['!rows'][3] = { hpt: 20 }
-    ws['!rows'][4] = { hpt: 28 }
-    ws['!rows'][5] = { hpt: 10 }  // Separador
-    
-    // ===== TABLA DE PRODUCTOS (fila 7+) - Con columnas separadoras =====
-    const tableStartRow = 7
-    
-    // Encabezados tabla - 16 columnas (A-P) con separadoras H, N, O
-    const tableHeaders = [
-      ['N°', 'CANT.', 'U/M', 'SKU', 'DESCRIPCIÓN', 'ESTADO', 'P. LISTA (S/.)', '', 'DESC 01 (%)', 'DESC 02 (%)', 'VALOR VENTA', 'PRECIO UNIT.', 'PRECIO VENTA', '', '', '']
-    ]
-    
-    // Agregar headers de tabla
-    XLSX.utils.sheet_add_aoa(ws, tableHeaders, { origin: tableStartRow })
-    
-    // Estilos para headers de tabla (fila 7) - Fondo gris oscuro
-    for (let c = 0; c < 16; c++) {
-      const cell = XLSX.utils.encode_cell({ r: tableStartRow, c })
-      const isSeparator = c === 7 || c === 13 || c === 14
-      ws[cell].s = { 
-        font: { bold: true, color: { rgb: "FFFFFF" }, sz: 10 }, 
-        fill: { fgColor: { rgb: isSeparator ? "CCCCCC" : "333333" } }, 
-        alignment: { horizontal: "center" },
-        border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } }
-      }
-    }
-    
-    // Fila 7 altura
-    ws['!rows'][6] = { hpt: 35 }
-    
-    // ===== DATOS DE PRODUCTOS (16 columnas: A-P) =====
-    const dataStartRow = tableStartRow + 1
-    
-    if (productos && productos.length > 0) {
-      productosCalculados.forEach((p, i) => { // Usar productosCalculados
-        const row = dataStartRow + i
-        
-        // Datos directos - 16 columnas (A-P) con separadoras
-        // A:N°, B:CANT, C:U/M, D:SKU, E:Descripción, F:Estado, G:P.Lista, H:sep, I:Desc1, J:Desc2, K:P.Neto, L:P.Unit, M:P.Venta, N:sep, O:sep, P:vacío
-        XLSX.utils.sheet_add_aoa(ws, [[
-          i + 1,                           // A: N°
-          p.cantidad || 0,               // B: CANT
-          p.unidadMedida || '',           // C: U/M
-          p.codigo || '',                 // D: SKU
-          p.descripcion || '',            // E: DESCRIPCIÓN
-          p.estadoStock || '',             // F: ESTADO
-          p.precioUnitario || 0,          // G: P. LISTA
-          '',                             // H: separador
-          p.descuento1 || 0,              // I: DESC 01
-          p.descuento2 || 0,              // J: DESC 02
-          0,                              // K: P. NETO (fórmula)
-          0,                               // L: PRECIO UNIT. (fórmula)
-          0,                               // M: PRECIO VENTA (fórmula)
-          '',                              // N: separador
-          '',                              // O: separador
-          0                                // P: vacío (reservado)
-        ]], { origin: row })
-        
-        // Fórmulas - Excel usa 1-based y las filas empiezan en dataStartRow
-        const excelRow = row + 1
-        
-        // Fórmula: CANT * P.LISTA * (1-DESC1/100) * (1-DESC2/100) (Calculado en el backend, pero se puede dejar la fórmula si se quiere que sea editable)
-        const formulaValor = `B${excelRow}*G${excelRow}*(1-I${excelRow}/100)*(1-J${excelRow}/100)` // Mantener fórmula para que sea editable en Excel
-        // Precio Unitario: (P.Neto / CANT) * IVA
-        const formulaPrecioUnit = `IFERROR(K${excelRow}/B${excelRow}*${IVA},0)`
-        // Precio Venta: P.Neto * 1.18
-        const formulaPrecioVenta = `K${excelRow}*${IVA}`
-        
-        // Color de fila zebra y según estado de stock
-        const rowColor = i % 2 === 0 ? G360_ROW_EVEN : G360_ROW_ODD
-        const estado = p.estadoStock || ''
-        let stockColor = G360_ACCENT
-        if (estado === 'OK') stockColor = G360_OK
-        else if (estado === 'AJ') stockColor = G360_AJ
-        else if (estado === 'Agotado') stockColor = G360_AGOTADO
-        
-        // Aplicar estilos base a todas las celdas (16 columnas A-P)
-        for (let c = 0; c < 16; c++) {
-          const cell = XLSX.utils.encode_cell({ r: row, c })
-          ws[cell] = ws[cell] || { v: '' }
-          const isSeparator = c === 7 || c === 13 || c === 14
-          ws[cell].s = { 
-            fill: { fgColor: { rgb: isSeparator ? "F0F0F0" : rowColor } },
-            border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } },
-            alignment: { vertical: "center" }
-          }
-        }
-        
-        // Columna N° (A) - centrado
-        const numCell = XLSX.utils.encode_cell({ r: row, c: 0 })
-        ws[numCell].s.alignment = { horizontal: "center" }
-        
-        // Columna ESTADO (F) - color según stock
-        const estadoCell = XLSX.utils.encode_cell({ r: row, c: 5 })
-        ws[estadoCell].s = { 
-          fill: { fgColor: { rgb: stockColor } },
-          font: { bold: true, color: { rgb: "FFFFFF" } },
-          border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } },
-          alignment: { horizontal: "center" }
-        }
-        
-        // Columna G (P. LISTA) - formato moneda
-        const listaCell = XLSX.utils.encode_cell({ r: row, c: 6 })
-        ws[listaCell].z = '#,##0.00'
-        
-        // Columnas I, J (DESC 01, DESC 02) - número simple
-        const dscto1Cell = XLSX.utils.encode_cell({ r: row, c: 8 })
-        ws[dscto1Cell].z = '0'
-        
-        const dscto2Cell = XLSX.utils.encode_cell({ r: row, c: 9 })
-        ws[dscto2Cell].z = '0'
-        
-        // Columna K (P. NETO) - fórmula + formato moneda
-        const valorCell = XLSX.utils.encode_cell({ r: row, c: 10 })
-        ws[valorCell] = { f: formulaValor, t: 'n', z: '#,##0.00', s: { 
-          fill: { fgColor: { rgb: "DCDCDC" } },
-          font: { bold: true },
-          border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } },
-          alignment: { horizontal: "right" }
-        } }
-        
-        // Columna L (PRECIO UNIT.) - fórmula + formato moneda
-        const precioUnitCell = XLSX.utils.encode_cell({ r: row, c: 11 })
-        ws[precioUnitCell] = { f: formulaPrecioUnit, t: 'n', z: '#,##0.00', s: { 
-          fill: { fgColor: { rgb: "C8E6C9" } },
-          font: { bold: true },
-          border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } },
-          alignment: { horizontal: "right" }
-        } }
-        
-        // Columna M (PRECIO VENTA) - fórmula + formato moneda
-        const precioCell = XLSX.utils.encode_cell({ r: row, c: 12 })
-        ws[precioCell] = { f: formulaPrecioVenta, t: 'n', z: '#,##0.00', s: { 
-          fill: { fgColor: { rgb: stockColor } },
-          font: { bold: true, color: { rgb: "FFFFFF" } },
-          border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } },
-          alignment: { horizontal: "right" }
-        } }
-      })
-    }
-    
-    // ===== TOTALES =====
-    // Fila 4: Headers (ya configurados), Fila 5: Valores
-    const totalsValuesRow = 5 // Fila 5 (índice 4)
-    
-    // Calcular totales usando el skill agent
-    const totalesPedido = calculos.pedido.totales(productosCalculados)
+  const totalIgvCell = valueRow.getCell(4)
+  totalIgvCell.value = { formula: `C6*${IVA}` }
+  totalIgvCell.font = { color: { argb: 'FF0000' }, bold: true }
+  totalIgvCell.numFmt = '"S/" #,##0.00'
 
-    // Las fórmulas en Excel se refieren a las celdas de la tabla de productos
-    const firstDataExcelRow = dataStartRow + 1 // Fila 8 en Excel
-    const lastDataExcelRow = dataStartRow + (productosCalculados.length || 0) // Última fila de datos en Excel
-    
-    // Agregar fila de valores de totales - Estilo VBA optimizado
-    // K=P.Neto (col 10), M=PRECIO VENTA (col 12)
-    XLSX.utils.sheet_add_aoa(ws, [ // Actualizar las fórmulas para usar los rangos correctos
-      ['', '', '', '', '', '', '', '', 'VALOR NETO:', `=SUM(K${firstDataExcelRow}:K${lastDataExcelRow})`, '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', '', 'Total + IGV:', `=IFERROR(K${totalsValuesRow}*${IVA},0)`, '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', '', 'TOTAL ATENDIBLE (CON STOCK):', `=IFERROR(SUMPRODUCT(((F${firstDataExcelRow}:F${lastDataExcelRow}="OK")+(F${firstDataExcelRow}:F${lastDataExcelRow}="AJ"))*M${firstDataExcelRow}:M${lastDataExcelRow}),0)`, '', '', '', '', '', '']
-    ], { origin: totalsValuesRow })
-    
-    // Estilos para totales - VBA Style
-    // Fila 5: Subtotal, Fila 6: Total+IGV, Fila 7: Total Disponible
-    
-    for (let c = 8; c <= 10; c++) {
-      for (let r = totalsValuesRow; r <= totalsValuesRow + 2; r++) {
-        const cell = XLSX.utils.encode_cell({ r, c })
-        if (!ws[cell]) continue
-        
-        const rowIndex = r - totalsValuesRow
-        const isSubtotal = rowIndex === 0
-        const isTotalPagar = rowIndex === 1
-        const isTotalDisp = rowIndex === 2
-        
-        let bgColor = G360_LIGHT
-        let fontColor = "000000"
-        let borderStyle = "thin"
-        let borderColor = "B4B4B4"
-        let fontWeight = true
-        let fontSize = 12
-        
-        if (isSubtotal) {
-          bgColor = "F0F0F0"
-          fontColor = "000000"
-        } else if (isTotalPagar) {
-          bgColor = "FFFFFF"
-          fontColor = "FF0000"
-          borderStyle = "thick"
-          borderColor = "FF0000"
-          fontSize = 14
-        } else if (isTotalDisp) {
-          bgColor = "F0F0F0"
-          fontColor = "000000"
-        }
-        
-        ws[cell].s = { 
-          font: { bold: fontWeight, sz: fontSize, color: { rgb: fontColor } }, 
-          fill: { fgColor: { rgb: bgColor } },
-          border: { 
-            top: { style: borderStyle, color: { rgb: borderColor } }, 
-            bottom: { style: borderStyle, color: { rgb: borderColor } }, 
-            left: { style: borderStyle, color: { rgb: borderColor } }, 
-            right: { style: borderStyle, color: { rgb: borderColor } } 
-          },
-          alignment: { horizontal: "right" },
-          z: '#,##0.00'
-        }
-        
-        if (isTotalPagar) {
-          ws[cell].s.font.color = { rgb: "FF0000" }
-        }
-      }
-    }
-    
-    // Ancho de columnas - 16 columnas (A-P) con separadoras
-    ws['!cols'] = [
-      { wch: 5 },   // A: N°
-      { wch: 10 },  // B: CANT
-      { wch: 8 },   // C: U/M
-      { wch: 14 },  // D: SKU
-      { wch: 35 },  // E: DESCRIPCIÓN
-      { wch: 10 },  // F: ESTADO
-      { wch: 14 },  // G: P. LISTA
-      { wch: 2 },   // H: separador
-      { wch: 10 },  // I: DESC 01
-      { wch: 10 },  // J: DESC 02
-      { wch: 14 },  // K: P. NETO
-      { wch: 14 },  // L: PRECIO UNIT.
-      { wch: 14 },  // M: PRECIO VENTA
-      { wch: 2 },   // N: separador
-      { wch: 2 },   // O: separador
-      { wch: 10 }   // P: vacío
-    ]
-    
-    // Freeze panes - Congelar fila 7 (headers tabla) y columna A
-    ws['!freeze'] = { x: 1, y: 7 }
-    
-    XLSX.utils.book_append_sheet(wb, ws, 'PEDIDO')
-    
-    // Agregar logo en A1:B4 - cargar como base64 para navegador
-    await agregarLogoBase64(ws)
+  const stockConfCell = valueRow.getCell(5)
+  // Suma de PRECIO TOTAL (columna L) solo si C/STOCK (columna F) es "OK"
+  stockConfCell.value = { formula: `SUMPRODUCT(--(F${dataStart}:F${dataEnd}="OK"), L${dataStart}:L${dataEnd})` }
+  stockConfCell.numFmt = '"S/" #,##0.00'
 
-    // =====================================================================
-    // HOJA 2 - ANÁLISIS POR LÍNEA Y CATEGORÍA
-    // =====================================================================
-    generarHojaAnalisis(wb, productosCalculados) // Pasar productos ya calculados
-  }
+  // Tabla de Productos
+  const headerRow = worksheet.getRow(8)
+  headerRow.values = ['N°', 'CANT.', 'U/M', 'SKU', 'DESCRIPCIÓN', 'C/STOCK', 'P. LISTA', 'DESC 01', 'DESC 02', 'VALOR VENTA', 'PRECIO UNIT.', 'PRECIO TOTAL']
+  headerRow.eachCell(cell => {
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DARK_BG } }
+    cell.font = { color: { argb: 'FFFFFF' }, bold: true }
+    cell.alignment = { horizontal: 'center' }
+  })
 
-  // =====================================================================
-  // DESCARGAR ARCHIVO
-  // =====================================================================
-  const nombre = `cotizacion-${limpiarNombreArchivo(cliente || 'doc')}.xlsx`
-  XLSX.writeFile(wb, nombre)
+  // Datos con Estilo Zebra y Fórmulas
+  productos.forEach((p, i) => {
+    const rowIdx = dataStart + i
+    const row = worksheet.addRow([
+      i + 1, p.cantidad, p.unidadMedida, p.codigo, p.descripcion,
+      '', p.precioUnitario, p.descuento1, p.descuento2, '', '', ''
+    ])
+
+    // Fórmulas
+    // C/STOCK (F/6): Mantiene la lógica de stock viva embebiendo el valor numérico en la fórmula
+    row.getCell(6).value = { formula: `IF(${p.stock || 0}>=B${rowIdx}*1.1,"OK",IF(${p.stock || 0}>=B${rowIdx}*0.9,"AJ","Agotado"))` }
+    
+    // P. LISTA (G/7): Formato de 4 decimales
+    row.getCell(7).numFmt = '0.0000'
+
+    // VALOR VENTA (J/10): Formato 2 decimales
+    row.getCell(10).value = { formula: `B${rowIdx}*G${rowIdx}*(1-H${rowIdx}/100)*(1-I${rowIdx}/100)` }
+    row.getCell(10).numFmt = '0.00'
+
+    // PRECIO UNIT (K/11): Formato 4 decimales para congruencia con el DOCX
+    row.getCell(11).value = { formula: `IFERROR(J${rowIdx}/B${rowIdx}*${IVA},0)` }
+    row.getCell(11).numFmt = '0.0000'
+
+    // PRECIO TOTAL (L/12): Formato 2 decimales
+    row.getCell(12).value = { formula: `J${rowIdx}*${IVA}` }
+    row.getCell(12).numFmt = '0.00'
+
+    // Estilo Zebra
+    const rowColor = i % 2 === 0 ? ROW_EVEN : ROW_ODD
+    row.eachCell(cell => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowColor } }
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+    })
+
+    // Badge de Stock
+    const stockCell = row.getCell(6)
+    const status = p.stock! >= p.cantidad * 1.1 ? 'OK' : p.stock! >= p.cantidad * 0.9 ? 'AJ' : 'Agotado'
+    const color = status === 'OK' ? STOCK_OK : status === 'AJ' ? STOCK_AJ : STOCK_AGOTADO
+    stockCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: color } }
+    stockCell.font = { color: { argb: 'FFFFFF' }, bold: true }
+    stockCell.alignment = { horizontal: 'center' }
+  })
+
+  await agregarLogoExcelJS(workbook, worksheet)
+
+  // Descarga
+  const buffer = await workbook.xlsx.writeBuffer()
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+  const url = URL.createObjectURL(blob)
+
+  // Generar fecha en formato ddmmyyyy
+  const now = new Date()
+  const dd = String(now.getDate()).padStart(2, '0')
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const yyyy = now.getFullYear()
+  const fechaStr = `${dd}${mm}${yyyy}`
+
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${numeroPedido || 'pedido'}_${limpiarNombreArchivo(cliente || 'cliente')}_${fechaStr}.xlsx`
+  a.click()
+  URL.revokeObjectURL(url)
 }

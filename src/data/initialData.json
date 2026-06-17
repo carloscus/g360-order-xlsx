@@ -1,0 +1,40 @@
+{
+  "config": {
+    "empresa": {
+      "nombre": "CORPORACIÓN DE INDUSTRIAS PLÁSTICAS S.A.",
+      "direccion": "Av. Los Frutales 419 - Ate - Lima",
+      "telefono": "(01) 3134200",
+      "email": "ventas@cipsa.com.pe",
+      "website": "",
+      "ruc": "20100654025",
+      "logo": "/logo-cipsa.png"
+    },
+    "vendedor": {
+      "nombre": "Kokoroko",
+      "telefono": "999 123 456",
+      "email": "k.vendedor@vinifan.com.pe"
+    },
+    "condiciones": {
+      "validez": "30 días calendario a partir de la fecha de emisión de la presente carta",
+      "tipoPago": "Crédito a 30 días (sujeto a evaluación crediticia previo envío de documentación) o Contado",
+      "plazoEntrega": "De 3 a 5 días hábiles, contados a partir de la recepción de su Orden de Compra formal",
+      "garantia": "12 meses"
+    },
+    "colores": {
+      "header": "#333333",
+      "totales": "#FF0000",
+      "formulas": "#F0F0F0",
+      "alertas": "#FFA500"
+    }
+  },
+  "pedido": {
+    "cliente": "",
+    "numeroPedido": "",
+    "productos": []
+  },
+  "totales": {
+    "subtotal": 0,
+    "totalIGV": 0,
+    "totalDisponible": 0
+  }
+}

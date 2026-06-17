@@ -1,0 +1,3 @@
+[submodule "g360-signature"]
+	path = g360-signature
+	url = https://github.com/carloscus/g360-signature.git

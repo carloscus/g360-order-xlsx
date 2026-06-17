@@ -1,4 +1,4 @@
-// Utilidades de formateo para números y monedas peruanas
+// Utilidades de formateo para nï¿½meros y monedas peruanas
 
 export const formatMoneda = (valor: number): string => {
   const num = Number(valor)
@@ -13,7 +13,12 @@ export const formatMoneda = (valor: number): string => {
 
 export const formatNumero = (valor: number, decimales = 2): string => {
   const num = Number(valor)
-  if (isNaN(num)) return '0.00'
+  if (isNaN(num)) {
+    return new Intl.NumberFormat('es-PE', {
+      minimumFractionDigits: decimales,
+      maximumFractionDigits: decimales
+    }).format(0)
+  }
   return new Intl.NumberFormat('es-PE', {
     minimumFractionDigits: decimales,
     maximumFractionDigits: decimales
@@ -36,4 +41,3 @@ export const limpiarNombreArchivo = (nombre: string): string => {
     .replace(/\s+/g, "-")
     .toLowerCase()
 }
-

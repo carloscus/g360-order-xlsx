@@ -10,7 +10,6 @@
  */
 
 import { calcularEstadoStock } from '../core/g360-skill-agentes'
-import { createSignal, createMemo } from 'solid-js'
 
 // =====================================================================
 // TIPOS DE AUDITORÍA
@@ -129,7 +128,7 @@ export const REGLAS_AUDITORIA = {
     tipo: TIPO_AUDITORIA.INFO,
     categoria: CATEGORIA_AUDITORIA.CATALOGO,
     mensaje: 'Producto no encontrado en catálogo',
-    evaluar: (p) => !p.tieneCatalogo
+    evaluar: (p) => !p.tieneDatosCatalogo
   },
   SKU_INVALIDO: {
     id: 'SKU_INVALIDO',
