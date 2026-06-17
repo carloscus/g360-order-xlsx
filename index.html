@@ -14,17 +14,14 @@
     <style>
       html, body { overflow-x: hidden; margin: 0; padding: 0; }
     </style>
+    <script>
+      if (!window.location.hash) {
+        window.location.replace(window.location.href + '#/')
+      }
+    </script>
   </head>
   <body style="overflow-x: hidden;">
     <div id="root"></div>
-    <script>
-      // Test básico para verificar que JS funciona
-      window.testHTML = () => {
-        console.log('✅ HTML JavaScript funcionando')
-        return 'HTML OK'
-      }
-      console.log('🌐 HTML cargado')
-    </script>
     <script type="module" src="/src/index.jsx"></script>
   </body>
 </html>
