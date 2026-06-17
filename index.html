@@ -14,18 +14,15 @@
     <style>
       html, body { overflow-x: hidden; margin: 0; padding: 0; }
     </style>
+    <script>
+      if (!window.location.hash) {
+        window.location.replace(window.location.href + '#/')
+      }
+    </script>
     <script type="module" crossorigin src="/g360-order-xlsx/assets/index-CdxB7NFr.js"></script>
     <link rel="stylesheet" crossorigin href="/g360-order-xlsx/assets/index-djwBp5cJ.css">
   </head>
   <body style="overflow-x: hidden;">
-    <div id="root"></div>
-    <script>
-      // Test básico para verificar que JS funciona
-      window.testHTML = () => {
-        console.log('✅ HTML JavaScript funcionando')
-        return 'HTML OK'
-      }
-      console.log('🌐 HTML cargado')
-    </script>
+    <div id="root"></div>
   </body>
 </html>
