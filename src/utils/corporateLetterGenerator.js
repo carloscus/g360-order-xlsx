@@ -60,8 +60,9 @@ export const generarCartaCorporativa = (datos) => {
     <div class="info-box">
       <h3>Información del Cliente</h3>
       <p><strong>Cliente:</strong> ${cliente || '-'}</p>
-      <p><strong>RUC/DOC:</strong> ${documento || '-'}</p>
+      <p><strong>RUC/DNI:</strong> ${documento || '-'}</p>
       <p><strong>N° Pedido:</strong> ${numeroPedido || '-'}</p>
+      <p><strong>Sucursal:</strong> ${datos.sucursal || 'PRINCIPAL'}</p>
     </div>
     <div class="info-box">
       <h3>Información del Asesor</h3>
@@ -117,8 +118,10 @@ export const generarCartaCorporativa = (datos) => {
   <p style="margin-top: 40px;">Quedamos a su entera disposición para cualquier consulta adicional.</p>
   
   <div class="footer">
-    <p>Este documento fue generado automáticamente por CIPSA OrderX - ${fechaStr}</p>
-    <p>Calle Los Plateros 123, Urb. Vulcano, Ate - Lima, Perú</p>
+    <p><strong>CORPORACIÓN DE INDUSTRIAS PLÁSTICAS S.A.</strong> — RUC: 20100654025</p>
+    <p>Av. Los Frutales 419, Urb. El Artesano, Ate — Lima, Perú</p>
+    <p>Central: (01) 3134200 — https://www.cipsa.com.pe/</p>
+    <p style="margin-top:8px; font-size:11px;">Generado por CIPSA OrderX — ${fechaStr}</p>
   </div>
 </body>
 </html>

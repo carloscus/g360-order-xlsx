@@ -1,4 +1,5 @@
 import { formatNumero } from '../../utils/formatters'
+import { IVA } from '../../constants/sharedConstants'
 
 const stockToClass = (status) => {
   if (status === 'OK') return 'ok'
@@ -11,6 +12,9 @@ export const ProductRow = (props) => {
   const p = props.producto
   const estado = () => p.estadoStock || 'OK'
   const stockClass = () => `stock-badge stock-${stockToClass(estado())}`
+  const valorVenta = () => p.valorVenta || 0
+  const precioUnitCIGV = () => p.cantidad ? (valorVenta() / p.cantidad) * IVA : 0
+  const totalVenta = () => valorVenta() * IVA
 
   return (
     <tr class="fade-in-up">
@@ -25,8 +29,9 @@ export const ProductRow = (props) => {
       <td class="number">{formatNumero(p.precioUnitario || 0)}</td>
       <td class="number d1">{p.descuento1?.toFixed(2) || '0.00'}</td>
       <td class="number d2">{p.descuento2?.toFixed(2) || '0.00'}</td>
-      <td class="number">{formatNumero(p.valorVenta ? p.valorVenta / p.cantidad : 0)}</td>
-      <td class="number row-total">{formatNumero(p.valorVenta || 0)}</td>
+      <td class="number row-total">{formatNumero(valorVenta())}</td>
+      <td class="number">{formatNumero(precioUnitCIGV())}</td>
+      <td class="number">{formatNumero(totalVenta())}</td>
     </tr>
   )
 }

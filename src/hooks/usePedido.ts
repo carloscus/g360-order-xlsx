@@ -37,6 +37,8 @@ interface DatosPedido {
   cliente: string
   ruc: string
   numeroPedido: string
+  idCliente: string
+  sucursal: string
   vendedor: string
   emailVendedor: string
   telefonoVendedor: string
@@ -197,6 +199,8 @@ export const usePedido = () => {
       cliente: savedData?.cliente || '',
       ruc: savedData?.ruc || '',
       numeroPedido: savedData?.numeroPedido || '',
+      idCliente: savedData?.idCliente || '',
+      sucursal: savedData?.sucursal || 'PRINCIPAL',
       vendedor: savedData?.vendedor || '',
       emailVendedor: savedData?.emailVendedor || '',
       telefonoVendedor: savedData?.telefonoVendedor || '',
@@ -213,6 +217,8 @@ export const usePedido = () => {
         cliente: state.cliente,
         ruc: state.ruc,
         numeroPedido: state.numeroPedido,
+        idCliente: state.idCliente,
+        sucursal: state.sucursal,
         vendedor: state.vendedor,
         emailVendedor: state.emailVendedor,
         telefonoVendedor: state.telefonoVendedor,
@@ -269,6 +275,8 @@ export const usePedido = () => {
         cliente: '',
         ruc: '',
         numeroPedido: '',
+        idCliente: '',
+        sucursal: 'PRINCIPAL',
         vendedor: '',
         emailVendedor: '',
         telefonoVendedor: '',
@@ -308,6 +316,8 @@ export const usePedido = () => {
       get cliente() { return state.cliente },
       get ruc() { return state.ruc },
       get numeroPedido() { return state.numeroPedido },
+      get idCliente() { return state.idCliente },
+      get sucursal() { return state.sucursal },
       get vendedor() { return state.vendedor },
       get emailVendedor() { return state.emailVendedor },
       get telefonoVendedor() { return state.telefonoVendedor },
@@ -319,6 +329,8 @@ export const usePedido = () => {
       setCliente: (v: string) => setState('cliente', v),
       setRuc: (v: string) => setState('ruc', v),
       setNumeroPedido: (v: string) => setState('numeroPedido', v),
+      setIdCliente: (v: string) => setState('idCliente', v),
+      setSucursal: (v: string) => setState('sucursal', v),
       setVendedor: (v: string) => setState('vendedor', v),
       setEmailVendedor: (v: string) => setState('emailVendedor', v),
       setTelefonoVendedor: (v: string) => setState('telefonoVendedor', v),

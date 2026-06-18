@@ -82,7 +82,7 @@ const LineaGroup = (props) => {
         onClick={props.onToggle}
         style={{ cursor: 'pointer', background: 'var(--g360-surface)', "font-weight": '600' }}
       >
-        <td colSpan={10} style={{ padding: '12px 16px' }}>
+        <td colSpan={11} style={{ padding: '12px 16px' }}>
           <div style={{ display: 'flex', "justify-content": 'space-between', "align-items": 'center' }}>
             <span style={{ display: 'flex', "align-items": 'center', gap: '8px' }}>
               <span style={{ 

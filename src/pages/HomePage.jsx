@@ -84,12 +84,16 @@ const HomePage = () => {
           cliente={pedido.cliente}
           documento={pedido.ruc}
           numeroPedido={pedido.numeroPedido}
+          idCliente={pedido.idCliente}
+          sucursal={pedido.sucursal}
           vendedor={pedido.vendedor}
           emailVendedor={pedido.emailVendedor}
           telefonoVendedor={pedido.telefonoVendedor}
           onClienteChange={pedido.setCliente}
           onDocumentoChange={pedido.setRuc}
           onNumeroPedidoChange={pedido.setNumeroPedido}
+          onIdClienteChange={pedido.setIdCliente}
+          onSucursalChange={pedido.setSucursal}
           onVendedorChange={pedido.setVendedor}
           onEmailVendedorChange={pedido.setEmailVendedor}
           onTelefonoVendedorChange={pedido.setTelefonoVendedor}

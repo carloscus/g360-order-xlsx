@@ -3,18 +3,15 @@
  * con el diseño profesional del sample de referencia
  */
 
-const renderClientInfo = (data) => `
+const renderVendedorInfo = (data) => data.vendedor ? `
 <div class="section">
-  <div class="section-title">📋 PERFIL DEL CLIENTE</div>
+  <div class="section-title">👤 DATOS DEL VENDEDOR</div>
   <div class="client-grid">
-    <div class="client-item"><label>Razón Social</label><span>${data.cliente}</span></div>
-    <div class="client-item"><label>RUC</label><span>${data.ruc}</span></div>
-    <div class="client-item"><label>Pedido</label><span>${data.numeroPedido}</span></div>
     <div class="client-item"><label>Vendedor</label><span>${data.vendedor}</span></div>
-    <div class="client-item"><label>Email</label><span>${data.emailVendedor || '-'}</span></div>
-    <div class="client-item"><label>Teléfono</label><span>${data.telefonoVendedor || '-'}</span></div>
+    ${data.emailVendedor ? `<div class="client-item"><label>Email</label><span>${data.emailVendedor}</span></div>` : ''}
+    ${data.telefonoVendedor ? `<div class="client-item"><label>Teléfono</label><span>${data.telefonoVendedor}</span></div>` : ''}
   </div>
-</div>`
+</div>` : ''
 
 const renderTotales = (consolidado) => {
   const sub = redondear2(consolidado.totales?.subtotal || 0)
@@ -166,11 +163,13 @@ const renderTablaProductos = (productos, consolidado) => {
   const rows = productos.map((p, idx) => {
     const stockClass = p.estadoStock === 'OK' ? 'stock-ok' : p.estadoStock === 'AJ' ? 'stock-aj' : 'stock-agotado'
     const totalNeto = redondear2(p.valorVenta || 0)
-    const pNeto = redondear2(p.precioVenta || p.valorVenta || 0)
-    return `<tr><td>${idx + 1}</td><td style="font-family:monospace;font-size:var(--text-xs)">${p.codigo}</td><td title="${(p.descripcion || '').replace(/"/g, '"')}">${(p.descripcion || '').slice(0, 60)}${(p.descripcion || '').length > 60 ? '...' : ''}</td><td style="text-align:right">${p.cantidad}</td><td>${p.unidadMedida || p.unBx ? 'UND' : ''}</td><td style="text-align:right">${formatear(p.precioUnitario || 0)}</td><td style="text-align:center">${redondear2(p.descuento1 || 0)}</td><td style="text-align:center">${redondear2(p.descuento2 || 0)}</td><td style="text-align:right">${formatear(pNeto)}</td><td style="text-align:right;font-weight:var(--fw-bold)">${formatear(totalNeto)}</td><td style="text-align:center"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span></td></tr>`
+    const precioUnitCIGV = redondear2((p.valorVenta || 0) / (p.cantidad || 1) * 1.18)
+    const totalVenta = redondear2((p.valorVenta || 0) * 1.18)
+    return `<tr><td>${idx + 1}</td><td style="font-family:monospace;font-size:var(--text-xs)">${p.codigo}</td><td title="${(p.descripcion || '').replace(/"/g, '"')}">${(p.descripcion || '').slice(0, 60)}${(p.descripcion || '').length > 60 ? '...' : ''}</td><td style="text-align:right">${p.cantidad}</td><td>${p.unidadMedida || p.unBx ? 'UND' : ''}</td><td style="text-align:right">${formatear(p.precioUnitario || 0)}</td><td style="text-align:center">${redondear2(p.descuento1 || 0)}</td><td style="text-align:center">${redondear2(p.descuento2 || 0)}</td><td style="text-align:right;font-weight:var(--fw-bold)">${formatear(totalNeto)}</td><td style="text-align:right">${formatear(precioUnitCIGV)}</td><td style="text-align:right">${formatear(totalVenta)}</td><td style="text-align:center"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span></td></tr>`
   }).join('')
 
   const totalLinea = redondear2(productos.reduce((s, p) => s + (p.valorVenta || 0), 0))
+  const totalVentaFinal = redondear2(totalLinea * 1.18)
   const totalCant = productos.reduce((s, p) => s + (p.cantidad || 0), 0)
 
   return `
@@ -187,8 +186,9 @@ const renderTablaProductos = (productos, consolidado) => {
         <th style="width:90px;text-align:right">P. Lista (S/.)</th>
         <th style="width:70px;text-align:center">Desc 01 (%)</th>
         <th style="width:70px;text-align:center">Desc 02 (%)</th>
-        <th style="width:90px;text-align:right">P. Neto (S/.)</th>
         <th style="width:110px;text-align:right">Total Neto (S/.)</th>
+        <th style="width:110px;text-align:right">P. Unit c/IGV (S/.)</th>
+        <th style="width:110px;text-align:right">Total Venta (S/.)</th>
         <th style="width:50px;text-align:center">Stock</th>
       </tr></thead>
       <tbody>${rows}</tbody>
@@ -196,8 +196,9 @@ const renderTablaProductos = (productos, consolidado) => {
         <tr>
           <td colspan="3" class="tf-label">TOTALES (${productos.length} productos)</td>
           <td style="text-align:right;font-weight:var(--fw-bold)">${totalCant}</td>
-          <td></td><td></td><td></td><td></td><td></td>
+          <td></td><td></td><td></td><td></td>
           <td class="tf-value" style="text-align:right">S/ ${formatear(totalLinea)}</td>
+          <td></td><td class="tf-value" style="text-align:right">S/ ${formatear(totalVentaFinal)}</td>
           <td></td>
         </tr>
       </tfoot>
@@ -210,7 +211,7 @@ const renderTablaProductos = (productos, consolidado) => {
  * Construye el string HTML completo para el reporte de cronograma
  */
 export const buildCronogramaHTML = (data) => {
-  const { cliente, ruc, numeroPedido, vendedor, emailVendedor, telefonoVendedor, cuotas, consolidado, productosCalculados, htmlDarkTheme } = data
+  const { cliente, ruc, numeroPedido, idCliente, sucursal, vendedor, emailVendedor, telefonoVendedor, cuotas, consolidado, productosCalculados, htmlDarkTheme } = data
 
   const now = new Date()
   const fechaStr = now.toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
@@ -404,17 +405,19 @@ export const buildCronogramaHTML = (data) => {
     <button class="print-btn" onclick="window.print()">🖨️ Imprimir / Guardar como PDF</button>
     <div class="header">
       <div>
-        <h1>📊 CHOPERS DISTRIBUCIONES</h1>
+        <h1>📊 ${cliente || 'CHOPERS DISTRIBUCIONES'}</h1>
         <div class="header-meta">
           <span>RUC: ${ruc || ''}</span>
           <span>Pedido: ${numeroPedido || ''}</span>
-          <span>Fecha: ${fechaStr}</span>
+          <span>ID: ${idCliente || '-'}</span>
+          <span>Sucursal: ${sucursal || 'PRINCIPAL'}</span>
+          <span>${fechaStr}</span>
         </div>
       </div>
       <span class="badge">Distribución</span>
     </div>
 
-    ${renderClientInfo({ cliente, ruc, numeroPedido, vendedor, emailVendedor, telefonoVendedor })}
+    ${renderVendedorInfo({ vendedor, emailVendedor, telefonoVendedor })}
     ${renderTotales(consolidado)}
     ${renderKPIs(consolidado, htmlDarkTheme)}
     ${renderButterflyChart(consolidado)}
@@ -423,7 +426,7 @@ export const buildCronogramaHTML = (data) => {
     ${renderTablaProductos(productosCalculados, consolidado)}
 
     <div class="footer">
-      G360 Order System — Generado el ${fechaStr} — CHOPERS DISTRIBUCIONES
+      G360 Order System — Generado el ${fechaStr} — ${cliente || 'CHOPERS DISTRIBUCIONES'}
     </div>
   </div>
 </body>

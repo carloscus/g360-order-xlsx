@@ -21,9 +21,9 @@ const procesarProducto = (p, enriquecerProductoFn, calculos) => {
   const valorVenta = calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)
   const precioVenta = calculos.basic.precioVenta(valorVenta)
   const estadoStock = calculos.stock.estado(p.stock, p.cantidad)
-  const cajas = calculos.logistica.cajas(p.cantidad, enrichedP.un_bx || 1)
-  const cajasDetalle = calculos.logistica.cajasDetalle(p.cantidad, enrichedP.un_bx || 1)
-  const pesoTotal = calculos.logistica.pesoTotal(p.cantidad, enrichedP.peso_kg || 0)
+  const cajas = calculos.logistica.cajas(p.cantidad, enrichedP.unBx || 1)
+  const cajasDetalle = calculos.logistica.cajasDetalle(p.cantidad, enrichedP.unBx || 1)
+  const pesoTotal = calculos.logistica.pesoTotal(p.cantidad, enrichedP.pesoKg || 0)
   return { 
     ...p, 
     ...enrichedP, // Incluir datos enriquecidos del catálogo
@@ -197,6 +197,8 @@ export const DistributionPage = () => {
 
     const htmlContent = buildCronogramaHTML({
       cliente, ruc, numeroPedido,
+      idCliente: pedido.idCliente,
+      sucursal: pedido.sucursal,
       vendedor: getVendedor(),
       emailVendedor: getEmailVendedor(),
       telefonoVendedor: getTelefonoVendedor(),
@@ -472,6 +474,7 @@ export const DistributionPage = () => {
                     cliente: getCliente(),
                     documento: getRuc(),
                     numeroPedido: getNumeroPedido(),
+                    sucursal: pedido.sucursal,
                     vendedor: getVendedor(),
                     emailVendedor: getEmailVendedor(),
                     telefonoVendedor: getTelefonoVendedor(),

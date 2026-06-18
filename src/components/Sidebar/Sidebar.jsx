@@ -39,6 +39,7 @@ const ExportMenuInline = (props) => {
         cliente: pedido.cliente,
         documento: pedido.ruc,
         numeroPedido: pedido.numeroPedido,
+        sucursal: pedido.sucursal,
         vendedor: pedido.vendedor,
         productos: prodsEnriquecidos,
         tipo: 'cotizacion'

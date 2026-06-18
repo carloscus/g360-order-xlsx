@@ -29,12 +29,13 @@ interface ProductoPedido {
 }
 
 interface DatosPedido {
-  cliente?: string
-  documento?: string
-  numeroPedido?: string
-  vendedor?: string
-  productos?: ProductoPedido[]
-  tipo?: 'cotizacion' | string
+  cliente?: string;
+  documento?: string;
+  numeroPedido?: string;
+  sucursal?: string;
+  vendedor?: string;
+  productos?: ProductoPedido[];
+  tipo?: 'cotizacion' | string;
 }
 
 // =====================================================================
@@ -87,7 +88,7 @@ const agregarLogoExcelJS = async (workbook: ExcelJS.Workbook, worksheet: ExcelJS
  *   Fila 9+: Datos con fórmulas
  */
 export const generarXLSX = async (data: DatosPedido) => {
-  const { cliente, numeroPedido, productos, tipo } = data
+  const { cliente, numeroPedido, sucursal, productos, tipo } = data
   if (!productos || productos.length === 0) return
 
   const workbook = new ExcelJS.Workbook()
@@ -113,10 +114,16 @@ export const generarXLSX = async (data: DatosPedido) => {
   clientRow.getCell(7).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DARK_BG } }
   clientRow.getCell(7).font = { color: { argb: 'FFFFFF' }, bold: true }
 
+  // Fila 3: Sucursal
+  const sucRow = worksheet.addRow(['', '', 'SUCURSAL:', sucursal || 'PRINCIPAL'])
+  sucRow.getCell(3).font = { bold: true }
+  sucRow.getCell(3).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DARK_BG } }
+  sucRow.getCell(3).font = { color: { argb: 'FFFFFF' }, bold: true }
+
   // Panel de Totales
-  worksheet.addRow([]) // Fila 4
+  worksheet.addRow([]) // Fila 5
   const totalLabels = ['Subtotal:', 'Total + IGV:', 'C/STOCK CONF.:']
-  const labelRow = worksheet.getRow(5)
+  const labelRow = worksheet.getRow(6)
   totalLabels.forEach((l, i) => {
     const cell = labelRow.getCell(i + 3)
     cell.value = l
@@ -124,17 +131,17 @@ export const generarXLSX = async (data: DatosPedido) => {
     cell.font = { color: { argb: 'FFFFFF' }, bold: true }
   })
 
-  const dataStart = 9
+  const dataStart = 10
   const dataEnd = dataStart + productos.length - 1
 
-  const valueRow = worksheet.getRow(6)
+  const valueRow = worksheet.getRow(7)
   
   const subtotalCell = valueRow.getCell(3)
   subtotalCell.value = { formula: `SUM(J${dataStart}:J${dataEnd})` }
   subtotalCell.numFmt = '"S/" #,##0.00'
 
   const totalIgvCell = valueRow.getCell(4)
-  totalIgvCell.value = { formula: `C6*${IVA}` }
+  totalIgvCell.value = { formula: `C7*${IVA}` }
   totalIgvCell.font = { color: { argb: 'FF0000' }, bold: true }
   totalIgvCell.numFmt = '"S/" #,##0.00'
 
@@ -144,8 +151,8 @@ export const generarXLSX = async (data: DatosPedido) => {
   stockConfCell.numFmt = '"S/" #,##0.00'
 
   // Tabla de Productos
-  const headerRow = worksheet.getRow(8)
-  headerRow.values = ['N°', 'CANT.', 'U/M', 'SKU', 'DESCRIPCIÓN', 'C/STOCK', 'P. LISTA', 'DESC 01', 'DESC 02', 'VALOR VENTA', 'PRECIO UNIT.', 'PRECIO TOTAL']
+  const headerRow = worksheet.getRow(9)
+  headerRow.values = ['N°', 'CANT.', 'U/M', 'SKU', 'DESCRIPCIÓN', 'C/STOCK', 'P. LISTA', 'DESC 01', 'DESC 02', 'TOTAL NETO', 'P. UNIT C/IGV', 'TOTAL VENTA']
   headerRow.eachCell(cell => {
     cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DARK_BG } }
     cell.font = { color: { argb: 'FFFFFF' }, bold: true }

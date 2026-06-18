@@ -23,6 +23,8 @@ interface DatosPedido {
   documento?: string;
   numeroPedido?: string;
   vendedor?: string;
+  emailVendedor?: string;
+  telefonoVendedor?: string;
   productos?: ProductoPedido[];
 }
 
@@ -69,7 +71,7 @@ const getFechaExtendida = () => {
  * Incluye: logo, datos del cliente, tabla de productos, totales, condiciones comerciales y firma
  */
 export const generarDOCX = async (data: DatosPedido) => {
-  const { cliente, documento, numeroPedido, vendedor, productos } = data;
+  const { cliente, documento, numeroPedido, vendedor, emailVendedor, telefonoVendedor, productos } = data;
   if (!productos || productos.length === 0) return;
 
   const { empresa, condiciones } = initialData.config;
@@ -128,7 +130,7 @@ export const generarDOCX = async (data: DatosPedido) => {
                   ],
                 }),
                 new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: empresa.direccion, size: 14, font: "Arial" })] }),
-                new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: `Telf: ${empresa.telefono} | ${empresa.email}`, size: 14, font: "Arial" })] }),
+                new Paragraph({ alignment: AlignmentType.RIGHT, children: [                new TextRun({ text: `Central: ${empresa.telefono} | https://www.cipsa.com.pe/`, size: 14, font: "Arial" })] }),
               ],
             }),
           ],
@@ -213,16 +215,17 @@ export const generarDOCX = async (data: DatosPedido) => {
           ),
         }),
         ...productosCalculados.map((p, i) => {
+          const rowBg = i % 2 === 0 ? undefined : LIGHT_GRAY_BG
+          const cellStyle = (bg) => bg ? { shading: { fill: bg }, verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS } : { verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS }
           return new TableRow({
             children: [
-              new TableCell({ verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (i + 1).toString(), size: 16, font: "Arial" })] })] }),
-              new TableCell({ verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: p.codigo || "", size: 16, font: "Arial" })] })] }),
-              new TableCell({ verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS, children: [new Paragraph({ children: [new TextRun({ text: p.descripcion || "", size: 16, font: "Arial" })] })] }),
-              new TableCell({ verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: p.cantidad.toString(), size: 16, font: "Arial" })] })] }),
-              new TableCell({ verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: p.unidadMedida || "UND", size: 16, font: "Arial" })] })] }),
-              // Mostramos 4 decimales para que el cliente pueda verificar el cálculo manual
-              new TableCell({ verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS, children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: formatNumero(p.valorNetoUnitario, 4), size: 16, font: "Arial" })] })] }),
-              new TableCell({ verticalAlign: VerticalAlign.CENTER, margins: CELL_MARGINS, children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: formatNumero(p.valorNetoFila), size: 16, font: "Arial" })] })] }),
+              new TableCell({ ...cellStyle(rowBg), children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: (i + 1).toString(), size: 16, font: "Arial" })] })] }),
+              new TableCell({ ...cellStyle(rowBg), children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: p.codigo || "", size: 16, font: "Arial" })] })] }),
+              new TableCell({ ...cellStyle(rowBg), children: [new Paragraph({ children: [new TextRun({ text: p.descripcion || "", size: 16, font: "Arial" })] })] }),
+              new TableCell({ ...cellStyle(rowBg), children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: p.cantidad.toString(), size: 16, font: "Arial" })] })] }),
+              new TableCell({ ...cellStyle(rowBg), children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: p.unidadMedida || "UND", size: 16, font: "Arial" })] })] }),
+              new TableCell({ ...cellStyle(rowBg), children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: formatNumero(p.valorNetoUnitario, 4), size: 16, font: "Arial" })] })] }),
+              new TableCell({ ...cellStyle(rowBg), children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: formatNumero(p.valorNetoFila), size: 16, font: "Arial" })] })] }),
             ],
           });
         }),
@@ -279,8 +282,8 @@ export const generarDOCX = async (data: DatosPedido) => {
   children.push(new Paragraph({ children: [new TextRun({ text: vendedor || "Responsable Comercial", bold: true, size: 20, font: "Arial" })] }));
   children.push(new Paragraph({ children: [new TextRun({ text: "Ejecutivo de Ventas / Representante Comercial", size: 18, font: "Arial" })] }));
   children.push(new Paragraph({ children: [new TextRun({ text: empresa.nombre, size: 18, font: "Arial" })] }));
-  children.push(new Paragraph({ children: [new TextRun({ text: `📧 Email: ${empresa.email}`, size: 16, font: "Arial" })] }));
-  children.push(new Paragraph({ children: [new TextRun({ text: `📱 Telf: ${empresa.telefono}`, size: 16, font: "Arial" })] }));
+  children.push(new Paragraph({ children: [new TextRun({ text: `📧 Email: ${emailVendedor || empresa.email}`, size: 16, font: "Arial" })] }));
+  children.push(new Paragraph({ children: [new TextRun({ text: `📱 Telf: ${telefonoVendedor || empresa.telefono}`, size: 16, font: "Arial" })] }));
 
   const doc = new Document({
     sections: [{
@@ -297,7 +300,7 @@ export const generarDOCX = async (data: DatosPedido) => {
               alignment: AlignmentType.CENTER,
               children: [
                 new TextRun({
-                  text: `${empresa.nombre} | RUC: ${empresa.ruc}`,
+                  text: `CORPORACIÓN DE INDUSTRIAS PLÁSTICAS S.A. — RUC: 20100654025`,
                   size: 14, color: "666666", font: "Arial",
                 }),
               ],
@@ -306,7 +309,7 @@ export const generarDOCX = async (data: DatosPedido) => {
               alignment: AlignmentType.CENTER,
               children: [
                 new TextRun({
-                  text: `${empresa.direccion} | Central: ${empresa.telefono} | ${empresa.email}`,
+                  text: `Av. Los Frutales 419, Urb. El Artesano, Ate — Lima, Perú | Central: (01) 3134200 | https://www.cipsa.com.pe/`,
                   size: 14, color: "666666", font: "Arial",
                 }),
               ],

@@ -10,8 +10,9 @@ export const TableHeader = () => {
         <th class="text-right">P. Lista (S/.)</th>
         <th class="text-right">Desc 01 (%)</th>
         <th class="text-right">Desc 02 (%)</th>
-        <th class="text-right">P. Neto (S/.)</th>
         <th class="text-right">Total Neto (S/.)</th>
+        <th class="text-right">P. Unit c/IGV (S/.)</th>
+        <th class="text-right">Total Venta (S/.)</th>
       </tr>
     </thead>
   )

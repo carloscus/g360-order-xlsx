@@ -21,7 +21,7 @@ const crearMapaCatalogo = (productos) => {
         mapa.set(p.codigo || p.sku, {
           linea: p.linea || 'SIN LÍNEA',
           categoria: p.categoria || 'SIN CATEGORÍA',
-          pesoKg: p.peso_kg || p.can_kg_um || 0,
+          pesoKg: p.peso_kg || 0,
           unBx: p.un_bx || p.u_por_caja || 1,
         })
       }

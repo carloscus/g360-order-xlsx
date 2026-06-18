@@ -68,7 +68,6 @@ export const HistoryModal = (props) => {
 
           <div class="modal-footer">
             <span class="history-count">Total: {htmlList().length} HTML</span>
-            <button class="btn-secondary" onClick={onClose}>Cerrar</button>
           </div>
         </div>
       </div>
