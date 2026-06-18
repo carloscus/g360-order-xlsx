@@ -6,11 +6,12 @@
  * + Texto original del ERP preservado
  */
 
-import { createEffect, createMemo, createSignal } from 'solid-js'
+import { createEffect, createMemo, createSignal, createRoot } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { ERPParserService } from '../services/erpParser'
 import { getAgentesSkill } from '../core/g360-skill-agentes'
 import { useCatalogo } from '../hooks/useCatalogo'
+import { STORAGE_KEYS } from '../constants/storage'
 
 // Tipos
 interface ProductoPedido {
@@ -59,12 +60,14 @@ interface Distribucion {
 }
 
 // Storage Keys
-const STORAGE_KEY = 'g360_pedido_actual'
-const PENDIENTE_KEY = 'g360_tarea_pendiente'
-const ERP_TEXTO_KEY = 'g360_erp_texto'
-const DIST_ACTIVA_KEY = 'g360_dist_activa'
-const DIST_FLAG_KEY = 'g360_dist_flag'
-const DIST_HISTORIAL_KEY = 'g360_dist_historial'
+const {
+  PEDIDO_ACTUAL: STORAGE_KEY,
+  TAREA_PENDIENTE: PENDIENTE_KEY,
+  ERP_TEXTO: ERP_TEXTO_KEY,
+  DIST_ACTIVA: DIST_ACTIVA_KEY,
+  DIST_FLAG: DIST_FLAG_KEY,
+  DIST_HISTORIAL: DIST_HISTORIAL_KEY
+} = STORAGE_KEYS
 
 // Storage helpers
 const saveToStorage = (data: DatosPedido) => {
@@ -178,180 +181,157 @@ export const loadErpTexto = (): string => {
   }
 }
 
+let pedidoSingleton = null
+
 export const usePedido = () => {
-  const savedData = loadFromStorage()
-  const savedDistActiva = loadDistActiva()
-  
-  const { enriquecerProducto } = useCatalogo()
-  const { calculos } = getAgentesSkill()
-  
-  const [state, setState] = createStore<DatosPedido & { tareaPendiente: boolean }>({
-    cliente: savedData?.cliente || '',
-    ruc: savedData?.ruc || '',
-    numeroPedido: savedData?.numeroPedido || '',
-    vendedor: savedData?.vendedor || '',
-    emailVendedor: savedData?.emailVendedor || '',
-    telefonoVendedor: savedData?.telefonoVendedor || '',
-    productos: savedData?.productos || [],
-    tareaPendiente: getTareaPendiente()
-  })
+  if (pedidoSingleton) return pedidoSingleton
 
-  // Distribución state
-  const [distActiva, setDistActiva] = createSignal<Distribucion | null>(savedDistActiva)
-  const [distHistorial, setDistHistorial] = createSignal<Distribucion[]>(loadDistHistorial())
-
-  createEffect(() => {
-    const data = {
-      cliente: state.cliente,
-      ruc: state.ruc,
-      numeroPedido: state.numeroPedido,
-      vendedor: state.vendedor,
-      emailVendedor: state.emailVendedor,
-      telefonoVendedor: state.telefonoVendedor,
-      productos: state.productos
-    }
-    saveToStorage(data)
-  })
-
-  createEffect(() => {
-    setTareaPendiente(state.tareaPendiente)
-  })
-
-  // Sync distribución activa con storage
-  createEffect(() => {
-    const dist = distActiva()
-    saveDistActiva(dist)
-    setDistFlag(!!dist)
-  })
-
-  const actualizarProductosDesdeTexto = (texto: string) => {
-    const productos = ERPParserService.parseDataPegada(texto)
-    setState('productos', productos)
-    saveErpTexto(texto)
-  }
-
-  const productosCalculados = createMemo(() => {
-    return state.productos.map(p => {
-      const enriched = enriquecerProducto(p)
-      const valorVenta = calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)
-      const precioVenta = calculos.basic.precioVenta(valorVenta)
-      const estadoStock = calculos.stock.estado(p.stock, p.cantidad)
-      const cajas = calculos.logistica.cajas(p.cantidad, enriched.unBx)
-      const pesoTotal = calculos.logistica.pesoTotal(p.cantidad, enriched.pesoKg)
-
-      return {
-        ...p,
-        ...enriched,
-        valorVenta,
-        precioVenta,
-        estadoStock,
-        cajas,
-        pesoTotal
-      }
-    })
-  })
-
-  const totales = createMemo(() => {
-    const productos = productosCalculados()
-    return calculos.pedido.totales(productos)
-  })
-
-  const resetearPedido = () => {
-    setState({
-      cliente: '',
-      ruc: '',
-      numeroPedido: '',
-      vendedor: '',
-      emailVendedor: '',
-      telefonoVendedor: '',
-      productos: [],
-      tareaPendiente: false
-    })
-    saveErpTexto('')
-  }
-
-  // Distribución functions
-  const iniciarDistribucion = () => {
-    const dist: Distribucion = {
-      id: `dist_${Date.now()}`,
-      timestamp: Date.now(),
-      cliente: state.cliente,
-      ruc: state.ruc,
-      numeroPedido: state.numeroPedido,
-      vendedor: state.vendedor,
-      total: totales().totalIGV,
-      cuotas: []
-    }
-    setDistActiva(dist)
-  }
-
-  const guardarDistribucion = () => {
-    const dist = distActiva()
-    if (!dist) return
-
-    const historial = [...distHistorial(), dist]
-    setDistHistorial(historial)
-    saveDistHistorial(historial)
+  pedidoSingleton = createRoot(() => {
+    const savedData = loadFromStorage()
+    const savedDistActiva = loadDistActiva()
     
-    setDistActiva(null)
-    setState('tareaPendiente', false)
-  }
+    const { enriquecerProducto } = useCatalogo()
+    const { calculos } = getAgentesSkill()
+    
+    const [state, setState] = createStore<DatosPedido & { tareaPendiente: boolean }>({
+      cliente: savedData?.cliente || '',
+      ruc: savedData?.ruc || '',
+      numeroPedido: savedData?.numeroPedido || '',
+      vendedor: savedData?.vendedor || '',
+      emailVendedor: savedData?.emailVendedor || '',
+      telefonoVendedor: savedData?.telefonoVendedor || '',
+      productos: savedData?.productos || [],
+      tareaPendiente: getTareaPendiente()
+    })
 
-  const continuarDistribucion = () => {
-    return distActiva() !== null
-  }
+    // Distribución state
+    const [distActiva, setDistActiva] = createSignal<Distribucion | null>(savedDistActiva)
+    const [distHistorial, setDistHistorial] = createSignal<Distribucion[]>(loadDistHistorial())
 
-  const nuevaDistribucion = () => {
-    setDistActiva(null)
-    setState('tareaPendiente', false)
-  }
+    createEffect(() => {
+      const data = {
+        cliente: state.cliente,
+        ruc: state.ruc,
+        numeroPedido: state.numeroPedido,
+        vendedor: state.vendedor,
+        emailVendedor: state.emailVendedor,
+        telefonoVendedor: state.telefonoVendedor,
+        productos: state.productos
+      }
+      saveToStorage(data)
+    })
 
-  const cargarDistribucion = (id: string) => {
-    const historial = distHistorial()
-    const dist = historial.find(d => d.id === id)
-    if (dist) {
+    createEffect(() => {
+      setTareaPendiente(state.tareaPendiente)
+    })
+
+    // Sync distribución activa con storage
+    createEffect(() => {
+      const dist = distActiva()
+      saveDistActiva(dist)
+      setDistFlag(!!dist)
+    })
+
+    const actualizarProductosDesdeTexto = (texto: string) => {
+      const productos = ERPParserService.parseDataPegada(texto)
+      setState('productos', productos)
+      saveErpTexto(texto)
+    }
+
+    const productosCalculados = createMemo(() => {
+      return state.productos.map(p => {
+        const enriched = enriquecerProducto(p)
+        const valorVenta = calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)
+        const precioVenta = calculos.basic.precioVenta(valorVenta)
+        const estadoStock = calculos.stock.estado(p.stock, p.cantidad)
+        const cajas = calculos.logistica.cajas(p.cantidad, enriched.unBx)
+        const pesoTotal = calculos.logistica.pesoTotal(p.cantidad, enriched.pesoKg)
+
+        return {
+          ...p,
+          ...enriched,
+          valorVenta,
+          precioVenta,
+          estadoStock,
+          cajas,
+          pesoTotal
+        }
+      })
+    })
+
+    const totales = createMemo(() => {
+      const productos = productosCalculados()
+      return calculos.pedido.totales(productos)
+    })
+
+    const resetearPedido = () => {
+      setState({
+        cliente: '',
+        ruc: '',
+        numeroPedido: '',
+        vendedor: '',
+        emailVendedor: '',
+        telefonoVendedor: '',
+        productos: [],
+        tareaPendiente: false
+      })
+      saveErpTexto('')
+      setDistActiva(null)
+      setDistHistorial([])
+    }
+
+    // Distribución functions
+    const iniciarDistribucion = () => {
+      const dist: Distribucion = {
+        id: `dist_${Date.now()}`,
+        timestamp: Date.now(),
+        cliente: state.cliente,
+        ruc: state.ruc,
+        numeroPedido: state.numeroPedido,
+        vendedor: state.vendedor,
+        total: totales().totalIGV,
+        cuotas: []
+      }
       setDistActiva(dist)
     }
-  }
 
-  const eliminarDistribucion = (id: string) => {
-    const historial = distHistorial().filter(d => d.id !== id)
-    setDistHistorial(historial)
-    saveDistHistorial(historial)
-  }
+    const nuevaDistribucion = () => {
+      setDistActiva(null)
+      setState('tareaPendiente', false)
+    }
 
-  const tieneDistPendiente = (): boolean => {
-    return getDistFlag()
-  }
+    const tieneDistPendiente = (): boolean => {
+      return getDistFlag()
+    }
 
-  return {
-    get cliente() { return state.cliente },
-    get ruc() { return state.ruc },
-    get numeroPedido() { return state.numeroPedido },
-    get vendedor() { return state.vendedor },
-    get emailVendedor() { return state.emailVendedor },
-    get telefonoVendedor() { return state.telefonoVendedor },
-    get productos() { return productosCalculados() },
-    get totales() { return totales() },
-    get tareaPendiente() { return state.tareaPendiente },
+    return {
+      get cliente() { return state.cliente },
+      get ruc() { return state.ruc },
+      get numeroPedido() { return state.numeroPedido },
+      get vendedor() { return state.vendedor },
+      get emailVendedor() { return state.emailVendedor },
+      get telefonoVendedor() { return state.telefonoVendedor },
+      get productos() { return productosCalculados() },
+      get totales() { return totales() },
+      get tareaPendiente() { return state.tareaPendiente },
 
-    setTareaPendiente: (v: boolean) => setState('tareaPendiente', v),
-    setCliente: (v: string) => setState('cliente', v),
-    setRuc: (v: string) => setState('ruc', v),
-    setNumeroPedido: (v: string) => setState('numeroPedido', v),
-    setVendedor: (v: string) => setState('vendedor', v),
-    setEmailVendedor: (v: string) => setState('emailVendedor', v),
-    setTelefonoVendedor: (v: string) => setState('telefonoVendedor', v),
-    actualizarProductosDesdeTexto,
-    resetearPedido,
+      setTareaPendiente: (v: boolean) => setState('tareaPendiente', v),
+      setCliente: (v: string) => setState('cliente', v),
+      setRuc: (v: string) => setState('ruc', v),
+      setNumeroPedido: (v: string) => setState('numeroPedido', v),
+      setVendedor: (v: string) => setState('vendedor', v),
+      setEmailVendedor: (v: string) => setState('emailVendedor', v),
+      setTelefonoVendedor: (v: string) => setState('telefonoVendedor', v),
+      actualizarProductosDesdeTexto,
+      resetearPedido,
 
-    get distActiva() { return distActiva() },
-    get distHistorial() { return distHistorial() },
-    iniciarDistribucion,
-    guardarDistribucion,
-    nuevaDistribucion,
-    cargarDistribucion,
-    eliminarDistribucion,
-    tieneDistPendiente
-  }
+      get distActiva() { return distActiva() },
+      get distHistorial() { return distHistorial() },
+      iniciarDistribucion,
+      nuevaDistribucion,
+      tieneDistPendiente
+    }
+    })
+
+  return pedidoSingleton
 }

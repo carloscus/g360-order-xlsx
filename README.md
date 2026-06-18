@@ -46,7 +46,7 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 - Creación y edición de pedidos con productos dinámicos
 - Validaciones en tiempo real de datos
 - Cálculo automático de subtotales, IGV, y totales
-- Soporte para múltiples monedas y tasas de cambio
+- Persistencia automática en localStorage
 
 ### Tabla de Productos
 - Interfaz tabular para gestión de productos
@@ -54,14 +54,8 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 - Cálculos automáticos de precios y cantidades
 - Footer con totales resumidos
 
-### Distribución y Split de Pagos
-- Distribución proporcional de productos
-- Cálculos de pagos divididos
-- Visualización de dashboards con gráficos
-
 ### Auditoría y Validaciones
 - Sistema de auditoría para rastrear cambios
-- Validaciones configurables de negocio
 - Alertas y notificaciones de errores
 
 ### Exportaciones
@@ -148,9 +142,9 @@ src/
 │   ├── Sidebar/        # Sidebar con exportación y navegación
 │   └── DistributionPage.jsx  # Página de distribución y letras
 ├── hooks/              # Hooks personalizados (usePedido, useCatalogo)
-├── constants/          # Constantes y configuraciones compartidas
+├── constants/          # Constantes y configuraciones compartidas (storage.js, sharedConstants.js)
 ├── utils/              # Utilidades (xlsxGenerator, docxGenerator, htmlExportBuilder, etc.)
-├── context/            # Contextos (ThemeContext)
+├── context/            # Contextos (ThemeContext.jsx)
 ├── pages/              # Páginas principales (HomePage)
 ├── services/           # Servicios (erpParser)
 ├── core/               # Lógica central (G360_ENGINE y skills)

@@ -1,6 +1,7 @@
 import { createContext, useContext, createSignal, createEffect } from 'solid-js'
+import { STORAGE_KEYS } from '../constants/storage'
 
-const THEME_KEY = 'g360_theme_dark'
+const THEME_KEY = STORAGE_KEYS.THEME_DARK
 
 const ThemeContext = createContext()
 

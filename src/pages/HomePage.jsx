@@ -37,7 +37,7 @@ const HomePage = () => {
   }
 
   const confirmarNuevoPedido = () => {
-    pedido.setTareaPendiente(false)
+    pedido.nuevaDistribucion()
     setShowAlertPendiente(false)
     pedido.actualizarProductosDesdeTexto(nuevosProductos())
     setNuevosProductos(null)

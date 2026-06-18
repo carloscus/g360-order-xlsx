@@ -13,6 +13,7 @@ import { CHART_COLORS } from '../constants/sharedConstants'
 import { generarXLSX } from '../utils/xlsxGenerator'
 import { buildCronogramaHTML } from '../utils/htmlExportBuilder'
 import { exportarCartaCorporativa } from '../utils/exportCarta'
+import { STORAGE_KEYS } from '../constants/storage'
 
 // Helper para enriquecer y calcular un producto usando los agentes de skill
 const procesarProducto = (p, enriquecerProductoFn, calculos) => {
@@ -45,7 +46,7 @@ export const DistributionPage = () => {
   const [loading, setLoading] = createSignal(true)
   const cuotasIniciales = (() => {
     try {
-      const saved = localStorage.getItem('g360_cuotas_persist')
+      const saved = localStorage.getItem(STORAGE_KEYS.CUOTAS_PERSIST)
       return saved ? JSON.parse(saved) : []
     } catch { return [] }
   })()
@@ -55,7 +56,7 @@ export const DistributionPage = () => {
   // Sincronizar cuotas cuando cambie el pedido global (ej: al cargar del historial)
   createEffect(() => {
     if (pedido.productos.length >= 0) {
-      const saved = localStorage.getItem('g360_cuotas_persist')
+      const saved = localStorage.getItem(STORAGE_KEYS.CUOTAS_PERSIST)
       try { setCuotas(saved ? JSON.parse(saved) : []) } 
       catch { setCuotas([]) }
     }
@@ -95,7 +96,7 @@ export const DistributionPage = () => {
   const getCliente = () => pedido.cliente || ''
   const getRuc = () => pedido.ruc || ''
   const getNumeroPedido = () => pedido.numeroPedido || ''
-  const getVendedor = () => pedido.vendedor || initialData.config.vendedor.nombre
+  const getVendedor = () => pedido.vendedor || ''
   const getEmailVendedor = () => pedido.emailVendedor || ''
   const getTelefonoVendedor = () => pedido.telefonoVendedor || ''
   const getProductos = () => pedido.productos || []
@@ -103,7 +104,7 @@ export const DistributionPage = () => {
   const handleCuotasChange = (nuevasCuotas) => {
     setCuotas(nuevasCuotas)
     try {
-      localStorage.setItem('g360_cuotas_persist', JSON.stringify(nuevasCuotas))
+      localStorage.setItem(STORAGE_KEYS.CUOTAS_PERSIST, JSON.stringify(nuevasCuotas))
     } catch { /* localStorage no disponible */ }
   }
 
@@ -157,10 +158,15 @@ export const DistributionPage = () => {
     const cliente = getCliente()
     const ruc = getRuc()
     const numeroPedido = getNumeroPedido()
+    const vendedor = getVendedor()
     
-    if (!cliente && !ruc && !numeroPedido) {
-      alert('Faltan datos del cliente. Complete los datos en la página principal.')
-      navigate('/')
+    const faltantes = []
+    if (!cliente) faltantes.push('Cliente')
+    if (!ruc) faltantes.push('Documento (RUC/DNI)')
+    if (!numeroPedido) faltantes.push('N° Pedido')
+    if (!vendedor) faltantes.push('Vendedor')
+    if (faltantes.length) {
+      alert(`⚠️ HTML / Distribución requiere:\n• ${faltantes.join('\n• ')}`)
       return
     }
 
@@ -460,6 +466,8 @@ export const DistributionPage = () => {
             <div class="export-options-compact">
               <button
                 onClick={async () => {
+                  if (!getNumeroPedido()) { alert('⚠️ XLSX requiere: N° Pedido'); return }
+                  if (!getCliente()) { alert('⚠️ XLSX requiere: Cliente'); return }
                   await generarXLSX({
                     cliente: getCliente(),
                     documento: getRuc(),
@@ -468,7 +476,6 @@ export const DistributionPage = () => {
                     emailVendedor: getEmailVendedor(),
                     telefonoVendedor: getTelefonoVendedor(),
                     productos: productosCalculados(),
-                    // totales: datosOriginales().totales, // Removed as it's not used in generarXLSX
                     tipo: 'cotizacion'
                   })
                   setShowExportModal(false)
@@ -479,6 +486,14 @@ export const DistributionPage = () => {
               </button>
               <button
                 onClick={() => {
+                  const faltantes = []
+                  if (!getCliente()) faltantes.push('Cliente')
+                  if (!getRuc()) faltantes.push('Documento (RUC/DNI)')
+                  if (!getNumeroPedido()) faltantes.push('N° Pedido')
+                  if (!getVendedor()) faltantes.push('Vendedor')
+                  if (!getEmailVendedor()) faltantes.push('Email')
+                  if (!getTelefonoVendedor()) faltantes.push('Teléfono')
+                  if (faltantes.length) { alert(`⚠️ Word / Carta requiere:\n• ${faltantes.join('\n• ')}`); return }
                   exportarCartaCorporativa({
                     cliente: getCliente(),
                     documento: getRuc(),
@@ -506,10 +521,13 @@ export const DistributionPage = () => {
               </button>
               <button
                 onClick={() => {
-                  if (window.confirm('🗑️ ¿Limpiar todo el pedido actual?\nSe perderá el calendario y los datos del cliente.')) {
+                  if (window.confirm('🗑️ ¿Limpiar todo el pedido actual?\nSe perderá el calendario, distribución y los datos del cliente.')) {
                     pedido.resetearPedido()
                     setTareaPendiente(false)
-                    localStorage.removeItem('g360_cuotas_persist')
+                    localStorage.removeItem(STORAGE_KEYS.CUOTAS_PERSIST)
+                    localStorage.removeItem(STORAGE_KEYS.DIST_FLAG)
+                    localStorage.removeItem(STORAGE_KEYS.DIST_HISTORIAL)
+                    localStorage.removeItem(STORAGE_KEYS.HISTORIAL)
                     navigate('/')
                   }
                 }}

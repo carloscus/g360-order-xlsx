@@ -5,6 +5,7 @@
 
 const renderClientInfo = (data) => `
 <div class="section">
+  <div class="section-title">📋 PERFIL DEL CLIENTE</div>
   <div class="client-grid">
     <div class="client-item"><label>Razón Social</label><span>${data.cliente}</span></div>
     <div class="client-item"><label>RUC</label><span>${data.ruc}</span></div>
@@ -21,7 +22,7 @@ const renderTotales = (consolidado) => {
   const disp = redondear2(consolidado.totales?.totalDisponible || 0)
   return `
 <div class="section">
-  <div class="section-title">💰 Totales del Pedido</div>
+  <div class="section-title">📊 VALORIZACIÓN Y STOCK</div>
   <div class="totals-row">
     <div class="total-card"><h4>Subtotal</h4><div class="value">S/ ${formatear(sub)}</div></div>
     <div class="total-card main"><h4>Total + IGV (18%)</h4><div class="value">S/ ${formatear(total)}</div></div>
@@ -30,7 +31,7 @@ const renderTotales = (consolidado) => {
 </div>`
 }
 
-const renderKPIs = (consolidado) => {
+const renderKPIs = (consolidado, htmlDarkTheme) => {
   const sub = redondear2(consolidado.subtotal || 0)
   const total = redondear2(consolidado.totales?.totalIGV || 0)
   const disp = redondear2(consolidado.totales?.totalDisponible || 0)
@@ -40,13 +41,13 @@ const renderKPIs = (consolidado) => {
   const nCats = consolidado.datosCategoria?.length || 0
   return `
 <div class="section">
-  <div class="section-title">📈 Análisis por Línea de Productos</div>
+  <div class="section-title">📊 ANÁLISIS Y SEGMENTACIÓN</div>
   <div class="kpis">
     <div class="kpi-card"><div class="kpi-label">💰 Ventas Totales</div><div class="kpi-value">S/ ${formatear(sub)}</div></div>
     <div class="kpi-card"><div class="kpi-label">📦 Cajas Totales</div><div class="kpi-value">${cajas}</div></div>
     <div class="kpi-card"><div class="kpi-label">⚖️ Peso Total</div><div class="kpi-value">${peso} kg</div></div>
-    <div class="kpi-card" style="background:linear-gradient(135deg,#10b981 0%,#059669 100%);color:white"><div class="kpi-label" style="color:rgba(255,255,255,0.9)">💳 Total + IGV</div><div class="kpi-value" style="color:white">S/ ${formatear(total)}</div></div>
-    <div class="kpi-card" style="background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:white"><div class="kpi-label" style="color:rgba(255,255,255,0.9)">✅ Total Disponible</div><div class="kpi-value" style="color:white">S/ ${formatear(disp)}</div></div>
+    <div class="kpi-card" style="background:linear-gradient(135deg,${htmlDarkTheme ? '#10b981' : '#059669'} 0%,${htmlDarkTheme ? '#059669' : '#047857'} 100%);color:white"><div class="kpi-label" style="color:rgba(255,255,255,0.9)">💳 Total + IGV</div><div class="kpi-value" style="color:white">S/ ${formatear(total)}</div></div>
+    <div class="kpi-card" style="background:linear-gradient(135deg,${htmlDarkTheme ? '#f59e0b' : '#d97706'} 0%,${htmlDarkTheme ? '#d97706' : '#b45309'} 100%);color:white"><div class="kpi-label" style="color:rgba(255,255,255,0.9)">✅ Total Disponible</div><div class="kpi-value" style="color:white">S/ ${formatear(disp)}</div></div>
     <div class="kpi-card"><div class="kpi-label">📊 Líneas</div><div class="kpi-value">${nLineas}</div></div>
     <div class="kpi-card"><div class="kpi-label">📂 Categorías</div><div class="kpi-value">${nCats}</div></div>
   </div>
@@ -151,7 +152,7 @@ const renderDistribucionFecha = (cuotas, totalPedido) => {
 
   return `
 <div class="section">
-  <div class="section-title">📅 Distribución por Fecha</div>
+  <div class="section-title">📅 Programación de Letras</div>
   <div class="psf-container">
     <div class="psf-meses-grid">${cards}</div>
   </div>
@@ -174,7 +175,7 @@ const renderTablaProductos = (productos, consolidado) => {
 
   return `
 <div class="section">
-  <div class="section-title">📦 Detalle de Productos (${productos.length})</div>
+  <div class="section-title">📦 DETALLE DE PARTIDAS (${productos.length})</div>
   <div class="table-container">
     <table>
       <thead><tr>
@@ -221,7 +222,7 @@ export const buildCronogramaHTML = (data) => {
   const text = htmlDarkTheme ? '#e2e8f0' : '#1e293b'
   const muted = htmlDarkTheme ? '#94a3b8' : '#64748b'
   const border = htmlDarkTheme ? '#334155' : '#e2e8f0'
-  const accent = '#00d084'
+  const accent = htmlDarkTheme ? '#00d084' : '#007a4d'
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -231,6 +232,7 @@ export const buildCronogramaHTML = (data) => {
   <title>Pedido ${numeroPedido || ''} - Distribución</title>
   <style>
     :root { --bg:${bg}; --surface:${surface}; --text:${text}; --muted:${muted}; --border:${border}; --accent:${accent};
+      --accent-rgb:${htmlDarkTheme ? '0,208,132' : '0,122,77'};
       --text-2xs:0.5625rem; --text-xs:0.6875rem; --text-sm:0.75rem; --text-base:0.875rem;
       --text-lg:1rem; --text-xl:1.125rem; --text-2xl:1.25rem; --text-3xl:1.5rem;
       --fw-normal:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-extrabold:800; }
@@ -253,7 +255,7 @@ export const buildCronogramaHTML = (data) => {
     .kpi-value { font-size:var(--text-lg); font-weight:var(--fw-bold); color:var(--accent); }
     .totals-row { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
     .total-card { background:var(--surface); padding:18px; border-radius:12px; flex:1; min-width:160px; text-align:center; border:1px solid var(--border); }
-    .total-card.main { background:linear-gradient(135deg,#00d08420,#00d08410); border:2px solid var(--accent); }
+    .total-card.main { background:linear-gradient(135deg,rgba(var(--accent-rgb),0.125),rgba(var(--accent-rgb),0.063)); border:2px solid var(--accent); }
     .total-card h4 { color:var(--muted); font-size:var(--text-2xs); text-transform:uppercase; margin-bottom:6px; letter-spacing:1px; }
     .total-card .value { font-size:var(--text-xl); font-weight:var(--fw-bold); color:var(--accent); }
     .butterfly-chart { background:var(--surface); border-radius:12px; padding:20px; border:1px solid var(--border); }
@@ -414,7 +416,7 @@ export const buildCronogramaHTML = (data) => {
 
     ${renderClientInfo({ cliente, ruc, numeroPedido, vendedor, emailVendedor, telefonoVendedor })}
     ${renderTotales(consolidado)}
-    ${renderKPIs(consolidado)}
+    ${renderKPIs(consolidado, htmlDarkTheme)}
     ${renderButterflyChart(consolidado)}
     ${renderCategorias(consolidado)}
     ${renderDistribucionFecha(cuotas, totalPedido)}

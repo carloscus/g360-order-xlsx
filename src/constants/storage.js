@@ -10,7 +10,6 @@ export const STORAGE_KEYS = {
   DIST_ACTIVA: 'g360_dist_activa',
   DIST_FLAG: 'g360_dist_flag',
   DIST_HISTORIAL: 'g360_dist_historial',
-  SAVE_FULL: 'g360_save_full',
   HISTORIAL: 'g360_historial',
   CUOTAS_PERSIST: 'g360_cuotas_persist',
   THEME_DARK: 'g360_theme_dark',
