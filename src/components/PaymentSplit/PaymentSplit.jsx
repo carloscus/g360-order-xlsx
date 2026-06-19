@@ -295,13 +295,29 @@ export const PaymentSplit = (props) => {
                         <div class="psf-res-monto-wrap">
                           <span class="psf-monto-simbolo">S/.</span>
                           <input
-                            type="number"
+                            type="text"
                             value={c.monto}
-                            onInput={(e) => actualizarMonto(c.id, e.currentTarget.value)}
+                            onChange={(e) => {
+                              const raw = e.currentTarget.value.trim()
+                              if (raw === '') return
+                              const normalizado = raw.replace(',', '.')
+                              const conCero = normalizado.startsWith('.') ? '0' + normalizado : normalizado
+                              const num = parseFloat(conCero)
+                              if (!isNaN(num)) actualizarMonto(c.id, num.toFixed(2))
+                            }}
+                            onFocus={(e) => e.target.select()}
                             class="psf-res-input"
-                            step="0.01"
                             placeholder="0.00"
                           />
+                          <button type="button" class="psf-monto-btn psf-monto-up" onClick={() => {
+                            const actual = parseFloat(c.monto) || 0
+                            actualizarMonto(c.id, (actual + 0.01).toFixed(2))
+                          }}>▲</button>
+                          <button type="button" class="psf-monto-btn psf-monto-down" onClick={() => {
+                            const actual = parseFloat(c.monto) || 0
+                            const nuevo = Math.max(0, actual - 0.01)
+                            actualizarMonto(c.id, nuevo.toFixed(2))
+                          }}>▼</button>
                         </div>
                       </div>
                     )}

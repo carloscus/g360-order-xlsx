@@ -1482,6 +1482,38 @@ td.number, th.number {
   transition: border-color 0.2s;
 }
 
+.psf-monto-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--g360-border);
+  border-radius: 3px;
+  background: var(--g360-surface-2);
+  color: var(--g360-muted);
+  font-size: 0.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  user-select: none;
+}
+.psf-monto-btn:hover {
+  background: var(--g360-accent);
+  color: white;
+  border-color: var(--g360-accent);
+}
+.psf-monto-btn:active {
+  transform: scale(0.9);
+}
+.psf-monto-up {
+  margin-left: 2px;
+}
+.psf-monto-down {
+  margin-left: 1px;
+}
+
 .psf-cuotas-list {
   display: flex;
   flex-direction: column;
