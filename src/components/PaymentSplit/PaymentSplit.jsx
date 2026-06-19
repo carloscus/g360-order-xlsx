@@ -1,6 +1,13 @@
 import { createSignal, createMemo, For, Show } from 'solid-js'
 import { formatNumero } from '../../utils/formatters'
 
+const AHORA = new Date()
+const ANIO_ACTUAL = AHORA.getFullYear()
+const MES_ACTUAL = AHORA.getMonth()
+const MES_ACTUAL_STR = `${ANIO_ACTUAL}-${String(MES_ACTUAL + 1).padStart(2, '0')}`
+
+const esFechaPasada = (anio, mes) => anio < ANIO_ACTUAL || (anio === ANIO_ACTUAL && mes < MES_ACTUAL)
+
 const NOMBRES_MESES = [
   'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
   'JULIO', 'AGOSTO', 'SETIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
@@ -53,10 +60,34 @@ const formatearFecha = (anio, mes, dia) => {
   return `${dd}/${mm}/${anio}`
 }
 
+const sumarMeses = (anio, mes, n) => {
+  const total = mes + n
+  return { anio: anio + Math.floor(total / 12), mes: total % 12 }
+}
+
 export const PaymentSplit = (props) => {
   const [startMonth, setStartMonth] = createSignal('')
   const [endMonth, setEndMonth] = createSignal('')
   const [cuotasMap, setCuotasMap] = createSignal({})
+
+  const maxEndMonth = createMemo(() => {
+    const s = obtenerAnioMes(startMonth())
+    if (!s) return ''
+    const r = sumarMeses(s.anio, s.mes, 11)
+    return `${r.anio}-${String(r.mes + 1).padStart(2, '0')}`
+  })
+
+  const setStartMonthWithClamp = (val) => {
+    setStartMonth(val)
+    const s = obtenerAnioMes(val)
+    if (!s) return
+    const e = obtenerAnioMes(endMonth())
+    if (!e) return
+    const limite = sumarMeses(s.anio, s.mes, 11)
+    if (e.anio > limite.anio || (e.anio === limite.anio && e.mes > limite.mes)) {
+      setEndMonth(`${limite.anio}-${String(limite.mes + 1).padStart(2, '0')}`)
+    }
+  }
 
   const totalAmount = () => props.totalAmount || 0
 
@@ -80,6 +111,11 @@ export const PaymentSplit = (props) => {
 
   const toggleDia = (anio, mes, dia) => {
     const k = key(anio, mes, dia)
+    if (!cuotasMap()[k]) {
+      if (esFechaPasada(anio, mes)) return
+      const tipo = obtenerDiaTipo(anio, mes, dia)
+      if (tipo === 'feriado' || tipo === 'domingo') return
+    }
     const actual = { ...cuotasMap() }
     if (actual[k]) {
       delete actual[k]
@@ -174,14 +210,26 @@ export const PaymentSplit = (props) => {
       <div class="psf-rango-meses">
         <div class="psf-rango-input">
           <label class="psf-rango-label">Mes inicio</label>
-          <input type="month" value={startMonth()} onInput={e => setStartMonth(e.currentTarget.value)} class="psf-input psf-month-input" />
+          <input type="month" value={startMonth()} onInput={e => setStartMonthWithClamp(e.currentTarget.value)} min={MES_ACTUAL_STR} class="psf-input psf-month-input" />
         </div>
         <span class="psf-rango-sep">→</span>
         <div class="psf-rango-input">
           <label class="psf-rango-label">Mes fin</label>
-          <input type="month" value={endMonth()} onInput={e => setEndMonth(e.currentTarget.value)} class="psf-input psf-month-input" />
+          <input type="month" value={endMonth()} onInput={e => setEndMonth(e.currentTarget.value)} min={MES_ACTUAL_STR} max={maxEndMonth()} class="psf-input psf-month-input" />
         </div>
       </div>
+      <Show when={meses().length > 0}>
+        <span class="psf-rango-hint">
+          {(() => {
+            const ms = meses()
+            const n = ms.length
+            return `${NOMBRES_MESES[ms[0].mes]} ${ms[0].anio} → ${NOMBRES_MESES[ms[n-1].mes]} ${ms[n-1].anio} (${n} mes${n !== 1 ? 'es' : ''})`
+          })()}
+        </span>
+        <Show when={meses().length === 12}>
+          <span class="psf-rango-max">Máximo rango alcanzado: 12 meses</span>
+        </Show>
+      </Show>
 
       <Show when={meses().length > 0}>
         <div class="psf-calendarios">
@@ -191,14 +239,11 @@ export const PaymentSplit = (props) => {
               const primerDiaLocal = primerDia === 0 ? 6 : primerDia - 1
               const celdasVacia = primerDiaLocal
               const map = cuotasMap()
-              const totalMes = totalPorMes()[key(m.anio, m.mes, 0)] || 0
-              const pct = totalAmount() > 0 ? (totalMes / totalAmount()) * 100 : 0
 
               return (
                 <div class="psf-cal-mes">
                   <div class="psf-cal-header">
                     <span class="psf-cal-titulo">{NOMBRES_MESES[m.mes]} {m.anio}</span>
-                    <span class="psf-cal-total">S/ {formatNumero(totalMes)} ({pct.toFixed(1)}%)</span>
                   </div>
                   <div class="psf-cal-grid">
                     <For each={DIAS_LAB}>
@@ -212,23 +257,15 @@ export const PaymentSplit = (props) => {
                         const k = key(m.anio, m.mes, dia)
                         const sel = map[k]
                         const tipo = obtenerDiaTipo(m.anio, m.mes, dia)
+                        const pasado = esFechaPasada(m.anio, m.mes)
+                        const bloqueado = !sel && (pasado || tipo === 'feriado' || tipo === 'domingo')
+                            const extraClass = pasado ? ' psf-cal-pasado' : (!sel && (tipo === 'feriado' || tipo === 'domingo')) ? ' psf-cal-disabled' : ''
                         return (
                           <div
-                            class={`psf-cal-celda${sel ? ' psf-cal-seleccionado' : ''} psf-cal-${tipo}`}
-                            onClick={() => toggleDia(m.anio, m.mes, dia)}
+                            class={`psf-cal-celda${sel ? ' psf-cal-seleccionado' : ''} psf-cal-${tipo}${extraClass}`}
+                            onClick={bloqueado ? undefined : () => toggleDia(m.anio, m.mes, dia)}
                           >
                             <span class="psf-cal-num">{dia}</span>
-                            <Show when={sel}>
-                              <input
-                                type="number"
-                                value={sel.monto}
-                                onInput={(e) => { e.stopPropagation(); actualizarMonto(k, e.currentTarget.value) }}
-                                onClick={(e) => e.stopPropagation()}
-                                class="psf-cal-monto-input"
-                                step="0.01"
-                                placeholder="0.00"
-                              />
-                            </Show>
                           </div>
                         )
                       }}

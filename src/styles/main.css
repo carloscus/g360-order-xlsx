@@ -41,12 +41,12 @@
 .light {
   --g360-accent: #00a86b;
   --g360-accent-dark: #008f5b;
-  --g360-bg: #f8fafc;
+  --g360-bg: #f1f5f9;
   --g360-surface: #ffffff;
-  --g360-surface-2: #f1f5f9;
-  --g360-border: #cbd5e1;
-  --g360-text: #1e293b;
-  --g360-muted: #64748b;
+  --g360-surface-2: #e2e8f0;
+  --g360-border: #94a3b8;
+  --g360-text: #0f172a;
+  --g360-muted: #475569;
   --g360-success: #16a34a;
   --g360-warning: #d97706;
   --g360-error: #dc2626;
@@ -73,6 +73,7 @@ body {
 .app {
   min-height: 100vh;
   background: var(--g360-bg);
+  color: var(--g360-text);
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -535,6 +536,13 @@ body {
 .product-table .total-row {
   background: var(--g360-accent);
   color: var(--g360-bg);
+}
+
+.row-num {
+  text-align: center;
+  color: var(--g360-muted);
+  font-size: 0.75rem;
+  width: 40px;
 }
 
 /* Badge */
@@ -1051,13 +1059,13 @@ td.number, th.number {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #ef4444;
+  background: var(--g360-error);
 }
 .dot-blue {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--g360-info);
 }
 
 /* PaymentSplit */
@@ -1174,6 +1182,23 @@ td.number, th.number {
   padding-bottom: 8px;
 }
 
+.psf-rango-hint {
+  display: block;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--g360-muted);
+  margin: -8px 0 4px;
+}
+
+.psf-rango-max {
+  display: block;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--g360-warning);
+  margin-bottom: 12px;
+}
+
 .psf-cuota-mes {
   flex: 1;
   font-size: 0.85rem;
@@ -1206,21 +1231,21 @@ td.number, th.number {
 }
 
 .psf-btn-equal {
-  background: #3b82f6;
+  background: var(--g360-info);
   color: white;
-  border-color: #3b82f6;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  border-color: var(--g360-info);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--g360-info) 30%, transparent);
   animation: psfBtnPulse 2s ease-in-out infinite;
 }
 
 .psf-btn-equal:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--g360-info) 40%, transparent);
 }
 
 @keyframes psfBtnPulse {
-  0%, 100% { box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); }
-  50% { box-shadow: 0 2px 16px rgba(59, 130, 246, 0.5); }
+  0%, 100% { box-shadow: 0 2px 8px color-mix(in srgb, var(--g360-info) 30%, transparent); }
+  50% { box-shadow: 0 2px 16px color-mix(in srgb, var(--g360-info) 50%, transparent); }
 }
 
 .psf-calendarios {
@@ -1259,12 +1284,6 @@ td.number, th.number {
   color: var(--g360-accent);
 }
 
-.psf-cal-total {
-  font-size: 0.7rem;
-  color: var(--g360-muted);
-  font-weight: var(--g360-font-weight-medium);
-}
-
 .psf-cal-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -1296,12 +1315,9 @@ td.number, th.number {
   border: 1px solid transparent;
 }
 
-.psf-cal-celda:hover {
+.psf-cal-celda:not(.psf-cal-seleccionado):not(.psf-cal-disabled):not(.psf-cal-pasado):hover {
   background: var(--g360-surface);
   border-color: var(--g360-border);
-  transform: scale(1.08);
-  z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .psf-cal-vacia {
@@ -1312,88 +1328,41 @@ td.number, th.number {
 }
 
 .psf-cal-sabado .psf-cal-num {
-  color: #3b82f6;
+  color: var(--g360-info);
 }
 
 .psf-cal-domingo .psf-cal-num,
 .psf-cal-feriado .psf-cal-num {
-  color: #ef4444;
+  color: var(--g360-error);
 }
 
 .psf-cal-seleccionado {
-  border: 2px solid var(--g360-accent) !important;
-  background: rgba(0, 208, 132, 0.18) !important;
-  box-shadow:
-    0 0 6px rgba(0, 208, 132, 0.4),
-    inset 0 0 4px rgba(0, 208, 132, 0.15);
-  transform: scale(1.05);
-  position: relative;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.15s ease;
 }
 
-.psf-cal-seleccionado::after {
-  content: '✓';
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  width: 12px;
-  height: 12px;
-  background: var(--g360-accent);
-  color: var(--g360-bg);
-  border-radius: 50%;
-  font-size: 0.45rem;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  box-shadow: 0 0 4px rgba(0, 208, 132, 0.6);
-  animation: psfBadgePop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+.psf-cal-seleccionado {
+  transition: transform 0.15s ease;
 }
 
-@keyframes psfBadgePop {
-  0% { transform: scale(0) rotate(-90deg); opacity: 0; }
-  50% { transform: scale(1.3) rotate(10deg); }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-
-.psf-cal-seleccionado:hover {
-  border-color: var(--g360-accent-dark) !important;
-  background: rgba(0, 168, 107, 0.28) !important;
-  transform: scale(1.08);
-  box-shadow:
-    0 0 10px rgba(0, 208, 132, 0.5),
-    inset 0 0 6px rgba(0, 208, 132, 0.2);
-}
-
-.psf-cal-seleccionado:active {
-  transform: scale(0.92);
-  transition: transform 0.08s ease;
-}
-
-.psf-cal-seleccionado .psf-cal-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--g360-accent) !important;
-  color: var(--g360-bg) !important;
-  font-weight: 700;
-  font-size: 0.7rem;
-  box-shadow: 0 0 8px rgba(0, 208, 132, 0.5);
-  transition: all 0.2s ease;
-}
-
-/* Efecto off: fade out al deseleccionar */
-.psf-cal-celda:not(.psf-cal-seleccionado):not(.psf-cal-vacia) {
+.psf-cal-celda:not(.psf-cal-seleccionado):not(.psf-cal-vacia):not(.psf-cal-disabled):not(.psf-cal-pasado) {
   transition: all 0.18s ease;
 }
 
-.psf-cal-celda:not(.psf-cal-seleccionado):not(.psf-cal-vacia):active {
-  transform: scale(0.9);
-  transition: transform 0.08s ease;
+.psf-cal-celda:not(.psf-cal-vacia):not(.psf-cal-disabled):not(.psf-cal-pasado):active {
+  transform: scale(0.65);
+  transition: transform 0.1s ease;
+}
+
+.psf-cal-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.psf-cal-pasado {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .psf-cal-num {
@@ -1401,30 +1370,6 @@ td.number, th.number {
   font-weight: 600;
   line-height: 1;
   pointer-events: none;
-}
-
-.psf-cal-monto-input {
-  width: 100%;
-  font-size: 0.5rem;
-  padding: 1px 2px;
-  border: none;
-  border-radius: 3px;
-  background: rgba(255,255,255,0.2);
-  color: var(--g360-bg);
-  text-align: center;
-  font-family: inherit;
-  line-height: 1;
-  outline: none;
-  font-weight: 700;
-}
-
-.psf-cal-monto-input:focus {
-  background: rgba(255,255,255,0.35);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.3);
-}
-
-.psf-cal-monto-input::placeholder {
-  color: rgba(255,255,255,0.4);
 }
 
 .psf-resumen-cards {
@@ -1608,12 +1553,12 @@ td.number, th.number {
 
 .psf-day-badge.day-domingo,
 .psf-day-badge.day-feriado {
-  background: #ef4444;
+  background: var(--g360-error);
   color: white;
 }
 
 .psf-day-badge.day-sabado {
-  background: #3b82f6;
+  background: var(--g360-info);
   color: white;
 }
 
@@ -3185,15 +3130,15 @@ td.number, th.number {
 }
 
 .stock-dot.stock-ok {
-  background: #22c55e;
+  background: var(--g360-success);
 }
 
 .stock-dot.stock-aj {
-  background: #f59e0b;
+  background: var(--g360-warning);
 }
 
 .stock-dot.stock-agotado {
-  background: #ef4444;
+  background: var(--g360-error);
 }
 
 /* Client Form Grid */
@@ -3265,7 +3210,7 @@ td.number, th.number {
   pointer-events: none;
 }
 
-.doc-badge.ruc { background: #ef4444; }
+.doc-badge.ruc { background: var(--g360-error); }
 .doc-badge.dni { background: var(--g360-accent); }
 
 /* Totals Cards Grid */
@@ -4344,9 +4289,9 @@ td.number, th.number {
 }
 
 .btn-alert.btn-danger:hover {
-  background: #dc2626;
+  filter: brightness(0.85);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--g360-error) 30%, transparent);
 }
 
 .btn-alert.btn-secondary {
@@ -4485,15 +4430,15 @@ td.number, th.number {
 }
 
 .stock-indicator.stock-ok {
-  background: #22c55e;
+  background: var(--g360-success);
 }
 
 .stock-indicator.stock-low {
-  background: #f59e0b;
+  background: var(--g360-warning);
 }
 
 .stock-indicator.stock-empty {
-  background: #ef4444;
+  background: var(--g360-error);
 }
 
 .sku-cell {
@@ -4529,17 +4474,17 @@ td.number, th.number {
 }
 
 .stock-badge.stock-ok {
-  background: #22c55e;
+  background: var(--g360-success);
   color: white;
 }
 
 .stock-badge.stock-aj {
-  background: #f59e0b;
+  background: var(--g360-warning);
   color: white;
 }
 
 .stock-badge.stock-agotado {
-  background: #ef4444;
+  background: var(--g360-error);
   color: white;
 }
 
@@ -4553,12 +4498,12 @@ td.number, th.number {
 }
 
 .margen-alto {
-  color: #22c55e;
+  color: var(--g360-success);
   font-weight: 700;
 }
 
 .margen-medio {
-  color: #f59e0b;
+  color: var(--g360-warning);
   font-weight: 600;
 }
 
@@ -4726,7 +4671,7 @@ td.number, th.number {
 }
 
 .badge-count.info {
-  background: #3b82f6;
+  background: var(--g360-info);
   color: white;
 }
 
@@ -4738,16 +4683,16 @@ td.number, th.number {
   font-weight: 600;
 }
 .um-ok {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  background: color-mix(in srgb, var(--g360-success) 20%, transparent);
+  color: var(--g360-success);
 }
 .um-warning {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
+  background: color-mix(in srgb, var(--g360-warning) 20%, transparent);
+  color: var(--g360-warning);
 }
 .um-alert {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  background: color-mix(in srgb, var(--g360-error) 20%, transparent);
+  color: var(--g360-error);
   animation: pulse 2s infinite;
 }
 /* Alert Panel Styles */
@@ -4780,7 +4725,7 @@ td.number, th.number {
 
 .stat-error { color: var(--g360-error); }
 .stat-warning { color: var(--g360-warning); }
-.stat-info { color: #3b82f6; }
+.stat-info { color: var(--g360-info); }
 
 .audit-summary {
   background: var(--g360-surface-2);
@@ -4886,8 +4831,8 @@ td.number, th.number {
 }
 
 .audit-section.infos h4 {
-  background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
+  background: color-mix(in srgb, var(--g360-info) 20%, transparent);
+  color: var(--g360-info);
 }
 
 .audit-item {
@@ -5444,12 +5389,12 @@ td.number, th.number {
 }
 
 .chart-btn:hover {
-  background: #3b82f6;
+  background: var(--g360-info);
   color: white;
 }
 
 .cuotas-btn:hover {
-  background: #8b5cf6;
+  background: var(--g360-purple);
   color: white;
 }
 
@@ -5510,13 +5455,13 @@ td.number, th.number {
 }
 
 .export-option.html {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  background: linear-gradient(135deg, var(--g360-purple), color-mix(in srgb, var(--g360-purple) 80%, black));
   color: white;
   border: none;
 }
 
 .export-option.html:hover {
-  opacity: 0.9;
+  filter: brightness(0.9);
 }
 
 .export-options-compact {
@@ -5537,80 +5482,39 @@ td.number, th.number {
 }
 
 .export-option.xlsx {
-  background: #22c55e;
+  background: var(--g360-success);
   color: white;
 }
 
 .export-option.xlsx:hover {
-  background: #16a34a;
+  filter: brightness(0.85);
 }
 
 .export-option.word {
-  background: #3b82f6;
+  background: var(--g360-info);
   color: white;
 }
 
 .export-option.word:hover {
-  background: #2563eb;
+  filter: brightness(0.85);
 }
 
 .export-option.clear {
-  background: #ef4444;
+  background: var(--g360-error);
   color: white;
 }
 
 .export-option.clear:hover {
-  background: #dc2626;
+  filter: brightness(0.85);
 }
 
 .export-option.print {
-  background: #8b5cf6;
+  background: var(--g360-purple);
   color: white;
 }
 
 .export-option.print:hover {
-  background: #7c3aed;
-}
-
-/* Alert Modal */
-.alert-modal {
-  background: var(--g360-surface);
-  border: 2px solid var(--g360-warning);
-  border-radius: 16px;
-  padding: 24px;
-  text-align: center;
-  max-width: 400px;
-}
-
-.alert-icon {
-  font-size: 3rem;
-  margin-bottom: 12px;
-}
-
-.alert-modal h3 {
-  color: var(--g360-warning);
-  margin-bottom: 8px;
-}
-
-.alert-modal p {
-  color: var(--g360-muted);
-  margin-bottom: 20px;
-}
-
-.alert-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.btn-alert {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+  background: color-mix(in srgb, var(--g360-purple) 80%, black);
 }
 
 .btn-danger {
@@ -5621,10 +5525,6 @@ td.number, th.number {
 .btn-secondary {
   background: var(--g360-surface-2);
   color: var(--g360-text);
-}
-
-.btn-alert:hover {
-  transform: translateY(-2px);
 }
 
 /* Historial Modal */

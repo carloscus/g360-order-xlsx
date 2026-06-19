@@ -157,6 +157,7 @@ const renderDistribucionFecha = (cuotas, totalPedido) => {
 }
 
 const formatear = (n) => (n || 0).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const formatear4 = (n) => (n || 0).toLocaleString('es-PE', { minimumFractionDigits: 4, maximumFractionDigits: 4 })
 const redondear2 = (n) => Math.round((n || 0) * 100) / 100
 
 const renderTablaProductos = (productos, consolidado) => {
@@ -165,7 +166,7 @@ const renderTablaProductos = (productos, consolidado) => {
     const totalNeto = redondear2(p.valorVenta || 0)
     const precioUnitCIGV = redondear2((p.valorVenta || 0) / (p.cantidad || 1) * 1.18)
     const totalVenta = redondear2((p.valorVenta || 0) * 1.18)
-    return `<tr><td>${idx + 1}</td><td style="font-family:monospace;font-size:var(--text-xs)">${p.codigo}</td><td title="${(p.descripcion || '').replace(/"/g, '"')}">${(p.descripcion || '').slice(0, 60)}${(p.descripcion || '').length > 60 ? '...' : ''}</td><td style="text-align:right">${p.cantidad}</td><td>${p.unidadMedida || p.unBx ? 'UND' : ''}</td><td style="text-align:right">${formatear(p.precioUnitario || 0)}</td><td style="text-align:center">${redondear2(p.descuento1 || 0)}</td><td style="text-align:center">${redondear2(p.descuento2 || 0)}</td><td style="text-align:right;font-weight:var(--fw-bold)">${formatear(totalNeto)}</td><td style="text-align:right">${formatear(precioUnitCIGV)}</td><td style="text-align:right">${formatear(totalVenta)}</td><td style="text-align:center"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span></td></tr>`
+    return `<tr><td style="text-align:center;color:var(--g360-muted);font-size:var(--text-xs)">${idx + 1}</td><td style="text-align:right"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${p.cantidad}</td><td>${p.unidadMedida || p.unBx ? 'UND' : ''}</td><td style="font-family:monospace;font-size:var(--text-xs)">${p.codigo}</td><td title="${(p.descripcion || '').replace(/"/g, '"')}">${(p.descripcion || '').slice(0, 60)}${(p.descripcion || '').length > 60 ? '...' : ''}</td><td style="text-align:right">${formatear4(p.precioUnitario || 0)}</td><td style="text-align:center">${redondear2(p.descuento1 || 0)}</td><td style="text-align:center">${redondear2(p.descuento2 || 0)}</td><td style="text-align:right;font-weight:var(--fw-bold)">${formatear(totalNeto)}</td><td style="text-align:right">${formatear4(precioUnitCIGV)}</td><td style="text-align:right">${formatear(totalVenta)}</td></tr>`
   }).join('')
 
   const totalLinea = redondear2(productos.reduce((s, p) => s + (p.valorVenta || 0), 0))
@@ -179,27 +180,25 @@ const renderTablaProductos = (productos, consolidado) => {
     <table>
       <thead><tr>
         <th style="width:30px">#</th>
-        <th style="width:80px">SKU</th>
-        <th style="min-width:200px">Descripción</th>
         <th style="width:60px;text-align:right">Cant.</th>
         <th style="width:70px">U/M</th>
+        <th style="width:80px">SKU</th>
+        <th style="min-width:200px">Descripción</th>
         <th style="width:90px;text-align:right">P. Lista (S/.)</th>
         <th style="width:70px;text-align:center">Desc 01 (%)</th>
         <th style="width:70px;text-align:center">Desc 02 (%)</th>
         <th style="width:110px;text-align:right">Total Neto (S/.)</th>
         <th style="width:110px;text-align:right">P. Unit c/IGV (S/.)</th>
         <th style="width:110px;text-align:right">Total Venta (S/.)</th>
-        <th style="width:50px;text-align:center">Stock</th>
       </tr></thead>
       <tbody>${rows}</tbody>
       <tfoot>
         <tr>
-          <td colspan="3" class="tf-label">TOTALES (${productos.length} productos)</td>
-          <td style="text-align:right;font-weight:var(--fw-bold)">${totalCant}</td>
-          <td></td><td></td><td></td><td></td>
+          <td colspan="5" class="tf-label">TOTALES (${productos.length} productos)</td>
+          <td></td><td></td><td></td>
           <td class="tf-value" style="text-align:right">S/ ${formatear(totalLinea)}</td>
-          <td></td><td class="tf-value" style="text-align:right">S/ ${formatear(totalVentaFinal)}</td>
           <td></td>
+          <td class="tf-value" style="text-align:right">S/ ${formatear(totalVentaFinal)}</td>
         </tr>
       </tfoot>
     </table>

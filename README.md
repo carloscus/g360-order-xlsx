@@ -67,6 +67,7 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 ### Distribución y Programación de Letras
 - Programación de letras (promissory notes) con calendario interactivo
 - Selección de fechas de vencimiento por día
+- Rango máximo de 12 meses consecutivos con indicador visual
 - Cálculo automático de montos equitativos por letra
 - Balance en tiempo real (asignado vs saldo)
 - KPIs de valor neto, unidades por caja, masa logística y total a financiar

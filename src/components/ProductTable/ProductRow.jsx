@@ -18,19 +18,19 @@ export const ProductRow = (props) => {
 
   return (
     <tr class="fade-in-up">
-      <td class="row-num">{p.id}</td>
-      <td class="row-sku">{p.codigo}</td>
-      <td class="row-desc" title={p.descripcion}>{p.descripcion}</td>
-      <td class="row-cant">
-        {Math.round(p.cantidad || 0).toLocaleString('es-PE')}
+      <td class="row-num text-center">{p.id}</td>
+      <td class="row-cant number">
         <span class={stockClass()} title={estado()}></span>
+        {Math.round(p.cantidad || 0).toLocaleString('es-PE')}
       </td>
       <td>{p.unidadMedida || 'UN'}</td>
-      <td class="number">{formatNumero(p.precioUnitario || 0)}</td>
+      <td class="row-sku">{p.codigo}</td>
+      <td class="row-desc" title={p.descripcion}>{p.descripcion}</td>
+      <td class="number">{formatNumero(p.precioUnitario || 0, 4)}</td>
       <td class="number d1">{p.descuento1?.toFixed(2) || '0.00'}</td>
       <td class="number d2">{p.descuento2?.toFixed(2) || '0.00'}</td>
       <td class="number row-total">{formatNumero(valorVenta())}</td>
-      <td class="number">{formatNumero(precioUnitCIGV())}</td>
+      <td class="number">{formatNumero(precioUnitCIGV(), 4)}</td>
       <td class="number">{formatNumero(totalVenta())}</td>
     </tr>
   )

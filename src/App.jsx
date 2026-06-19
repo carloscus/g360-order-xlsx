@@ -18,8 +18,12 @@ function App(props) {
     document.title = `${appName} - ${client}`;
   });
 
+  createEffect(() => {
+    document.body.classList.toggle('light', !darkTheme())
+  })
+
   return (
-    <div class={`app skill-${getActiveSkill()} ${darkTheme() ? '' : 'light'}`}>
+    <div class={`app skill-${getActiveSkill()}`}>
       <Sidebar />
       
       <Navbar hayProductos={pedido.productos.length > 0} tareaPendiente={pedido.tareaPendiente} />
