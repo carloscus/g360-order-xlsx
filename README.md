@@ -2,7 +2,7 @@
 
 > Aplicación web desarrollada en SolidJS para el procesamiento inteligente de cotizaciones ERP/CRM. Forma parte de la familia de microherramientas G360 para apoyo CRM y gestión de datos en escritorio.
 
-[![npm version](https://img.shields.io/npm/v/g360-order-xlsx)](https://www.npmjs.com/package/g360-order-xlsx)
+[![version](https://img.shields.io/badge/version-5.0.0-blue)](https://github.com/carloscus/g360-order-xlsx)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---

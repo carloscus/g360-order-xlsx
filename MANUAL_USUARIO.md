@@ -1,7 +1,7 @@
 # Manual de Usuario — G360 Order XLSX
 
 > Sistema de procesamiento inteligente de cotizaciones ERP/CRM  
-> **Versión**: 1.1.0 | **Plataforma**: Web (SolidJS) | **Entorno**: Escritorio + Móvil
+> **Versión**: 5.0.0 | **Plataforma**: Web (SolidJS) | **Entorno**: Escritorio + Móvil
 
 ---
 
@@ -374,4 +374,4 @@ Completa todos los campos obligatorios marcados en el formulario antes de export
 
 ---
 
-*Documento generado para G360 Order XLSX v1.1.0 — Junio 2026*
+*Documento generado para G360 Order XLSX v5.0.0 — Junio 2026*
