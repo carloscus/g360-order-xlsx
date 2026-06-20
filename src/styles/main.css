@@ -8,12 +8,12 @@
   --g360-surface-2: #334155;
   --g360-border: #475569;
   --g360-text: #f1f5f9;
-  --g360-muted: #94a3b8;
+  --g360-muted: #cbd5e1;
   --g360-success: #22c55e;
   --g360-warning: #f59e0b;
-  --g360-error: #ef4444;
-  --g360-info: #3b82f6;
-  --g360-purple: #8b5cf6;
+  --g360-error: #f87171;
+  --g360-info: #60a5fa;
+  --g360-purple: #a78bfa;
   --g360-teal: #10b981;
 
   /* Tipografía Estandarizada */
@@ -39,20 +39,20 @@
 }
 
 .light {
-  --g360-accent: #00a86b;
-  --g360-accent-dark: #008f5b;
+  --g360-accent: #047857;
+  --g360-accent-dark: #065f46;
   --g360-bg: #f1f5f9;
   --g360-surface: #ffffff;
   --g360-surface-2: #e2e8f0;
   --g360-border: #94a3b8;
   --g360-text: #0f172a;
-  --g360-muted: #475569;
-  --g360-success: #16a34a;
-  --g360-warning: #d97706;
+  --g360-muted: #334155;
+  --g360-success: #15803d;
+  --g360-warning: #b45309;
   --g360-error: #dc2626;
   --g360-info: #2563eb;
   --g360-purple: #7c3aed;
-  --g360-teal: #059669;
+  --g360-teal: #047857;
 }
 
 * {
@@ -68,6 +68,11 @@ body {
   color: var(--g360-text);
   line-height: var(--g360-line-height-relaxed);
   min-height: 100vh;
+}
+
+/* === Global Smooth Theme Transition & Visual Polish === */
+body, .app, .app-with-sidebar, .sidebar, .navbar, .modal-content, .card, .panel, .product-table, th, td, tr, button, input, select, textarea, .history-item, .psf-res-card, .psf-cal-celda {
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app {
@@ -525,7 +530,7 @@ body {
 }
 
 .product-table tbody tr:hover {
-  background: rgba(0, 208, 132, 0.05);
+  background: color-mix(in srgb, var(--g360-accent) 8%, transparent);
 }
 
 .product-table tfoot td {
@@ -607,6 +612,12 @@ td.number, th.number {
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .btn-xlsx { background: var(--g360-success); color: white; }
@@ -812,6 +823,7 @@ td.number, th.number {
   overflow: hidden;
 }
 
+.dist-container .header {
   margin-bottom: 20px;
 }
 
@@ -3129,7 +3141,7 @@ td.number, th.number {
 }
 
 .product-table tbody tr:hover {
-  background: rgba(0, 208, 132, 0.05);
+  background: color-mix(in srgb, var(--g360-accent) 8%, transparent);
 }
 
 .product-table tbody tr:nth-child(even) {
@@ -3274,7 +3286,8 @@ td.number, th.number {
 
 .totals-cards-grid .total-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border-color: var(--g360-accent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .totals-cards-grid .total-card h4,
@@ -4435,7 +4448,7 @@ td.number, th.number {
 }
 
 .product-table tbody tr:hover {
-  background: rgba(0, 208, 132, 0.05);
+  background: color-mix(in srgb, var(--g360-accent) 8%, transparent);
 }
 
 .product-table tbody tr.row-error {

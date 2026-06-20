@@ -16,9 +16,19 @@ const DIAS_POR_MES = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 const DIAS_LAB = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
 
 const FERIADOS_PERU = {
-  '01-01': 'Año Nuevo', '05-01': 'Día del Trabajo', '06-29': 'San Pedro y San Pablo',
-  '07-28': 'Independencia', '07-29': 'Independencia', '08-30': 'Santa Rosa',
-  '10-08': 'Angamos', '11-01': 'Todos los Santos', '12-08': 'Inmaculada',
+  '01-01': 'Año Nuevo',
+  '05-01': 'Día del Trabajo',
+  '06-07': 'Batalla de Arica',
+  '06-29': 'San Pedro y San Pablo',
+  '07-23': 'Día de la Fuerza Aérea',
+  '07-28': 'Independencia',
+  '07-29': 'Independencia',
+  '08-06': 'Batalla de Junín',
+  '08-30': 'Santa Rosa',
+  '10-08': 'Angamos',
+  '11-01': 'Todos los Santos',
+  '12-08': 'Inmaculada',
+  '12-09': 'Batalla de Ayacucho',
   '12-25': 'Navidad'
 }
 

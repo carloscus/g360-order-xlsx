@@ -5,12 +5,16 @@
   {"date": "2026-04-19", "name": "Semana Santa", "type": "feriado"},
   {"date": "2026-04-20", "name": "Semana Santa", "type": "feriado"},
   {"date": "2026-05-01", "name": "Día del Trabajo", "type": "feriado"},
+  {"date": "2026-06-07", "name": "Batalla de Arica y Día de la Bandera", "type": "feriado"},
   {"date": "2026-06-29", "name": "San Pedro y San Pablo", "type": "feriado"},
   {"date": "2026-07-28", "name": "Fiestas Patrias", "type": "feriado"},
+  {"date": "2026-07-23", "name": "Día de la Fuerza Aérea del Perú", "type": "feriado"},
   {"date": "2026-07-29", "name": "Fiestas Patrias", "type": "feriado"},
+  {"date": "2026-08-06", "name": "Batalla de Junín", "type": "feriado"},
   {"date": "2026-08-30", "name": "Santa Rosa de Lima", "type": "feriado"},
   {"date": "2026-10-08", "name": "Batalla de Angamos", "type": "feriado"},
   {"date": "2026-11-01", "name": "Todos los Santos", "type": "feriado"},
   {"date": "2026-12-08", "name": "Inmaculada Concepción", "type": "feriado"},
+  {"date": "2026-12-09", "name": "Batalla de Ayacucho", "type": "feriado"},
   {"date": "2026-12-25", "name": "Navidad", "type": "feriado"}
 ]
