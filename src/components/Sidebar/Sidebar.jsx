@@ -125,8 +125,7 @@ export const Sidebar = () => {
         telefonoVendedor: pedido.telefonoVendedor,
         cuotas,
         consolidado,
-        productosCalculados: prodsEnriquecidos,
-        htmlDarkTheme: false
+        productosCalculados: prodsEnriquecidos
       })
 
       await guardarHTMLSnapshot({

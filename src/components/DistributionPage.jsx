@@ -38,7 +38,6 @@ const procesarProducto = (p, enriquecerProductoFn, calculos) => {
 
 export const DistributionPage = () => {
   const { darkTheme } = useTheme()
-  const isDark = () => darkTheme()
   const pedido = usePedido()
   const { enriquecerProducto } = useCatalogo()
   const { calculos } = getAgentesSkill()
@@ -177,14 +176,6 @@ export const DistributionPage = () => {
       return
     }
 
-    const respuesta = prompt('¿Qué estilo deseas para el HTML?\n1 = Presentación (oscuro)\n2 = Impresión (claro)\n(Presiona Enter para por defecto - Presentación)', '1')
-    let htmlDarkTheme = isDark()
-    if (respuesta === '2') {
-      htmlDarkTheme = false
-    } else if (respuesta !== '1') {
-      return
-    }
-
     const now = new Date()
     const fechaArchivo = now.toISOString().split('T')[0].replace(/-/g, '')
     const rucLimpio = ruc ? ruc.replace(/\D/g, '') : ''
@@ -204,8 +195,7 @@ export const DistributionPage = () => {
       telefonoVendedor: getTelefonoVendedor(),
       cuotas: cuotas(),
       consolidado: datosOriginales(),
-      productosCalculados: productosCalculados(),
-      htmlDarkTheme: htmlDarkTheme
+      productosCalculados: productosCalculados()
     })
 
     const blob = new Blob([htmlContent], { type: 'text/html' })

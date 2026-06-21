@@ -61,7 +61,7 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 ### Exportaciones
 - **XLSX**: Generación de archivos Excel con logo corporativo
 - **DOCX**: Cartas corporativas en Word con formato A4, logo y márgenes profesionales
-- **HTML**: Descarga de cronograma en HTML con tema oscuro/claro seleccionable
+- **HTML**: Descarga de cronograma en HTML autocontenido con toggle interactivo de tema claro/oscuro, header sticky y botón de impresión. El archivo generado es completamente independiente (no requiere servidor ni conexión)
 - **Impresión A4**: Botón de impresión directa desde la página de distribución con tema claro forzado via `@media print`
 
 ### Distribución y Programación de Letras
