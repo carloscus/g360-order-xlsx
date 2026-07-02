@@ -21,9 +21,11 @@ const procesarProducto = (p, enriquecerProductoFn, calculos) => {
   const valorVenta = calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)
   const precioVenta = calculos.basic.precioVenta(valorVenta)
   const estadoStock = calculos.stock.estado(p.stock, p.cantidad)
-  const cajas = calculos.logistica.cajas(p.cantidad, enrichedP.unBx || 1)
-  const cajasDetalle = calculos.logistica.cajasDetalle(p.cantidad, enrichedP.unBx || 1)
-  const pesoTotal = calculos.logistica.pesoTotal(p.cantidad, enrichedP.pesoKg || 0)
+  // Usar cantidadUnd para cajas/peso cuando el ERP la provee (viene en unidades individuales)
+  const cantLogistica = (p.cantidadUnd && p.cantidadUnd > 0) ? p.cantidadUnd : p.cantidad
+  const cajas = calculos.logistica.cajas(cantLogistica, enrichedP.unBx || 1)
+  const cajasDetalle = calculos.logistica.cajasDetalle(cantLogistica, enrichedP.unBx || 1)
+  const pesoTotal = calculos.logistica.pesoTotal(cantLogistica, enrichedP.pesoKg || 0)
   return { 
     ...p, 
     ...enrichedP, // Incluir datos enriquecidos del catálogo
@@ -130,6 +132,37 @@ export const DistributionPage = () => {
 
     const productosFiltrados = prods.filter(p => p.estadoStock !== 'Agotado')
     return calculos.pedido.consolidado(productosFiltrados)
+  })
+
+  // Agrupar productos por estadoLinea (NUEVA / TRADICIONAL)
+  // Usa la misma fuente que el butterfly (datosFiltrados) para mantener consistencia
+  const datosEstadoLinea = createMemo(() => {
+    const prods = filterStock() 
+      ? productosCalculados().filter(p => p.estadoStock !== 'Agotado')
+      : productosCalculados()
+    if (!prods.length) return []
+    
+    const grupos = {}
+    let totalValor = 0
+    
+    prods.forEach(p => {
+      // Solo agrupar productos que tengan estadoLinea definido (NUEVA o TRADICIONAL)
+      if (!p.estadoLinea) return
+      const estado = p.estadoLinea
+      if (!grupos[estado]) {
+        grupos[estado] = { estado, valorTotal: 0, cantidad: 0, cajas: 0, peso: 0 }
+      }
+      grupos[estado].valorTotal += p.valorVenta || 0
+      grupos[estado].cantidad++
+      grupos[estado].cajas += p.cajas || 0
+      grupos[estado].peso += p.pesoTotal || 0
+      totalValor += p.valorVenta || 0
+    })
+    
+    return Object.values(grupos).map(g => ({
+      ...g,
+      porcentaje: totalValor > 0 ? (g.valorTotal / totalValor) * 100 : 0
+    })).sort((a, b) => b.valorTotal - a.valorTotal)
   })
 
   const formatSoles = (n) => 'S/ ' + (n || 0).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -304,6 +337,11 @@ export const DistributionPage = () => {
                   <div class="dist-kpi-value">{formatSoles(datosFiltrados().totales.totalIGV)}</div>
                 </div>
               </div>
+              
+              <div style={{ "font-size": 'var(--text-xs)', color: 'var(--g360-info)', "margin-top": '4px', "display": 'flex', "align-items": 'center', gap: '6px' }}>
+                <span style={{ "font-size": '1rem' }}>ℹ️</span>
+                <span>Peso producto. Para envío real considerar +2% por empaque/caja.</span>
+              </div>
 
               <div class="dist-filter-row">
                 <button
@@ -429,6 +467,47 @@ export const DistributionPage = () => {
                   </span>
                 </div>
               </div>
+
+              {/* Sección de Estado de Línea (NUEVA / TRADICIONAL) */}
+              <Show when={datosEstadoLinea().length > 0}>
+                <div class="dist-categories-section" style={{ "margin-top": '8px' }}>
+                  <div class="dist-categories-inner">
+                    <span class="dist-category-label">🏷️ ESTADO LÍNEA:</span>
+                    
+                    <For each={datosEstadoLinea()}>
+                      {(d) => {
+                        const esNueva = d.estado === 'NUEVA'
+                        const color = esNueva ? '#059669' : '#f59e0b'
+                        return (
+                          <span class="dist-category-badge" style={{ 
+                            background: `${color}15`, 
+                            border: `1px solid ${color}40`,
+                            padding: '6px 14px'
+                          }}>
+                            <span class="dist-category-dot" style={{ background: color }}></span>
+                            <span class="dist-category-name" style={{ color }}>{d.estado}</span>
+                            <span class="dist-category-pct" style={{ color }}>{d.porcentaje.toFixed(2)}%</span>
+                            <span class="dist-category-sep">•</span>
+                            <span class="dist-category-monto">{formatSoles(d.valorTotal)}</span>
+                            <span class="dist-category-sep">•</span>
+                            <span class="dist-category-bx">{d.cantidad} prod.</span>
+                            <span class="dist-category-sep">•</span>
+                            <span class="dist-category-bx">{d.cajas} BX | {d.peso.toFixed(1)} kg</span>
+                          </span>
+                        )
+                      }}
+                    </For>
+                    
+                    <span class="dist-category-total">
+                      <span class="dist-category-name">TOTAL</span>
+                      <span class="dist-category-monto">{formatSoles(datosFiltrados().subtotal)}</span>
+                      <span class="dist-category-sep">|</span>
+                      <span class="dist-category-bx">{datosFiltrados().totalGeneral.cajas} BX</span>
+                      <span class="dist-category-bx">{datosFiltrados().totalGeneral.peso.toFixed(1)} kg</span>
+                    </span>
+                  </div>
+                </div>
+              </Show>
             </div>
 
             <div class="preview-table-section">

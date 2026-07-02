@@ -48,29 +48,25 @@ export const useCatalogo = () => {
   }
 
   // Enriquecer producto con datos del catálogo
+  // Los datos del ERP (campos extendidos) tienen prioridad sobre el catálogo local
   const enriquecerProducto = (productoRPE) => {
     const info = buscarProducto(productoRPE.codigo)
     
-    if (info) {
-      return {
-        ...productoRPE,
-        linea: info.linea,
-        categoria: info.categoria,
-        pesoKg: info.pesoKg,
-        unBx: info.unBx,
-        tieneDatosCatalogo: true
-      }
+    const lineaERP = (productoRPE.linea || '').trim();
+    const erpTieneLineaValida = lineaERP && lineaERP.length > 1 && lineaERP.length < 50 && !lineaERP.includes('\t');
+    
+    const pesoKgERP = productoRPE.pesoKg && productoRPE.pesoKg > 0 ? productoRPE.pesoKg : 0
+    
+    const base = {
+      ...productoRPE,
+      linea: erpTieneLineaValida ? lineaERP.toUpperCase() : (info?.linea || 'SIN LÍNEA'),
+      pesoKg: pesoKgERP > 0 ? pesoKgERP : (info?.pesoKg || 0),
+      unBx: info?.unBx || 1,
+      categoria: info?.categoria || 'SIN CATEGORÍA',
+      tieneDatosCatalogo: !!info
     }
     
-    // Si no está en catálogo, asignar SIN LÍNEA
-    return {
-      ...productoRPE,
-      linea: 'SIN LÍNEA',
-      categoria: 'SIN CATEGORÍA',
-      pesoKg: 0,
-      unBx: 1,
-      tieneDatosCatalogo: false
-    }
+    return base
   }
 
   // Obtener todas las líneas únicas

@@ -31,6 +31,10 @@ interface ProductoPedido {
   precioVenta?: number
   cajas?: number
   pesoTotal?: number
+  // Campos extendidos del ERP
+  cantidadUnd?: number
+  pesoKg?: number
+  estadoLinea?: 'NUEVA' | 'TRADICIONAL'
 }
 
 interface DatosPedido {
@@ -195,6 +199,13 @@ export const usePedido = () => {
     const { enriquecerProducto } = useCatalogo()
     const { calculos } = getAgentesSkill()
     
+    // Forzar re-parseo desde texto ERP guardado para migrar datos legacy
+    // (productos guardados antes de los campos extendidos: estadoLinea, cantidadUnd, pesoKg, linea limpia)
+    const erpTextoGuardado = loadErpTexto()
+    const productosIniciales = erpTextoGuardado 
+      ? ERPParserService.parseDataPegada(erpTextoGuardado)
+      : (savedData?.productos || [])
+    
     const [state, setState] = createStore<DatosPedido & { tareaPendiente: boolean }>({
       cliente: savedData?.cliente || '',
       ruc: savedData?.ruc || '',
@@ -204,7 +215,7 @@ export const usePedido = () => {
       vendedor: savedData?.vendedor || '',
       emailVendedor: savedData?.emailVendedor || '',
       telefonoVendedor: savedData?.telefonoVendedor || '',
-      productos: savedData?.productos || [],
+      productos: productosIniciales,
       tareaPendiente: getTareaPendiente()
     })
 
@@ -246,16 +257,20 @@ export const usePedido = () => {
 
     const productosCalculados = createMemo(() => {
       return state.productos.map(p => {
-        const enriched = enriquecerProducto(p)
-        const valorVenta = calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)
-        const precioVenta = calculos.basic.precioVenta(valorVenta)
-        const estadoStock = calculos.stock.estado(p.stock, p.cantidad)
-        const cajas = calculos.logistica.cajas(p.cantidad, enriched.unBx)
-        const pesoTotal = calculos.logistica.pesoTotal(p.cantidad, enriched.pesoKg)
+        // 1. Fusionar el producto con los datos del catálogo y ERP primero.
+        const productoCompleto = enriquecerProducto(p);
+        
+        // 2. Realizar todos los cálculos usando el producto ya enriquecido.
+        const valorVenta = calculos.basic.valorVenta(productoCompleto.cantidad, productoCompleto.precioUnitario, productoCompleto.descuento1, productoCompleto.descuento2);
+        const precioVenta = calculos.basic.precioVenta(valorVenta);
+        const estadoStock = calculos.stock.estado(productoCompleto.stock, productoCompleto.cantidad);
+        const cantLogistica = (productoCompleto.cantidadUnd > 0) ? productoCompleto.cantidadUnd : productoCompleto.cantidad;
+        const cajas = calculos.logistica.cajas(cantLogistica, productoCompleto.unBx);
+        const pesoTotal = calculos.logistica.pesoTotal(cantLogistica, productoCompleto.pesoKg);
 
+        // 3. Retornar el objeto final con todos los campos calculados.
         return {
-          ...p,
-          ...enriched,
+          ...productoCompleto,
           valorVenta,
           precioVenta,
           estadoStock,

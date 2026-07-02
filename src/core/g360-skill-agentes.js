@@ -259,9 +259,10 @@ export const calcularDistribucionPorLinea = (productos) => {
     lineas[linea].peso += p.pesoTotal || 0
     totalValor += p.valorVenta || 0
     
-    // Desglose logístico
-    lineas[linea].cajasCompletas += Math.floor((p.cantidad || 0) / (p.unBx || 1))
-    lineas[linea].unidadesSueltas += (p.cantidad || 0) % (p.unBx || 1)
+    // Desglose logístico - usar cantidadUnd para logística
+    const cantLog = (p.cantidadUnd > 0) ? p.cantidadUnd : (p.cantidad || 0)
+    lineas[linea].cajasCompletas += Math.floor(cantLog / (p.unBx || 1))
+    lineas[linea].unidadesSueltas += cantLog % (p.unBx || 1)
   })
   
   return Object.entries(lineas).map(([linea, data]) => ({
@@ -285,8 +286,8 @@ export const calcularMetricasPorCategoria = (productos) => {
     categorias[cat].monto += p.valorVenta || 0
     categorias[cat].cajas += p.cajas || 0
     categorias[cat].peso += p.pesoTotal || 0
-    categorias[cat].cajasCompletas += Math.floor((p.cantidad || 0) / (p.unBx || 1))
-    categorias[cat].unidadesSueltas += (p.cantidad || 0) % (p.unBx || 1)
+    categorias[cat].cajasCompletas += Math.floor(((p.cantidadUnd || p.cantidad) || 0) / (p.unBx || 1))
+    categorias[cat].unidadesSueltas += ((p.cantidadUnd || p.cantidad) || 0) % (p.unBx || 1)
   })
 
   return Object.values(categorias).map(c => ({

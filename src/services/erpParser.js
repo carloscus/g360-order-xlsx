@@ -36,7 +36,7 @@ export class ERPParserService {
     // Detectar formato por la línea de encabezado o por la primera línea de datos
     // Funciona incluso si Google Sheets elimina el tab vacío inicial al exportar
     let formatoDetectado = null // 'A'|'B'|null
-    for (const _raw of lineas) { // solo examinar hasta 3 primeras líneas
+    for (const _raw of lineas) { // examinar hasta encontrar indicios claros
       if (!_raw.trim()) continue
       const _esTSV = _raw.includes('\t')
       if (!_esTSV) break
@@ -50,7 +50,17 @@ export class ERPParserService {
       if (_e[0] === 'N°' || _e[0] === 'Nº' || _e[1] === 'SKU') {
         formatoDetectado = 'B'; break
       }
-      break // solo revisar primeras líneas
+      // Si parece Formato A por estructura (más de 25 columnas y centro en [1])
+      if (_p.length >= 30 && (_e[1].includes('CENTRO') || _e[1].includes('LOGISTICO'))) {
+        formatoDetectado = 'A'; break
+      }
+      // Si no es ninguno de los anteriores y tiene muchas columnas, asumir A si hay centro en [1]
+      if (_p.length >= 30 && _e[1].length > 3 && !_e[0].match(/^N[°º]?$/)) {
+        formatoDetectado = 'A'; break
+      }
+      // Solo revisar primeras 5 líneas (headers o primeras de datos)
+      const lineasReview = lineas.filter(l => l.includes('\t')).slice(0, 5)
+      if (lineasReview.indexOf(_raw) >= 2) break
     }
 
     for (const rawLinea of lineas) {
@@ -68,9 +78,15 @@ export class ERPParserService {
       const col1 = (partes[1] || '').trim().toUpperCase()
       if (col1 === 'SKU' || col0.includes('CARGAS') || col0.includes('MUESTRA')) continue
 
-      // ── Formato A: ERP VES (primera celda vacía) ──────────────────
-      const esFormatoA = (formatoDetectado === 'A') || (formatoDetectado === null && esTSV && col0 === '')
-
+      // ── Formato A: ERP VES ─────────────────────────────────────────
+      // Puede empezar con celda vacía (col0="") o directamente con el nombre del centro
+      // Si col1 contiene "CENTRO" o "ALMACEN" también es Formato A
+      const col1_raw = (partes[1] || '').trim().toUpperCase()
+      // Si el formato ya fue detectado, usarlo. Si no, inferir.
+      // La inferencia más robusta es por el número de columnas (>25 es formato A).
+      const esFormatoA = (formatoDetectado === 'A') ||
+        (formatoDetectado === null && esTSV && partes.length > 25);
+      
       // ── SKU ───────────────────────────────────────────────────────
       const idxSku = esFormatoA ? 2 : 1
       if (partes.length <= idxSku) continue
@@ -101,7 +117,9 @@ export class ERPParserService {
       // ── Índices ──────────────────────────────────────────────────
       // Formato A (TSV ERP VES: col0="" col1=Centro)
       // [0]="" [1]=Centro [2]=SKU [3]=Desc [4]=Cant [5]=Stock [6]=UM [7]=Precio [8]=Dto1% [9]=Dto2% [10]=ValorVenta
-      const A_Cant    = 4,  A_Stock  = 5,  A_Unidad = 6,  A_Precio = 7,  A_Dto1 = 8,  A_Dto2 = 9
+      // [11..27]=vacíos/ceros [28]=LíneaERP [29]=CantUnd [30]=PesoKg [31]=FlagLíneaNueva [32]=vacío
+      const A_Cant    = 4,  A_Stock  = 5,  A_Unidad = 6,  A_Precio = 7,  A_Dto1 = 8,  A_Dto2 = 9;
+      const A_LineaERP = 28, A_CantUnd = 29, A_PesoKg = 30, A_FlagNueva = 31;
       // Formato B normal (UM en [4])
       const B_Cant    = 3,  B_Precio = 5,  B_Unidad = 4,  B_Dto1 = 6,  B_Dto2 = 7
       // Formato B corrido sin UM  ([4]=Precio)
@@ -117,6 +135,11 @@ export class ERPParserService {
       const idxPrecio  = f() ? A_Precio  : (b()  ? B_Precio : BC_Precio)
       const idxDto1    = f() ? A_Dto1    : (b()  ? B_Dto1   : BC_Dto1)
       const idxDto2    = f() ? A_Dto2    : (b()  ? B_Dto2   : BC_Dto2)
+      // Columnas extendidas del ERP (solo Formato A)
+      const idxLineaERP = f() ? A_LineaERP : -1
+      const idxCantUnd = f() ? A_CantUnd  : -1
+      const idxPesoKg  = f() ? A_PesoKg   : -1
+      const idxFlagNva = f() ? A_FlagNueva : -1
 
       const cantidad    = this.parseNumber(partes[idxCant])
       const descripcion = (partes[idxSku + 1] || '').trim()
@@ -141,7 +164,11 @@ export class ERPParserService {
         descuento1:      this.parseNumber(partes[idxDto1]) || 0,
         descuento2:      this.parseNumber(partes[idxDto2]) || 0,
         montoDescuento:  0,
-        linea:           rawLinea,
+        linea:           esFormatoA ? (partes[idxLineaERP] || '').trim() : rawLinea,
+        // Campos extendidos ERP
+        cantidadUnd:     esFormatoA ? this.parseNumber(partes[idxCantUnd]) : this.parseNumber(partes[idxCant]),
+        pesoKg:          esFormatoA ? this.parseNumber(partes[idxPesoKg]) : 0,
+        estadoLinea:     esFormatoA ? ((partes[idxFlagNva] || '').trim() === '1' ? 'NUEVA' : 'TRADICIONAL') : undefined,
       })
     }
 

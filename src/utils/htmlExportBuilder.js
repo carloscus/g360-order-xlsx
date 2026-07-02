@@ -51,6 +51,7 @@ const renderKPIs = (consolidado) => {
     <div class="kpi-card"><div class="kpi-label">💰 Ventas Totales</div><div class="kpi-value">S/ ${formatear(sub)}</div></div>
     <div class="kpi-card"><div class="kpi-label">📦 Cajas Totales</div><div class="kpi-value">${cajas}</div></div>
     <div class="kpi-card"><div class="kpi-label">⚖️ Peso Total</div><div class="kpi-value">${peso} kg</div></div>
+    <div class="kpi-card info"><div class="kpi-label">ℹ️ Peso</div><div class="kpi-value" title="Incluye 2% adicional por empaque/caja">+2% emb.</div></div>
     <div class="kpi-card accent"><div class="kpi-label">💳 Total + IGV</div><div class="kpi-value">S/ ${formatear(total)}</div></div>
     <div class="kpi-card warning"><div class="kpi-label">✅ Total Disponible</div><div class="kpi-value">S/ ${formatear(disp)}</div></div>
     <div class="kpi-card"><div class="kpi-label">📊 Líneas</div><div class="kpi-value">${nLineas}</div></div>
@@ -124,6 +125,63 @@ const renderCategorias = (consolidado) => {
 </div>`
 }
 
+const renderEstadoLinea = (productos, subtotal) => {
+  const prods = productos || []
+  if (!prods.length) return ''
+
+  const grupos = {}
+  let totalValor = 0
+
+  prods.forEach(p => {
+    if (!p.estadoLinea) return
+    const estado = p.estadoLinea
+    if (!grupos[estado]) {
+      grupos[estado] = { estado, valorTotal: 0, cantidad: 0, cajas: 0, peso: 0 }
+    }
+    grupos[estado].valorTotal += p.valorVenta || 0
+    grupos[estado].cantidad++
+    grupos[estado].cajas += p.cajas || 0
+    grupos[estado].peso += p.pesoTotal || 0
+    totalValor += p.valorVenta || 0
+  })
+
+  if (Object.keys(grupos).length === 0) return ''
+
+  const datos = Object.values(grupos).map(g => ({
+    ...g,
+    porcentaje: totalValor > 0 ? (g.valorTotal / totalValor) * 100 : 0
+  })).sort((a, b) => b.valorTotal - a.valorTotal)
+
+  const badges = datos.map(d => {
+    const esNueva = d.estado === 'NUEVA'
+    const color = esNueva ? '#059669' : '#f59e0b'
+    return `<span class="cat-badge" style="background:${color}15;border:1px solid ${color}40">
+      <span class="cat-dot" style="background:${color}"></span>
+      <span class="cat-name" style="color:${color}">${d.estado}</span>
+      <span class="cat-pct" style="color:${color}">${redondear2(d.porcentaje)}%</span>
+      <span class="cat-separator">•</span>
+      <span class="cat-monto">S/ ${formatear(d.valorTotal)}</span>
+      <span class="cat-separator">•</span>
+      <span class="cat-bx">${d.cantidad} prod.</span>
+      <span class="cat-separator">•</span>
+      <span class="cat-bx">${redondear2(d.cajas)} BX | ${redondear2(d.peso)} kg</span>
+    </span>`
+  }).join('')
+
+  const sub = redondear2(subtotal || 0)
+  const cajas = redondear2(Object.values(grupos).reduce((s, g) => s + g.cajas, 0))
+  const peso = redondear2(Object.values(grupos).reduce((s, g) => s + g.peso, 0))
+
+  return `
+<div class="section" style="margin-top:20px">
+  <div class="categories-compact">
+    <span class="cat-label">🏷️ ESTADO LÍNEA:</span>
+    ${badges}
+    <span class="cat-total-badge">TOTAL: S/ ${formatear(sub)} | ${cajas} BX | ${peso} kg</span>
+  </div>
+</div>`
+}
+
 const agruparCuotasPorMes = (cuotas) => {
   const mapa = {}
   cuotas.forEach(c => {
@@ -166,7 +224,12 @@ const renderTablaProductos = (productos) => {
     const totalNeto = redondear2(p.valorVenta || 0)
     const precioUnitCIGV = redondear2((p.valorVenta || 0) / (p.cantidad || 1) * 1.18)
     const totalVenta = redondear2((p.valorVenta || 0) * 1.18)
-    return `<tr><td style="text-align:center;color:var(--g360-muted);font-size:var(--text-xs)">${idx + 1}</td><td style="text-align:right"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${p.cantidad}</td><td>${p.unidadMedida || p.unBx ? 'UND' : ''}</td><td style="font-family:monospace;font-size:var(--text-xs)">${p.codigo}</td><td title="${(p.descripcion || '').replace(/"/g, '&quot;')}">${(p.descripcion || '').slice(0, 60)}${(p.descripcion || '').length > 60 ? '...' : ''}</td><td style="text-align:right">${formatear4(p.precioUnitario || 0)}</td><td style="text-align:center">${redondear2(p.descuento1 || 0)}</td><td style="text-align:center">${redondear2(p.descuento2 || 0)}</td><td style="text-align:right;font-weight:var(--fw-bold)">${formatear(totalNeto)}</td><td style="text-align:right">${formatear4(precioUnitCIGV)}</td><td style="text-align:right">${formatear(totalVenta)}</td></tr>`
+    const badgeTipo = p.estadoLinea === 'NUEVA'
+      ? '<span class="badge badge-nueva">NUEVA</span>'
+      : p.estadoLinea === 'TRADICIONAL'
+        ? '<span class="badge badge-tradicional">TRAD</span>'
+        : ''
+    return `<tr><td style="text-align:center;color:var(--g360-muted);font-size:var(--text-xs)">${idx + 1}</td><td style="text-align:right"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${p.cantidad}</td><td>${p.unidadMedida || p.unBx ? 'UND' : ''}</td><td style="font-family:monospace;font-size:var(--text-xs)">${p.codigo}</td><td title="${(p.descripcion || '').replace(/"/g, '"')}">${(p.descripcion || '').slice(0, 60)}${(p.descripcion || '').length > 60 ? '...' : ''}</td><td style="text-align:right">${formatear4(p.precioUnitario || 0)}</td><td style="text-align:center">${redondear2(p.descuento1 || 0)}</td><td style="text-align:center">${redondear2(p.descuento2 || 0)}</td><td style="text-align:right;font-weight:var(--fw-bold)">${formatear(totalNeto)}</td><td style="text-align:right">${formatear4(precioUnitCIGV)}</td><td style="text-align:right">${formatear(totalVenta)}</td><td style="text-align:center">${badgeTipo}</td></tr>`
   }).join('')
 
   const totalLinea = redondear2(productos.reduce((s, p) => s + (p.valorVenta || 0), 0))
@@ -190,11 +253,12 @@ const renderTablaProductos = (productos) => {
         <th style="width:110px;text-align:right">Total Neto (S/.)</th>
         <th style="width:110px;text-align:right">P. Unit c/IGV (S/.)</th>
         <th style="width:110px;text-align:right">Total Venta (S/.)</th>
+        <th style="width:70px;text-align:center">Tipo</th>
       </tr></thead>
       <tbody>${rows}</tbody>
       <tfoot>
         <tr>
-          <td colspan="5" class="tf-label">TOTALES (${productos.length} productos)</td>
+          <td colspan="6" class="tf-label">TOTALES (${productos.length} productos)</td>
           <td></td><td></td><td></td>
           <td class="tf-value" style="text-align:right">S/ ${formatear(totalLinea)}</td>
           <td></td>
@@ -235,6 +299,7 @@ function buildContent(data) {
     ${renderKPIs(consolidado)}
     ${renderButterflyChart(consolidado)}
     ${renderCategorias(consolidado)}
+    ${renderEstadoLinea(productosCalculados, consolidado.subtotal)}
     ${renderDistribucionFecha(cuotas, totalPedido)}
     ${renderTablaProductos(productosCalculados)}
 
@@ -335,6 +400,8 @@ function getPrintStyles() {
   .header h1 { color:#000 !important; }
   .header-meta { color:#555 !important; }
   .badge { border:1px solid #000 !important; color:white !important; background:#000 !important; }
+  .badge-nueva { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; background:#059669 !important; color:white !important; border:1px solid #34d399 !important; }
+  .badge-tradicional { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; background:#f59e0b !important; color:#1e293b !important; border:1px solid #fbbf24 !important; }
   .section-title { color:#000 !important; border-bottom-color:#000 !important; }
   .client-item { border-color:#ccc !important; background:#f9f9f9 !important; }
   .client-item label { color:#555 !important; }
@@ -344,6 +411,8 @@ function getPrintStyles() {
   .kpi-value { color:#000 !important; }
   .kpi-card.accent { background:#e8f5e9 !important; border-color:#4caf50 !important; }
   .kpi-card.warning { background:#fff3e0 !important; border-color:#ff9800 !important; }
+  .kpi-card.info { background:#e3f2fd !important; border-color:#2196f3 !important; }
+  .kpi-card.info .kpi-value { color:#1565c0 !important; }
   .total-card { border-color:#ccc !important; background:#f9f9f9 !important; }
   .total-card.main { background:#e8f5e9 !important; border-color:#4caf50 !important; }
   .total-card h4 { color:#555 !important; }
@@ -479,6 +548,8 @@ export const buildCronogramaHTML = (data) => {
     .header h1 { font-size:calc(var(--text-3xl) + 2px); color:var(--g360-accent); margin-bottom:4px; }
     .header-meta { font-size:var(--text-sm); color:var(--g360-muted); display:flex; gap:16px; flex-wrap:wrap; margin-top:4px; }
     .badge { background:var(--g360-accent); color:white; padding:6px 16px; border-radius:20px; font-size:var(--text-sm); font-weight:var(--fw-bold); text-transform:uppercase; letter-spacing:1px; }
+    .badge-nueva { background:#059669; color:white; border:1px solid #34d399; }
+    .badge-tradicional { background:#f59e0b; color:#1e293b; border:1px solid #fbbf24; }
     .section { margin-bottom:28px; }
     .section-title { font-size:var(--text-lg); font-weight:var(--fw-bold); color:var(--g360-accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid var(--g360-border); }
     .client-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
@@ -492,6 +563,8 @@ export const buildCronogramaHTML = (data) => {
     .kpi-card.accent { background:linear-gradient(135deg,rgba(var(--accent-rgb),0.125),rgba(var(--accent-rgb),0.063)); border:2px solid var(--g360-accent); }
     .kpi-card.warning { background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(245,158,11,0.05)); border:2px solid var(--g360-warning); }
     .kpi-card.warning .kpi-value { color:var(--g360-warning); }
+    .kpi-card.info { background:linear-gradient(135deg,rgba(96,165,250,0.1),rgba(96,165,250,0.05)); border:1px solid var(--g360-info); }
+    .kpi-card.info .kpi-value { color:var(--g360-info); font-size:var(--text-xs); }
     .totals-row { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
     .total-card { background:var(--g360-surface); padding:18px; border-radius:12px; flex:1; min-width:160px; text-align:center; border:1px solid var(--g360-border); }
     .total-card.main { background:linear-gradient(135deg,rgba(var(--accent-rgb),0.125),rgba(var(--accent-rgb),0.063)); border:2px solid var(--g360-accent); }

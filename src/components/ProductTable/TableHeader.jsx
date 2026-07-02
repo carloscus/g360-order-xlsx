@@ -13,6 +13,7 @@ export const TableHeader = () => {
         <th class="text-right">Total Neto (S/.)</th>
         <th class="text-right">P. Unit c/IGV (S/.)</th>
         <th class="text-right">Total Venta (S/.)</th>
+        <th class="badge-cell-header">Tipo</th>
       </tr>
     </thead>
   )

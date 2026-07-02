@@ -16,6 +16,15 @@ export const ProductRow = (props) => {
   const precioUnitCIGV = () => p.cantidad ? (valorVenta() / p.cantidad) * IVA : 0
   const totalVenta = () => valorVenta() * IVA
 
+  const badgeLinea = () => {
+    if (p.estadoLinea === 'NUEVA') {
+      return <span class="badge badge-nueva" title="Línea Nueva">🆕 NUEVA</span>
+    } else if (p.estadoLinea === 'TRADICIONAL') {
+      return <span class="badge badge-tradicional" title="Línea Tradicional">TRAD</span>
+    }
+    return null
+  }
+
   return (
     <tr class="fade-in-up">
       <td class="row-num text-center">{p.id}</td>
@@ -32,6 +41,7 @@ export const ProductRow = (props) => {
       <td class="number row-total">{formatNumero(valorVenta())}</td>
       <td class="number">{formatNumero(precioUnitCIGV(), 4)}</td>
       <td class="number">{formatNumero(totalVenta())}</td>
+      <td class="badge-cell">{badgeLinea()}</td>
     </tr>
   )
 }
