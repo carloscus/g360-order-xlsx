@@ -479,15 +479,6 @@ td.number, th.number {
   text-align: right;
 }
 
-/* Checkbox */ {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.875rem;
-  color: var(--g360-muted);
-  cursor: pointer;
-}
-
 /* Modal */
 .modal-overlay {
   position: fixed;
