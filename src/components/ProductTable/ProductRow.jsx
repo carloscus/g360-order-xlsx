@@ -17,12 +17,10 @@ export const ProductRow = (props) => {
   const totalVenta = () => valorVenta() * IVA
 
   const badgeLinea = () => {
-    if (p.estadoLinea === 'NUEVA') {
-      return <span class="badge badge-nueva" title="Línea Nueva">🆕 NUEVA</span>
-    } else if (p.estadoLinea === 'TRADICIONAL') {
-      return <span class="badge badge-tradicional" title="Línea Tradicional">TRAD</span>
-    }
-    return null
+    if (!p.estadoLinea) return null
+    const estado = p.estadoLinea
+    const color = p.colorEstadoLinea || '#6b7280'
+    return <span class="badge" style={{ background: `${color}20`, color, border: `1px solid ${color}40`, padding: '2px 8px', "border-radius": '4px', "font-size": '11px', "font-weight": 600 }}>{estado}</span>
   }
 
   return (

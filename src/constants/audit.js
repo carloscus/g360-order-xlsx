@@ -210,17 +210,6 @@ export const auditarPedido = (productos) => {
   }
 }
 
-export const getHallazgosPorCategoria = (hallazgos) => {
-  const porCategoria = {}
-  hallazgos.forEach(h => {
-    if (!porCategoria[h.categoria]) {
-      porCategoria[h.categoria] = []
-    }
-    porCategoria[h.categoria].push(h)
-  })
-  return porCategoria
-}
-
 export const getHallazgosPorTipo = (hallazgos) => {
   return {
     errores: hallazgos.filter(h => h.tipo === TIPO_AUDITORIA.ERROR),

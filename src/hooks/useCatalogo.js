@@ -12,17 +12,39 @@
 import dataEstatica from '../data/catalogo_productos.json'
 import { createSignal, createMemo } from 'solid-js'
 
-// Crear mapa de productos del catálogo: sku -> datos completos
+const PALETA_ESTADOS = [
+  { raw: 'NACIONAL', color: '#059669' },
+  { raw: 'NUEVO', color: '#0891b2' },
+  { raw: 'IMPORTADO', color: '#d97706' },
+  { raw: 'TRADICIONAL', color: '#7c3aed' },
+  { raw: 'PENDIENTE', color: '#6b7280' },
+  { raw: '__RESERVA_1__', color: '#dc2626' },
+  { raw: '__RESERVA_2__', color: '#2563eb' },
+  { raw: '__RESERVA_3__', color: '#db2777' },
+]
+
+const MAPA_ESTADO_POR_RAW = new Map(PALETA_ESTADOS.map((e, i) => [e.raw, { posicion: i, color: e.color }]))
+
+const mapearEstadoLinea = (raw) => {
+  if (raw === undefined || raw === null) return null
+  const info = MAPA_ESTADO_POR_RAW.get(raw)
+  if (info) return { estado: raw, color: info.color }
+  return { estado: raw, color: '#6b7280' }
+}
+
 const crearMapaCatalogo = (productos) => {
   const mapa = new Map()
   if (productos && Array.isArray(productos)) {
     productos.forEach(p => {
       if (p.codigo || p.sku) {
+        const estadoLinea = mapearEstadoLinea(p.estado_linea)
         mapa.set(p.codigo || p.sku, {
           linea: p.linea || 'SIN LÍNEA',
           categoria: p.categoria || 'SIN CATEGORÍA',
           pesoKg: p.peso_kg || 0,
-          unBx: p.un_bx || p.u_por_caja || 1,
+          unBx: p.un_bx || 0,
+          estadoLinea: estadoLinea?.estado || null,
+          colorEstadoLinea: estadoLinea?.color || null,
         })
       }
     })
@@ -61,9 +83,11 @@ export const useCatalogo = () => {
       ...productoRPE,
       linea: erpTieneLineaValida ? lineaERP.toUpperCase() : (info?.linea || 'SIN LÍNEA'),
       pesoKg: pesoKgERP > 0 ? pesoKgERP : (info?.pesoKg || 0),
-      unBx: info?.unBx || 1,
+      unBx: info?.unBx || 0,
       categoria: info?.categoria || 'SIN CATEGORÍA',
-      tieneDatosCatalogo: !!info
+      tieneDatosCatalogo: !!info,
+      estadoLinea: info?.estadoLinea || 'PENDIENTE',
+      colorEstadoLinea: info?.colorEstadoLinea || null,
     }
     
     return base

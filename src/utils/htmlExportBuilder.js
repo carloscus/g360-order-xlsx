@@ -136,7 +136,7 @@ const renderEstadoLinea = (productos, subtotal) => {
     if (!p.estadoLinea) return
     const estado = p.estadoLinea
     if (!grupos[estado]) {
-      grupos[estado] = { estado, valorTotal: 0, cantidad: 0, cajas: 0, peso: 0 }
+      grupos[estado] = { estado, color: p.colorEstadoLinea || '#6b7280', valorTotal: 0, cantidad: 0, cajas: 0, peso: 0 }
     }
     grupos[estado].valorTotal += p.valorVenta || 0
     grupos[estado].cantidad++
@@ -152,9 +152,9 @@ const renderEstadoLinea = (productos, subtotal) => {
     porcentaje: totalValor > 0 ? (g.valorTotal / totalValor) * 100 : 0
   })).sort((a, b) => b.valorTotal - a.valorTotal)
 
+  const COLORES_ESTADO_FALLBACK = { 'NACIONAL': '#059669', 'NUEVO': '#0891b2', 'IMPORTADO': '#d97706', 'TRADICIONAL': '#7c3aed', '': '#6b7280' }
   const badges = datos.map(d => {
-    const esNueva = d.estado === 'NUEVA'
-    const color = esNueva ? '#059669' : '#f59e0b'
+    const color = d.color || COLORES_ESTADO_FALLBACK[d.estado] || '#6b7280'
     return `<span class="cat-badge" style="background:${color}15;border:1px solid ${color}40">
       <span class="cat-dot" style="background:${color}"></span>
       <span class="cat-name" style="color:${color}">${d.estado}</span>
@@ -224,11 +224,11 @@ const renderTablaProductos = (productos) => {
     const totalNeto = redondear2(p.valorVenta || 0)
     const precioUnitCIGV = redondear2((p.valorVenta || 0) / (p.cantidad || 1) * 1.18)
     const totalVenta = redondear2((p.valorVenta || 0) * 1.18)
-    const badgeTipo = p.estadoLinea === 'NUEVA'
-      ? '<span class="badge badge-nueva">NUEVA</span>'
-      : p.estadoLinea === 'TRADICIONAL'
-        ? '<span class="badge badge-tradicional">TRAD</span>'
-        : ''
+    const _estado = p.estadoLinea
+    const _colorEstado = p.colorEstadoLinea || COLORES_ESTADO_FALLBACK[_estado] || '#6b7280'
+    const badgeTipo = _estado
+      ? `<span class="badge" style="background:${_colorEstado}20;color:${_colorEstado};border:1px solid ${_colorEstado}40;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">${_estado}</span>`
+      : ''
     return `<tr><td style="text-align:center;color:var(--g360-muted);font-size:var(--text-xs)">${idx + 1}</td><td style="text-align:right"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${p.cantidad}</td><td>${p.unidadMedida || p.unBx ? 'UND' : ''}</td><td style="font-family:monospace;font-size:var(--text-xs)">${p.codigo}</td><td title="${(p.descripcion || '').replace(/"/g, '"')}">${(p.descripcion || '').slice(0, 60)}${(p.descripcion || '').length > 60 ? '...' : ''}</td><td style="text-align:right">${formatear4(p.precioUnitario || 0)}</td><td style="text-align:center">${redondear2(p.descuento1 || 0)}</td><td style="text-align:center">${redondear2(p.descuento2 || 0)}</td><td style="text-align:right;font-weight:var(--fw-bold)">${formatear(totalNeto)}</td><td style="text-align:right">${formatear4(precioUnitCIGV)}</td><td style="text-align:right">${formatear(totalVenta)}</td><td style="text-align:center">${badgeTipo}</td></tr>`
   }).join('')
 
@@ -306,30 +306,6 @@ function buildContent(data) {
     <div class="footer">
       G360 Order System — Generado el ${fechaStr} — ${cliente || 'CHOPERS DISTRIBUCIONES'}
     </div>`
-}
-
-/**
- * Obtiene las variables CSS del documento actual (light y dark)
- */
-function extractCSSVars() {
-  const root = document.documentElement
-  const computed = window.getComputedStyle(root)
-
-  const cssVars = [
-    '--g360-accent', '--g360-bg', '--g360-surface', '--g360-text',
-    '--g360-muted', '--g360-border', '--g360-success', '--g360-warning', '--g360-error'
-  ]
-
-  const lightVars = cssVars.map(v => {
-    const val = computed.getPropertyValue(v)
-    return val ? `  ${v}: ${val};` : ''
-  }).filter(Boolean).join('\n')
-
-  const darkVars = cssVars.map(v => {
-    return v
-  })
-
-  return { lightVars, darkVars }
 }
 
 /**

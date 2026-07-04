@@ -135,6 +135,24 @@ export const Sidebar = () => {
         html: htmlContent
       })
       setHtmlCount(c => c + 1)
+
+      const now = new Date()
+      const fechaArchivo = now.toISOString().split('T')[0].replace(/-/g, '')
+      const rucLimpio = (pedido.ruc || '').replace(/\D/g, '')
+      const docValido = (rucLimpio.length === 8 || rucLimpio.length === 11) ? rucLimpio : 'DOC'
+      const pedidoLimpio = (pedido.numeroPedido || 'PEDIDO').replace(/[^a-zA-Z0-9\-_]/g, '').trim().substring(0, 12)
+      const nombreArchivo = `cronograma_${docValido}_${pedidoLimpio}_${fechaArchivo}.html`
+
+      const blob = new Blob([htmlContent], { type: 'text/html' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = nombreArchivo
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
       return true
     } catch (e) {
       console.error('Error guardando HTML:', e)

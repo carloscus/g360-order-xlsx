@@ -72,7 +72,7 @@ const Pagination = (props) => {
 
 const LineaGroup = (props) => {
   const totalMonto = () => props.productos.reduce((sum, p) => sum + (p.valorVenta || 0), 0)
-  const totalCajas = () => props.productos.reduce((sum, p) => sum + Math.ceil(p.cantidad / (p.unBx || 1)), 0)
+  const totalCajas = () => props.productos.reduce((sum, p) => sum + (p.cajas || 0), 0)
   const totalPeso = () => props.productos.reduce((sum, p) => sum + (p.cantidad * (p.pesoKg || 0)), 0)
 
   return (

@@ -2,7 +2,7 @@
 
 > Aplicación web desarrollada en SolidJS para el procesamiento inteligente de cotizaciones ERP/CRM. Forma parte de la familia de microherramientas G360 para apoyo CRM y gestión de datos en escritorio.
 
-[![version](https://img.shields.io/badge/version-5.1.0-blue)](https://github.com/carloscus/g360-order-xlsx)
+[![version](https://img.shields.io/badge/version-5.2.0-blue)](https://github.com/carloscus/g360-order-xlsx)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -37,7 +37,7 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 - **Lenguajes**: TypeScript 5.4.0 + JavaScript (ESModules)
 - **Testing**: Vitest 1.2.0
 - **Styling**: CSS puro con variables CSS para temas
-- **Exportación**: XLSX 0.18.5 para generación de archivos Excel
+- **Exportación**: ExcelJS 4.4.0 para generación de archivos Excel
 - **Plugins**: Vite Plugin Solid 2.10.0
 
 ## Características Principales
@@ -74,16 +74,20 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 - **Nota informativa**: El peso incluye referencia +2% por empaque/caja (no计入 en el cálculo)
 
 ### Clasificación de Productos por Estado de Línea
-- Badge visual **NUEVA** (verde) para líneas clasificadas como nuevas
-- Badge visual **TRAD** (ámbar) para líneas tradicionales
-- Indicadores en tabla de productos y sección de distribución
-- Exportación HTML incluye columna de tipo y sección de resumen NUEVA/TRADICIONAL
+- El campo `estado_linea` se obtiene **exclusivamente del catálogo JSON** (fuente de verdad por SKU)
+- Los valores del ERP (flag `1` línea nueva) son ignorados por no estar actualizados
+- Productos sin registro en catálogo o con `estado_linea` vacío se muestran como `PENDIENTE`
+- Mapa de colores por posición fija: NACIONAL (`#059669`), NUEVO (`#0891b2`), IMPORTADO (`#d97706`), TRADICIONAL (`#7c3aed`), PENDIENTE (`#6b7280`)
+- Badge visual por fila en tabla de productos y exportación HTML
+- Sección de agrupación en página de distribución con indicadores de %, monto, cajas/unidades sueltas y peso
 
 ### Distribución Visual (Butterfly Chart)
 - Gráfico simétrico valor vs volumen por línea de producto
-- Cálculo de cajas: usa `cantidadUnd` del ERP + `un_bx` del catálogo
+- Cálculo de cajas centralizado vía `desgloseCajas()`: usa `cantidadUnd` del ERP + `un_bx` del catálogo
+- Productos sin `un_bx` en catálogo se contabilizan como unidades sueltas (0 cajas)
+- Evaluación de stock: compara stock ERP vs `cantidadUnd` (col 29), no vs cantidad pedida (col 4)
 - Agrupamiento por línea, categoría y estado de línea
-- Indicadores de porcentaje y cajas/unidades sueltas
+- Totales unificados con formato `cajas/sueltas BX`
 
 ### UI/UX Avanzada
 - Tema oscuro/claro automático con persistencia en localStorage
@@ -93,7 +97,6 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 - Branding G360 integrado
 
 ### Integraciones
-- Submódulo `g360-signature` para branding consistente
 - Soporte para catálogos externos vía hooks
 - Integración con servicios ERP
 

@@ -142,19 +142,11 @@ const getDistFlag = (): boolean => {
   }
 }
 
-export const setDistFlag = (valor: boolean) => {
+const setDistFlag = (valor: boolean) => {
   try {
     localStorage.setItem(DIST_FLAG_KEY, valor ? '1' : '0')
   } catch (e) {
     console.error('Error guardando dist flag:', e)
-  }
-}
-
-const saveDistHistorial = (historial: Distribucion[]) => {
-  try {
-    localStorage.setItem(DIST_HISTORIAL_KEY, JSON.stringify(historial))
-  } catch (e) {
-    console.error('Error guardando historial:', e)
   }
 }
 
@@ -167,7 +159,7 @@ const loadDistHistorial = (): Distribucion[] => {
   }
 }
 
-export const saveErpTexto = (texto: string) => {
+const saveErpTexto = (texto: string) => {
   try {
     if (texto) {
       localStorage.setItem(ERP_TEXTO_KEY, texto)
@@ -263,9 +255,9 @@ export const usePedido = () => {
         // 2. Realizar todos los cálculos usando el producto ya enriquecido.
         const valorVenta = calculos.basic.valorVenta(productoCompleto.cantidad, productoCompleto.precioUnitario, productoCompleto.descuento1, productoCompleto.descuento2);
         const precioVenta = calculos.basic.precioVenta(valorVenta);
-        const estadoStock = calculos.stock.estado(productoCompleto.stock, productoCompleto.cantidad);
         const cantLogistica = (productoCompleto.cantidadUnd > 0) ? productoCompleto.cantidadUnd : productoCompleto.cantidad;
-        const cajas = calculos.logistica.cajas(cantLogistica, productoCompleto.unBx);
+        const estadoStock = calculos.stock.estado(productoCompleto.stock, cantLogistica);
+        const desglose = calculos.logistica.desglose(cantLogistica, productoCompleto.unBx);
         const pesoTotal = calculos.logistica.pesoTotal(cantLogistica, productoCompleto.pesoKg);
 
         // 3. Retornar el objeto final con todos los campos calculados.
@@ -274,7 +266,9 @@ export const usePedido = () => {
           valorVenta,
           precioVenta,
           estadoStock,
-          cajas,
+          cajas: desglose.cajas,
+          cajasCompletas: desglose.cajasCompletas,
+          unidadesSueltas: desglose.unidadesSueltas,
           pesoTotal
         }
       })

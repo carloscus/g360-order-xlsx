@@ -36,50 +36,60 @@ export const ChartModal = (props) => {
    */
   const stockPorLinea = createMemo(() => {
     const lineas = {}
+    const estados = {}
+    let totalVentaPedido = 0
 
-    // Recorremos productos y agrupamos
     productos().forEach(p => {
       const linea = (p.linea || 'OTRAS').toUpperCase()
+      const estadoRaw = p.estadoLinea
+      const estadoColor = p.colorEstadoLinea || '#6b7280'
       
-      // Inicializar linea si no existe
       if (!lineas[linea]) {
         lineas[linea] = { valorConStock: 0, valorSinStock: 0 }
       }
 
-      // Regla de disponibilidad: stock >= cantidad solicitada
-      const tieneStock = calculos.stock.estado(p.stock, p.cantidad) === 'OK' // Usar el skill agent para consistencia
+      const cantLogistica = (p.cantidadUnd && p.cantidadUnd > 0) ? p.cantidadUnd : p.cantidad
+      const tieneStock = calculos.stock.estado(p.stock, cantLogistica) === 'OK'
       const valor = Number(p.valorVenta) || 0
 
-      // Clasificamos el valor segun disponibilidad
       if (tieneStock) {
         lineas[linea].valorConStock += valor
       } else {
         lineas[linea].valorSinStock += valor
       }
+
+      if (estadoRaw) {
+        if (!estados[estadoRaw]) {
+          estados[estadoRaw] = { valor: 0, color: estadoColor }
+        }
+        estados[estadoRaw].valor += valor
+      }
+
+      totalVentaPedido += valor
     })
 
-    // Total general del pedido
-    const totalVentaPedido = Object.values(lineas).reduce((sum, l) => sum + l.valorConStock + l.valorSinStock, 0)
-
-    // Transformamos y calculamos porcentajes
-    return Object.entries(lineas).map(([linea, data], index) => {
+    const lineasArr = Object.entries(lineas).map(([linea, data], index) => {
       const valorTotalLinea = data.valorConStock + data.valorSinStock
-      
       return {
         linea,
         color: CHART_COLORS[index % CHART_COLORS.length],
         valorConStock: data.valorConStock,
         valorSinStock: data.valorSinStock,
         valorTotal: valorTotalLinea,
-        // Porcentaje que representa esta linea sobre el TOTAL del pedido
         porcentajeDelTotal: totalVentaPedido > 0 ? (valorTotalLinea / totalVentaPedido) * 100 : 0,
-        // Porcentaje de esta linea que SI tiene stock
         pctStockDeLinea: valorTotalLinea > 0 ? (data.valorConStock / valorTotalLinea) * 100 : 0,
-        // Porcentaje de esta linea que NO tiene stock
         pctSinStockDeLinea: valorTotalLinea > 0 ? (data.valorSinStock / valorTotalLinea) * 100 : 0
       }
-      // Ordenamos de mayor a menor monto
     }).sort((a, b) => b.valorTotal - a.valorTotal)
+
+    const estadosArr = Object.entries(estados).map(([estado, data]) => ({
+      estado,
+      color: data.color,
+      valor: data.valor,
+      porcentaje: totalVentaPedido > 0 ? (data.valor / totalVentaPedido) * 100 : 0
+    })).sort((a, b) => b.valor - a.valor)
+
+    return { lineas: lineasArr, estados: estadosArr, total: totalVentaPedido }
   })
 
   // Estado para arrastre del modal
@@ -127,7 +137,7 @@ export const ChartModal = (props) => {
           </div>
           <div class='chart-modal-content'>
             <div class='chart-bars-list'>
-              <For each={stockPorLinea()}>
+              <For each={stockPorLinea().lineas}>
                 {(d) => (
                   <div class='minimal-row'>
                     <div class='minimal-header'>
@@ -165,16 +175,41 @@ export const ChartModal = (props) => {
             <div class='minimal-footer'>
               <div class='minimal-footer-row'>
                 <span>VALOR ATENDIBLE (CON STOCK):</span>
-                <span class='text-emerald-400'>S/ {formatNumero(stockPorLinea().reduce((sum, d) => sum + d.valorConStock, 0))}</span>
+                <span class='text-emerald-400'>S/ {formatNumero(stockPorLinea().lineas.reduce((sum, d) => sum + d.valorConStock, 0))}</span>
               </div>
               <div class='minimal-footer-row'>
                 <span>VALOR PENDIENTE (SIN STOCK):</span>
-                <span class='text-amber-400'>S/ {formatNumero(stockPorLinea().reduce((sum, d) => sum + d.valorSinStock, 0))}</span>
+                <span class='text-amber-400'>S/ {formatNumero(stockPorLinea().lineas.reduce((sum, d) => sum + d.valorSinStock, 0))}</span>
               </div>
               <div class='minimal-footer-row total'>
                 <span>TOTAL A ATENDER:</span>
-                <span>S/ {formatNumero(stockPorLinea().reduce((sum, d) => sum + d.valorTotal, 0))}</span>
+                <span>S/ {formatNumero(stockPorLinea().total)}</span>
               </div>
+
+              <Show when={stockPorLinea().estados.length > 0}>
+                <div style={{ "margin-top": '12px', "padding-top": '10px', "border-top": '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ display: 'flex', "flex-wrap": 'wrap', gap: '8px' }}>
+                    <span style={{ "font-size": '11px', color: 'var(--g360-muted)', "font-weight": 600, "margin-right": '4px', "padding-top": '4px' }}>🏷️ ESTADO LÍNEA:</span>
+                    <For each={stockPorLinea().estados}>
+                      {(e) => (
+                        <span class="dist-category-badge" style={{
+                          background: `${e.color}15`,
+                          border: `1px solid ${e.color}40`,
+                          padding: '4px 10px',
+                          "font-size": '11px'
+                        }}>
+                          <span class="dist-category-dot" style={{ background: e.color }}></span>
+                          <span class="dist-category-name" style={{ color: e.color }}>{e.estado}</span>
+                          <span class="dist-category-sep">•</span>
+                          <span class="dist-category-monto" style={{ color: e.color }}>{e.porcentaje.toFixed(1)}%</span>
+                          <span class="dist-category-sep">•</span>
+                          <span class="dist-category-monto">S/ {formatNumero(e.valor)}</span>
+                        </span>
+                      )}
+                    </For>
+                  </div>
+                </div>
+              </Show>
             </div>
             </div>
 

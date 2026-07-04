@@ -144,14 +144,6 @@ export class ERPParserService {
       const cantidad    = this.parseNumber(partes[idxCant])
       const descripcion = (partes[idxSku + 1] || '').trim()
 
-      // if (id <= 6) {
-      //   console.log(`[PARSE L${id}] fmtA=${esFormatoA} offB=${offsetB}`,
-      //     { cant: cantidad, stock: this.parseNumber(partes[idxStock]),
-      //       precio: this.parseNumber(partes[idxPrecio]), um: (partes[idxUnidad]||'').slice(0,20),
-      //       dto1: this.parseNumber(partes[idxDto1]), dto2: this.parseNumber(partes[idxDto2]),
-      //       line0: JSON.stringify(partes[0]), line1: JSON.stringify(partes[1]) })
-      // }
-
       productos.push({
         id:              id++,
         codigo:          codigo,
@@ -168,7 +160,7 @@ export class ERPParserService {
         // Campos extendidos ERP
         cantidadUnd:     esFormatoA ? this.parseNumber(partes[idxCantUnd]) : this.parseNumber(partes[idxCant]),
         pesoKg:          esFormatoA ? this.parseNumber(partes[idxPesoKg]) : 0,
-        estadoLinea:     esFormatoA ? ((partes[idxFlagNva] || '').trim() === '1' ? 'NUEVA' : 'TRADICIONAL') : undefined,
+        estadoLinea:     undefined,
       })
     }
 

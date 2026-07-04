@@ -12,28 +12,27 @@ import initialData from '../data/initialData.json'
 import { CHART_COLORS } from '../constants/sharedConstants'
 import { generarXLSX } from '../utils/xlsxGenerator'
 import { buildCronogramaHTML } from '../utils/htmlExportBuilder'
-import { exportarCartaCorporativa } from '../utils/exportCarta'
+
 import { STORAGE_KEYS } from '../constants/storage'
 
 // Helper para enriquecer y calcular un producto usando los agentes de skill
 const procesarProducto = (p, enriquecerProductoFn, calculos) => {
-  const enrichedP = enriquecerProductoFn(p) // Obtener datos de catálogo
+  const enrichedP = enriquecerProductoFn(p)
   const valorVenta = calculos.basic.valorVenta(p.cantidad, p.precioUnitario, p.descuento1, p.descuento2)
   const precioVenta = calculos.basic.precioVenta(valorVenta)
-  const estadoStock = calculos.stock.estado(p.stock, p.cantidad)
-  // Usar cantidadUnd para cajas/peso cuando el ERP la provee (viene en unidades individuales)
   const cantLogistica = (p.cantidadUnd && p.cantidadUnd > 0) ? p.cantidadUnd : p.cantidad
-  const cajas = calculos.logistica.cajas(cantLogistica, enrichedP.unBx || 1)
-  const cajasDetalle = calculos.logistica.cajasDetalle(cantLogistica, enrichedP.unBx || 1)
+  const estadoStock = calculos.stock.estado(p.stock, cantLogistica)
+  const desglose = calculos.logistica.desglose(cantLogistica, enrichedP.unBx)
   const pesoTotal = calculos.logistica.pesoTotal(cantLogistica, enrichedP.pesoKg || 0)
   return { 
     ...p, 
-    ...enrichedP, // Incluir datos enriquecidos del catálogo
+    ...enrichedP,
     valorVenta,
     precioVenta,
     estadoStock, 
-    cajas, // Mantener numérico para sumas
-    cajasDetalle, // Nuevo campo visual "4/4"
+    cajas: desglose.cajas,
+    cajasCompletas: desglose.cajasCompletas,
+    unidadesSueltas: desglose.unidadesSueltas,
     pesoTotal
   }
 }
@@ -63,35 +62,12 @@ export const DistributionPage = () => {
     }
   })
 
-  const [showExportModal, setShowExportModal] = createSignal(false)
-  const [exportPos, setExportPos] = createSignal({ x: window.innerWidth - 420, y: 120 })
-  const [isDraggingExport, setIsDraggingExport] = createSignal(false)
-  const [dragStartExport, setDragStartExport] = createSignal({ x: 0, y: 0 })
-
-  // Consolidación de onMount: Carga de datos y Event Listeners
+  // Consolidación de onMount
   onMount(() => {
-    document.addEventListener('mousemove', handleExportMouseMove)
-    document.addEventListener('mouseup', handleExportMouseUp)
     setLoading(false)
   })
 
-  // Handlers para arrastre del modal flotante
-  const handleExportMouseDown = (e) => {
-    setIsDraggingExport(true)
-    setDragStartExport({ x: e.clientX - exportPos().x, y: e.clientY - exportPos().y })
-  }
-
-  const handleExportMouseMove = (e) => {
-    if (isDraggingExport()) {
-      setExportPos({ x: e.clientX - dragStartExport().x, y: e.clientY - dragStartExport().y })
-    }
-  }
-
-  const handleExportMouseUp = () => setIsDraggingExport(false)
-
   onCleanup(() => {
-    document.removeEventListener('mousemove', handleExportMouseMove)
-    document.removeEventListener('mouseup', handleExportMouseUp)
   })
 
   const getCliente = () => pedido.cliente || ''
@@ -119,7 +95,7 @@ export const DistributionPage = () => {
   const datosOriginales = createMemo(() => {
     const prods = productosCalculados()
     if (prods.length === 0) {
-      return { subtotal: 0, totales: {}, datosLinea: [], datosCategoria: [], totalGeneral: { cajas: 0, peso: 0 } }
+      return { subtotal: 0, totales: {}, datosLinea: [], datosCategoria: [], totalGeneral: { cajas: 0, unidadesSueltas: 0, peso: 0 } }
     }
     return calculos.pedido.consolidado(prods)
   })
@@ -146,15 +122,15 @@ export const DistributionPage = () => {
     let totalValor = 0
     
     prods.forEach(p => {
-      // Solo agrupar productos que tengan estadoLinea definido (NUEVA o TRADICIONAL)
       if (!p.estadoLinea) return
       const estado = p.estadoLinea
       if (!grupos[estado]) {
-        grupos[estado] = { estado, valorTotal: 0, cantidad: 0, cajas: 0, peso: 0 }
+        grupos[estado] = { estado, color: p.colorEstadoLinea || '#6b7280', valorTotal: 0, cantidad: 0, cajas: 0, unidadesSueltas: 0, peso: 0 }
       }
       grupos[estado].valorTotal += p.valorVenta || 0
       grupos[estado].cantidad++
       grupos[estado].cajas += p.cajas || 0
+      grupos[estado].unidadesSueltas += p.unidadesSueltas || 0
       grupos[estado].peso += p.pesoTotal || 0
       totalValor += p.valorVenta || 0
     })
@@ -324,10 +300,10 @@ export const DistributionPage = () => {
                   <div class="dist-kpi-label">💰 Valor Neto Est.</div>
                   <div class="dist-kpi-value">{formatSoles(datosFiltrados().subtotal)}</div>
                 </div>
-                <div class="dist-kpi-card blue">
-                  <div class="dist-kpi-label">📦 Unidades Caja</div>
-                  <div class="dist-kpi-value">{datosFiltrados().totalGeneral.cajas}</div>
-                </div>
+<div class="dist-kpi-card blue">
+                   <div class="dist-kpi-label">📦 Cajas / UND</div>
+                   <div class="dist-kpi-value">{datosFiltrados().totalGeneral.cajas}/{datosFiltrados().totalGeneral.unidadesSueltas} BX</div>
+                 </div>
                 <div class="dist-kpi-card amber">
                   <div class="dist-kpi-label">⚖️ Masa Logística</div>
                   <div class="dist-kpi-value">{(datosFiltrados().totalGeneral.peso || 0).toFixed(0)} kg</div>
@@ -427,7 +403,7 @@ export const DistributionPage = () => {
                       <span class="dist-butterfly-total-value" style={{ color: 'var(--g360-accent)', "font-size": 'var(--g360-font-sm)' }}>TOTAL</span>
                     </div>
                     <div class="dist-butterfly-total-right">
-                      <div class="dist-butterfly-total-value">{datosFiltrados().totalGeneral.cajas} BX / {datosFiltrados().totalGeneral.peso.toFixed(1)} kg</div>
+                      <div class="dist-butterfly-total-value">{datosFiltrados().totalGeneral.cajas}/{datosFiltrados().totalGeneral.unidadesSueltas} BX | {datosFiltrados().totalGeneral.peso.toFixed(1)} kg</div>
                       <div class="dist-butterfly-total-label">Total Volumen (100%)</div>
                     </div>
                   </div>
@@ -462,7 +438,7 @@ export const DistributionPage = () => {
                     <span class="dist-category-name">TOTAL</span>
                     <span class="dist-category-monto">{formatSoles(datosFiltrados().subtotal)}</span>
                     <span class="dist-category-sep">|</span>
-                    <span class="dist-category-bx">{datosFiltrados().totalGeneral.cajas} BX</span>
+                    <span class="dist-category-bx">{datosFiltrados().totalGeneral.cajas}/{datosFiltrados().totalGeneral.unidadesSueltas} BX</span>
                     <span class="dist-category-bx">{datosFiltrados().totalGeneral.peso.toFixed(1)} kg</span>
                   </span>
                 </div>
@@ -476,8 +452,7 @@ export const DistributionPage = () => {
                     
                     <For each={datosEstadoLinea()}>
                       {(d) => {
-                        const esNueva = d.estado === 'NUEVA'
-                        const color = esNueva ? '#059669' : '#f59e0b'
+                        const color = d.color || '#6b7280'
                         return (
                           <span class="dist-category-badge" style={{ 
                             background: `${color}15`, 
@@ -492,7 +467,7 @@ export const DistributionPage = () => {
                             <span class="dist-category-sep">•</span>
                             <span class="dist-category-bx">{d.cantidad} prod.</span>
                             <span class="dist-category-sep">•</span>
-                            <span class="dist-category-bx">{d.cajas} BX | {d.peso.toFixed(1)} kg</span>
+                            <span class="dist-category-bx">{d.cajas}/{d.unidadesSueltas} BX | {d.peso.toFixed(1)} kg</span>
                           </span>
                         )
                       }}
@@ -502,7 +477,7 @@ export const DistributionPage = () => {
                       <span class="dist-category-name">TOTAL</span>
                       <span class="dist-category-monto">{formatSoles(datosFiltrados().subtotal)}</span>
                       <span class="dist-category-sep">|</span>
-                      <span class="dist-category-bx">{datosFiltrados().totalGeneral.cajas} BX</span>
+<span class="dist-category-bx">{datosFiltrados().totalGeneral.cajas}/{datosFiltrados().totalGeneral.unidadesSueltas} BX</span>
                       <span class="dist-category-bx">{datosFiltrados().totalGeneral.peso.toFixed(1)} kg</span>
                     </span>
                   </div>
@@ -519,97 +494,7 @@ export const DistributionPage = () => {
           </div>
         </div>
 
-        {/* Floating Export Modal */}
-        <Show when={showExportModal()}>
-          <div
-            class="export-modal-floating"
-            style={{
-              left: exportPos().x + 'px',
-              top: exportPos().y + 'px',
-              cursor: isDraggingExport() ? 'grabbing' : 'grab'
-            }}
-            onMouseDown={handleExportMouseDown}
-          >
-            <div class="export-modal-header">
-              <span>📤 Exportar</span>
-              <button onClick={() => setShowExportModal(false)} class="close-btn-small">×</button>
-            </div>
-            <div class="export-options-compact">
-              <button
-                onClick={async () => {
-                  if (!getNumeroPedido()) { alert('⚠️ XLSX requiere: N° Pedido'); return }
-                  if (!getCliente()) { alert('⚠️ XLSX requiere: Cliente'); return }
-                  await generarXLSX({
-                    cliente: getCliente(),
-                    documento: getRuc(),
-                    numeroPedido: getNumeroPedido(),
-                    sucursal: pedido.sucursal,
-                    vendedor: getVendedor(),
-                    emailVendedor: getEmailVendedor(),
-                    telefonoVendedor: getTelefonoVendedor(),
-                    productos: productosCalculados(),
-                    tipo: 'cotizacion'
-                  })
-                  setShowExportModal(false)
-                }}
-                class="export-option xlsx"
-              >
-                📊 XLSX
-              </button>
-              <button
-                onClick={() => {
-                  const faltantes = []
-                  if (!getCliente()) faltantes.push('Cliente')
-                  if (!getRuc()) faltantes.push('Documento (RUC/DNI)')
-                  if (!getNumeroPedido()) faltantes.push('N° Pedido')
-                  if (!getVendedor()) faltantes.push('Vendedor')
-                  if (!getEmailVendedor()) faltantes.push('Email')
-                  if (!getTelefonoVendedor()) faltantes.push('Teléfono')
-                  if (faltantes.length) { alert(`⚠️ Word / Carta requiere:\n• ${faltantes.join('\n• ')}`); return }
-                  exportarCartaCorporativa({
-                    cliente: getCliente(),
-                    documento: getRuc(),
-                    numeroPedido: getNumeroPedido(),
-                    vendedor: getVendedor(),
-                    emailVendedor: getEmailVendedor(),
-                    telefonoVendedor: getTelefonoVendedor(),
-                    productos: productosCalculados(),
-                    totales: datosOriginales().totales
-                  })
-                  setShowExportModal(false)
-                }}
-                class="export-option word"
-              >
-                📄 Word
-              </button>
-              <button
-                onClick={() => {
-                  handleDownloadHTML()
-                  setShowExportModal(false)
-                }}
-                class="export-option html"
-              >
-                🌐 HTML
-              </button>
-              <button
-                onClick={() => {
-                  if (window.confirm('🗑️ ¿Limpiar todo el pedido actual?\nSe perderá el calendario, distribución y los datos del cliente.')) {
-                    pedido.resetearPedido()
-                    setTareaPendiente(false)
-                    localStorage.removeItem(STORAGE_KEYS.CUOTAS_PERSIST)
-                    localStorage.removeItem(STORAGE_KEYS.DIST_FLAG)
-                    localStorage.removeItem(STORAGE_KEYS.DIST_HISTORIAL)
-                    localStorage.removeItem(STORAGE_KEYS.HISTORIAL)
-                    navigate('/')
-                  }
-                }}
-                class="export-option clear"
-              >
-                🗑️ Clear
-              </button>
-            </div>
-          </div>
-        </Show>
+        
 
       </Show>
     </Show>

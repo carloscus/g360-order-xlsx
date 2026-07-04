@@ -1,5 +1,6 @@
 import { createSignal, createMemo, For, Show } from 'solid-js'
 import { formatNumero } from '../../utils/formatters'
+import feriadosData from '../../data/feriados.json'
 
 const AHORA = new Date()
 const ANIO_ACTUAL = AHORA.getFullYear()
@@ -15,22 +16,18 @@ const NOMBRES_MESES = [
 const DIAS_POR_MES = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 const DIAS_LAB = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
 
-const FERIADOS_PERU = {
-  '01-01': 'Año Nuevo',
-  '05-01': 'Día del Trabajo',
-  '06-07': 'Batalla de Arica',
-  '06-29': 'San Pedro y San Pablo',
-  '07-23': 'Día de la Fuerza Aérea',
-  '07-28': 'Independencia',
-  '07-29': 'Independencia',
-  '08-06': 'Batalla de Junín',
-  '08-30': 'Santa Rosa',
-  '10-08': 'Angamos',
-  '11-01': 'Todos los Santos',
-  '12-08': 'Inmaculada',
-  '12-09': 'Batalla de Ayacucho',
-  '12-25': 'Navidad'
+const construirMapaFeriados = () => {
+  const mapa = {}
+  feriadosData.forEach(f => {
+    if (f.date) {
+      const key = f.date.slice(5, 10)
+      mapa[key] = f.name
+    }
+  })
+  return mapa
 }
+
+const FERIADOS_PERU = construirMapaFeriados()
 
 const calcularSemanaSanta = (anio) => {
   const a = anio % 19, b = Math.floor(anio / 100), c = anio % 100
@@ -41,8 +38,10 @@ const calcularSemanaSanta = (anio) => {
   const mes = Math.floor((h + l - 7 * m + 114) / 31)
   const dia = ((h + l - 7 * m + 114) % 31) + 1
   const domingo = new Date(anio, mes - 1, dia)
+  const jueves = new Date(domingo); jueves.setDate(jueves.getDate() - 3)
   const viernes = new Date(domingo); viernes.setDate(viernes.getDate() - 2)
   return {
+    [jueves.toISOString().slice(5, 10)]: 'Jueves Santo',
     [viernes.toISOString().slice(5, 10)]: 'Viernes Santo',
     [domingo.toISOString().slice(5, 10)]: 'Domingo Resurrección'
   }

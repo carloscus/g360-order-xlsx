@@ -231,12 +231,3 @@ export const G360_ENGINE: G360Engine = {
     }
   }
 }
-
-// Exportar funciones útiles
-export const createG360Component = (type: string, props: Record<string, unknown> = {}) => {
-  return G360_ENGINE.utils.createComponent(type, props)
-}
-
-export const applyG360Skill = (component: G360ComponentStyles, skill: string) => {
-  return G360_ENGINE.utils.applySkill(component, skill)
-}
