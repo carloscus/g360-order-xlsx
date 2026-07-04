@@ -286,6 +286,7 @@ export const generarDOCX = async (data: DatosPedido) => {
   children.push(new Paragraph({ children: [new TextRun({ text: `📱 Telf: ${telefonoVendedor || empresa.telefono}`, size: 16, font: "Arial" })] }));
 
   const doc = new Document({
+    creator: 'ccusi - G360 Order System',
     sections: [{
       properties: {
         page: {

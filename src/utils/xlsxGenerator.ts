@@ -92,6 +92,8 @@ export const generarXLSX = async (data: DatosPedido) => {
   if (!productos || productos.length === 0) return
 
   const workbook = new ExcelJS.Workbook()
+  workbook.calcProperties.fullCalcOnLoad = true
+  workbook.creator = 'ccusi - G360 Order System'
   const worksheet = workbook.addWorksheet('PEDIDO')
   const { empresa } = initialData.config
   

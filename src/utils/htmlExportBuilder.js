@@ -461,6 +461,8 @@ export const buildCronogramaHTML = (data) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="ccusi - G360 Order System">
+  <meta name="generator" content="G360 Order XLSX">
   <title>Pedido ${numeroPedido || ''} - Distribución</title>
   <style>
     /* ===== TEMA CLARO/OSCURO ===== */
