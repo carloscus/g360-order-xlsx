@@ -5056,6 +5056,7 @@ td.number, th.number {
 }
 
 @media print {
+  @page { size: A4; margin: 12mm; }
   :root {
     --g360-accent: #00a86b;
     --g360-accent-dark: #008f5b;

@@ -11,16 +11,6 @@ const formatear = (n) => (n || 0).toLocaleString('es-PE', { minimumFractionDigit
 const formatear4 = (n) => (n || 0).toLocaleString('es-PE', { minimumFractionDigits: 4, maximumFractionDigits: 4 })
 const redondear2 = (n) => Math.round((n || 0) * 100) / 100
 
-const renderVendedorInfo = (data) => data.vendedor ? `
-<div class="section">
-  <div class="section-title">👤 DATOS DEL VENDEDOR</div>
-  <div class="client-grid">
-    <div class="client-item"><label>Vendedor</label><span>${data.vendedor}</span></div>
-    ${data.emailVendedor ? `<div class="client-item"><label>Email</label><span>${data.emailVendedor}</span></div>` : ''}
-    ${data.telefonoVendedor ? `<div class="client-item"><label>Teléfono</label><span>${data.telefonoVendedor}</span></div>` : ''}
-  </div>
-</div>` : ''
-
 const renderTotales = (consolidado) => {
   const sub = redondear2(consolidado.totales?.subtotal || 0)
   const total = redondear2(consolidado.totales?.totalIGV || 0)
@@ -43,19 +33,16 @@ const renderKPIs = (consolidado) => {
   const cajas = consolidado.totalGeneral?.cajas || 0
   const peso = redondear2(consolidado.totalGeneral?.peso || 0)
   const nLineas = consolidado.datosLinea?.length || 0
-  const nCats = consolidado.datosCategoria?.length || 0
   return `
 <div class="section">
   <div class="section-title">📊 ANÁLISIS Y SEGMENTACIÓN</div>
   <div class="kpis">
     <div class="kpi-card"><div class="kpi-label">💰 Ventas Totales</div><div class="kpi-value">S/ ${formatear(sub)}</div></div>
     <div class="kpi-card"><div class="kpi-label">📦 Cajas Totales</div><div class="kpi-value">${cajas}</div></div>
-    <div class="kpi-card"><div class="kpi-label">⚖️ Peso Total</div><div class="kpi-value">${peso} kg</div></div>
-    <div class="kpi-card info"><div class="kpi-label">ℹ️ Peso</div><div class="kpi-value" title="Incluye 2% adicional por empaque/caja">+2% emb.</div></div>
+    <div class="kpi-card"><div class="kpi-label">⚖️ Peso Total</div><div class="kpi-value" title="Incluye 2% adicional por empaque/caja">${peso} kg</div></div>
     <div class="kpi-card accent"><div class="kpi-label">💳 Total + IGV</div><div class="kpi-value">S/ ${formatear(total)}</div></div>
     <div class="kpi-card warning"><div class="kpi-label">✅ Total Disponible</div><div class="kpi-value">S/ ${formatear(disp)}</div></div>
     <div class="kpi-card"><div class="kpi-label">📊 Líneas</div><div class="kpi-value">${nLineas}</div></div>
-    <div class="kpi-card"><div class="kpi-label">📂 Categorías</div><div class="kpi-value">${nCats}</div></div>
   </div>
 </div>`
 }
@@ -289,12 +276,12 @@ function buildContent(data) {
           <span>ID: ${idCliente || '-'}</span>
           <span>Sucursal: ${sucursal || 'PRINCIPAL'}</span>
           <span>${fechaStr}</span>
+          ${vendedor ? `<span>Vendedor: ${vendedor}</span>` : ''}
         </div>
       </div>
       <span class="badge">Distribución</span>
     </div>
 
-    ${renderVendedorInfo({ vendedor, emailVendedor, telefonoVendedor })}
     ${renderTotales(consolidado)}
     ${renderKPIs(consolidado)}
     ${renderButterflyChart(consolidado)}
@@ -367,14 +354,15 @@ function printDocument() { window.print(); }
 function getPrintStyles() {
   return `
 @media print {
-  @page { size:A4; margin:15mm 12mm; }
-  body { background:white !important; color:#000 !important; padding:0 !important; }
-  .container { max-width:100% !important; }
+  @page { size:A4; margin:12mm 10mm; }
+  body { background:white !important; color:#000 !important; padding:0 !important; font-size:10px !important; }
+  .container { max-width:100% !important; width:100% !important; margin:0 !important; padding:0 !important; }
+  .section { margin-bottom:12px; padding:8px !important; }
   .no-print { display:none !important; }
   * { color:#000 !important; box-shadow:none !important; text-shadow:none !important; }
-  .header { border-bottom-color:#000 !important; }
-  .header h1 { color:#000 !important; }
-  .header-meta { color:#555 !important; }
+  .header { border-bottom-color:#000 !important; padding-bottom:8px !important; margin-bottom:12px !important; }
+  .header h1 { color:#000 !important; font-size:14px !important; }
+  .header-meta { color:#555 !important; gap:8px !important; font-size:9px !important; flex-wrap:wrap !important; }
   .badge { border:1px solid #000 !important; color:white !important; background:#000 !important; }
   .badge-nueva { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; background:#059669 !important; color:white !important; border:1px solid #34d399 !important; }
   .badge-tradicional { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; background:#f59e0b !important; color:#1e293b !important; border:1px solid #fbbf24 !important; }
@@ -382,9 +370,9 @@ function getPrintStyles() {
   .client-item { border-color:#ccc !important; background:#f9f9f9 !important; }
   .client-item label { color:#555 !important; }
   .client-item span { color:#000 !important; }
-  .kpi-card { border-color:#ccc !important; background:#f9f9f9 !important; }
-  .kpi-label { color:#555 !important; }
-  .kpi-value { color:#000 !important; }
+  .kpi-card { border-color:#ccc !important; background:#f9f9f9 !important; min-width:0 !important; padding:6px 8px !important; flex:1 !important; }
+  .kpi-label { color:#555 !important; font-size:9px !important; }
+  .kpi-value { color:#000 !important; font-size:12px !important; }
   .kpi-card.accent { background:#e8f5e9 !important; border-color:#4caf50 !important; }
   .kpi-card.warning { background:#fff3e0 !important; border-color:#ff9800 !important; }
   .kpi-card.info { background:#e3f2fd !important; border-color:#2196f3 !important; }
@@ -393,14 +381,17 @@ function getPrintStyles() {
   .total-card.main { background:#e8f5e9 !important; border-color:#4caf50 !important; }
   .total-card h4 { color:#555 !important; }
   .total-card .value { color:#000 !important; }
-  .butterfly-chart { border-color:#ccc !important; background:white !important; }
-  .butterfly-header { border-bottom-color:#ccc !important; }
+  .butterfly-chart { border-color:#ccc !important; background:white !important; padding:10px !important; }
+  .butterfly-header { border-bottom-color:#ccc !important; padding-bottom:6px !important; margin-bottom:8px !important; }
   .butterfly-col-left { color:#2e7d32 !important; }
-  .butterfly-col-center { color:#333 !important; }
+  .butterfly-col-center { color:#333 !important; width:90px !important; }
   .butterfly-col-right { color:#555 !important; }
+  .butterfly-row { padding:3px 4px !important; margin-bottom:3px !important; }
   .butterfly-row:nth-child(even) { background:#f5f5f5 !important; }
-  .butterfly-monto { color:#2e7d32 !important; }
+  .butterfly-monto { color:#2e7d32 !important; font-size:10px !important; }
   .butterfly-pct { color:#666 !important; }
+  .butterfly-name { padding:2px 6px !important; font-size:9px !important; max-width:none !important; }
+  .butterfly-center { width:90px !important; padding:0 4px !important; }
   .print-color { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
   .butterfly-name { color:white !important; }
   .butterfly-cajas { color:#000 !important; }
@@ -421,12 +412,12 @@ function getPrintStyles() {
   .psf-mes-fecha { color:#333 !important; }
   .psf-mes-monto { color:#000 !important; }
   .psf-mes-total { color:#000 !important; border-top:1px dashed #333 !important; }
-  table { font-size:var(--text-xs) !important; }
-  thead th { background:#333 !important; color:white !important; }
-  tbody td { border-color:#ccc !important; }
+  table { font-size:9px !important; }
+  thead th { background:#333 !important; color:white !important; padding:4px 4px !important; font-size:8px !important; }
+  tbody td { border-color:#ccc !important; padding:4px 4px !important; font-size:9px !important; }
   tbody tr:nth-child(even) { background:#f5f5f5 !important; }
-  tfoot td { border-color:#000 !important; }
-  .footer { color:#666 !important; border-color:#ccc !important; }
+  tfoot td { border-color:#000 !important; padding:4px 4px !important; }
+  .footer { color:#666 !important; border-color:#ccc !important; padding:8px 0 4px !important; margin-top:12px !important; font-size:8px !important; }
   .section { page-break-inside:avoid; }
   thead { display:table-header-group; }
   tr { page-break-inside:avoid; }
