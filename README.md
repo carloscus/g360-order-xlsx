@@ -1,104 +1,142 @@
 # G360 Order XLSX
 
-> Aplicación web desarrollada en SolidJS para el procesamiento inteligente de cotizaciones ERP/CRM. Forma parte de la familia de microherramientas G360 para apoyo CRM y gestión de datos en escritorio.
+<picture>
+  <img alt="CIPSA OrderX" height="64" src="public/logo-cipsa.svg">
+</picture>
 
-[![version](https://img.shields.io/badge/version-5.2.0-blue)](https://github.com/carloscus/g360-order-xlsx)
+> Aplicación web SolidJS para procesamiento inteligente de cotizaciones ERP/CRM de CIPSA. Forma parte de la familia de microherramientas G360 para apoyo CRM y gestión de datos en escritorio.
+
+[![version](https://img.shields.io/badge/version-5.0.0-blue)](https://github.com/carloscus/g360-order-xlsx)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Framework: SolidJS](https://img.shields.io/badge/SolidJS-1.8-2c4f7c?logo=solidjs)](https://www.solidjs.com)
+
+---
+
+## Arquitectura
+
+```mermaid
+flowchart TD
+    ERP["Datos ERP<br/>Texto pegado TSV/Grid"]
+    PARSER["erpParser<br/>Detección de formato y parseo"]
+    CATALOG["useCatalogo<br/>Enriquecimiento por SKU"]
+    STATE["usePedido<br/>Store singleton + localStorage"]
+    AGENTS["g360-skill-agentes<br/>Cálculos: stock, precio, cajas, peso"]
+    AUDIT["audit.js<br/>16 reglas de validación"]
+    XLSX["xlsxGenerator<br/>Excel con fórmulas VBA"]
+    DOCX["docxGenerator<br/>Carta corporativa Word"]
+    HTML["htmlExportBuilder<br/>Cronograma HTML autocontenido"]
+    UI["SolidJS UI<br/>ProductTable · TotalsPanel · Sidebar"]
+
+    ERP --> PARSER
+    PARSER --> CATALOG
+    CATALOG --> STATE
+    STATE --> AGENTS
+    AGENTS --> AUDIT
+    AGENTS --> XLSX
+    AGENTS --> DOCX
+    AGENTS --> HTML
+    STATE --> UI
+    AUDIT --> UI
+```
 
 ---
 
 ## Tabla de Contenidos
 
+- [Arquitectura](#arquitectura)
 - [Descripción](#descripción)
 - [Características](#características)
 - [Tecnologías](#tecnologías)
-- [Instalación](# instalación)
+- [Instalación](#instalación)
 - [Uso](#uso)
-- [Estructura](#estructura)
+- [Estructura del Proyecto](#estructura-del-proyecto)
 - [Scripts](#scripts)
 - [Testing](#testing)
 - [Contribución](#contribución)
 - [Licencia](#licencia)
-- [Familia G360](#familia-g360)
+- [Ecosistema G360](#ecosistema-g360)
 
 ---
 
 ## Descripción
 
-**G360 Order XLSX** es una aplicación web desarrollada en **SolidJS** para el procesamiento inteligente de cotizaciones ERP/CRM. Forma parte del ecosistema G360 y proporciona una interfaz intuitiva para gestionar pedidos, distribuir productos, calcular totales, generar reportes en formato XLSX y más. Diseñada como una micro-herramienta de apoyo ERP, facilita el flujo de trabajo en entornos corporativos.
+**G360 Order XLSX** (CIPSA OrderX) es una aplicación web desarrollada en **SolidJS** para el procesamiento inteligente de cotizaciones ERP/CRM. Proporciona una interfaz para gestionar pedidos, distribuir productos, calcular totales, generar reportes en formato XLSX/DOCX/HTML y programar letras de pago.
 
-La aplicación incluye funcionalidades avanzadas como validaciones en tiempo real, auditoría de cambios, gestión de catálogos de productos, cálculo de distribuciones proporcionales, y exportación a Excel. Está optimizada para entornos de producción con soporte para temas oscuros/claros y un diseño responsivo.
+La aplicación parsea texto pegado desde el ERP de CIPSA, enriquece los datos con un catálogo local de 1117+ productos, ejecuta cálculos de negocio (stock, precio, cajas, peso, distribución), valida el pedido con 16 reglas de auditoría, y exporta a múltiples formatos con branding corporativo.
 
-## Tecnologías
+**Tipo**: Aplicación Web / Herramienta ERP  
+**Plataforma**: Navegador web (SPA)  
+**Marca**: CIPSA — Corporación de Industrias Plásticas S.A.
 
-- **Framework**: SolidJS 1.8.0 (librería reactiva para interfaces de usuario)
-- **Router**: @solidjs/router 0.16.1
-- **Build Tool**: Vite 5.0.0
-- **Lenguajes**: TypeScript 5.4.0 + JavaScript (ESModules)
-- **Testing**: Vitest 1.2.0
-- **Styling**: CSS puro con variables CSS para temas
-- **Exportación**: ExcelJS 4.4.0 para generación de archivos Excel
-- **Plugins**: Vite Plugin Solid 2.10.0
+---
 
-## Características Principales
+## Características
 
 ### Gestión de Pedidos
-- Creación y edición de pedidos con productos dinámicos
-- Validaciones en tiempo real de datos
-- Cálculo automático de subtotales, IGV, y totales
+- Parseo automático de texto ERP (formato TSV/Grid con auto-detección de variantes)
+- Enriquecimiento de productos desde catálogo JSON (línea, categoría, peso, unidades/caja)
+- Cálculo automático de subtotales, IGV (18%), y totales
 - Persistencia automática en localStorage
 
 ### Tabla de Productos
-- Interfaz tabular para gestión de productos
+- Interfaz tabular con 13+ columnas compatible con VBA
 - Agregar, editar y eliminar productos
-- Cálculos automáticos de precios y cantidades
-- Footer con totales resumidos
+- Cálculos automáticos de precios, descuentos y estado de stock
+- Footer con totales resumidos y badge de stock por fila
 
 ### Auditoría y Validaciones
-- Sistema de auditoría para rastrear cambios
-- Alertas y notificaciones de errores
+- 16 reglas de auditoría configurables (stock, precio, descuento, catálogo, logística)
+- Panel de hallazgos con severidad: ERROR, WARNING, INFO, SUCCESS
+- Categorías: STOCK, PRECIO, DESCUENTO, CANTIDAD, CATALOGO, VALIDACION, LOGISTICA
 
 ### Exportaciones
-- **XLSX**: Generación de archivos Excel con logo corporativo
-- **DOCX**: Cartas corporativas en Word con formato A4, logo y márgenes profesionales
-- **HTML**: Descarga de cronograma en HTML autocontenido con toggle interactivo de tema claro/oscuro, header sticky y botón de impresión. El archivo generado es completamente independiente (no requiere servidor ni conexión)
-- **Impresión A4**: Botón de impresión directa desde la página de distribución con tema claro forzado via `@media print`
+- **XLSX**: Archivo Excel con logo CIPSA, fórmulas SUMPRODUCT, badge de stock y formato condicional
+- **DOCX**: Carta corporativa en Word con formato A4, logo, márgenes profesionales y condiciones comerciales
+- **HTML**: Cronograma autocontenido con toggle dark/light, header sticky, botón de impresión y gráficos
+- **Impresión A4**: Print directo con tema claro forzado via `@media print`
 
 ### Distribución y Programación de Letras
-- Programación de letras (promissory notes) con calendario interactivo
-- Selección de fechas de vencimiento por día
+- Calendario interactivo para selección de fechas de vencimiento
 - Rango máximo de 12 meses consecutivos con indicador visual
 - Cálculo automático de montos equitativos por letra
 - Balance en tiempo real (asignado vs saldo)
-- KPIs de valor neto, unidades por caja, masa logística y total a financiar
-- **Nota informativa**: El peso incluye referencia +2% por empaque/caja (no计入 en el cálculo)
+- KPIs: valor neto, unidades/caja, masa logística, total a financiar
 
 ### Clasificación de Productos por Estado de Línea
-- El campo `estado_linea` se obtiene **exclusivamente del catálogo JSON** (fuente de verdad por SKU)
-- Los valores del ERP (flag `1` línea nueva) son ignorados por no estar actualizados
-- Productos sin registro en catálogo o con `estado_linea` vacío se muestran como `PENDIENTE`
-- Mapa de colores por posición fija: NACIONAL (`#059669`), NUEVO (`#0891b2`), IMPORTADO (`#d97706`), TRADICIONAL (`#7c3aed`), PENDIENTE (`#6b7280`)
-- Badge visual por fila en tabla de productos y exportación HTML
-- Sección de agrupación en página de distribución con indicadores de %, monto, cajas/unidades sueltas y peso
+- Campo `estado_linea` del catálogo JSON (fuente de verdad por SKU)
+- Mapa de colores: NACIONAL (`#059669`), NUEVO (`#0891b2`), IMPORTADO (`#d97706`), TRADICIONAL (`#7c3aed`), PENDIENTE (`#6b7280`)
+- Badge visual por fila y sección de agrupación en distribución
 
 ### Distribución Visual (Butterfly Chart)
 - Gráfico simétrico valor vs volumen por línea de producto
-- Cálculo de cajas centralizado vía `desgloseCajas()`: usa `cantidadUnd` del ERP + `un_bx` del catálogo
-- Productos sin `un_bx` en catálogo se contabilizan como unidades sueltas (0 cajas)
-- Evaluación de stock: compara stock ERP vs `cantidadUnd` (col 29), no vs cantidad pedida (col 4)
+- Cálculo de cajas centralizado: `cantidadUnd` (ERP) + `un_bx` (catálogo)
+- Evaluación de stock: stock ERP vs `cantidadUnd` (columna 29)
 - Agrupamiento por línea, categoría y estado de línea
-- Totales unificados con formato `cajas/sueltas BX`
 
-### UI/UX Avanzada
+### UI/UX
 - Tema oscuro/claro automático con persistencia en localStorage
-- Sidebar navegable con acceso rápido a exportación
-- Componentes modales para detalles y gráficos
+- Sidebar navegable con acceso rápido a exportación y atajos de teclado
+- Componentes modales arrastrables para detalles y gráficos
 - Diseño responsivo para móviles y desktop
-- Branding G360 integrado
+- Branding G360/CIPSA integrado
 
-### Integraciones
-- Soporte para catálogos externos vía hooks
-- Integración con servicios ERP
+---
+
+## Tecnologías
+
+| Categoría | Tecnología | Versión |
+|-----------|-----------|---------|
+| **Framework** | SolidJS | 1.8.0 |
+| **Router** | @solidjs/router | 0.16.1 |
+| **Build Tool** | Vite | 5.0.0 |
+| **Lenguajes** | TypeScript + JavaScript | TS 5.4.0 |
+| **Testing** | Vitest | 1.2.0 |
+| **Export XLSX** | ExcelJS | 4.4.0 |
+| **Export DOCX** | docx | 9.7.1 |
+| **Styling** | CSS puro con variables CSS | — |
+| **Identidad** | g360-signature | submodule |
+
+---
 
 ## Instalación
 
@@ -106,131 +144,203 @@ La aplicación incluye funcionalidades avanzadas como validaciones en tiempo rea
 - Node.js 18+ y npm
 - Git
 
-### Pasos de Instalación
+### Pasos
 
-1. **Clonar el repositorio**:
-   ```bash
-   git clone https://github.com/carloscus/g360-order-xlsx.git
-   cd g360-order-xlsx
-   ```
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/carloscus/g360-order-xlsx.git
+cd g360-order-xlsx
 
-2. **Instalar dependencias**:
-   ```bash
-   npm install
-   ```
+# 2. Instalar dependencias
+npm install
 
-3. **Configurar submódulos** (opcional, para branding):
-   ```bash
-   git submodule update --init --recursive
-   ```
+# 3. Configurar submódulos (branding G360)
+git submodule update --init --recursive
 
-4. **Ejecutar en desarrollo**:
-   ```bash
-   npm run dev
-   ```
-   La aplicación estará disponible en `http://localhost:5173`.
+# 4. Ejecutar en desarrollo
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:5173`.
+
+---
 
 ## Uso
 
-### Navegación
-- **/**: Página principal con gestión del pedido (carga RPE, catálogo, edición de productos)
-- **/distribucion**: Página de programación de letras con calendario, KPIs, tablas y exportaciones
-
 ### Flujo Básico
-1. Cargar datos del RPE o ingresar manualmente en la página principal
-2. Revisar y editar productos, precios y descuentos
-3. Navegar a **Distribución** para programar letras (fechas de vencimiento y montos)
-4. Exportar a XLSX, Word, HTML o imprimir en A4
+
+1. **Cargar datos del RPE**: Pegar texto del ERP en el área de importación (Ctrl+V)
+2. **Revisar productos**: Editar precios, descuentos y cantidades en la tabla
+3. **Auditar**: Verificar hallazgos del panel de auditoría
+4. **Distribuir**: Navegar a `/distribucion` para programar letras de pago
+5. **Exportar**: Generar XLSX, DOCX, HTML o imprimir en A4
+
+### Rutas
+
+| Ruta | Descripción |
+|------|-------------|
+| `/` | Página principal — carga ERP, gestión de productos, auditoría |
+| `/distribucion` | Programación de letras, KPIs, butterfly chart, exportaciones |
 
 ### Temas
-La aplicación detecta automáticamente el tema del sistema (oscuro/claro). También se puede forzar desde el contexto de tema.
 
-## Desarrollo
+La aplicación detecta automáticamente el tema del sistema (oscuro/claro). Se puede alternar desde el sidebar.
 
-### Estructura del Proyecto
+---
+
+## Estructura del Proyecto
+
+```mermaid
+flowchart LR
+    subgraph Core["Core Engine"]
+        ENGINE["g360-engine.ts<br/>Diseño y marca"]
+        SKILL["g360-skill-config.js<br/>Configuración de skill"]
+        AGENTES["g360-skill-agentes.js<br/>Lógica de negocio"]
+    end
+
+    subgraph State["State Management"]
+        PEDIDO["usePedido.ts<br/>Store singleton"]
+        CATALOGO["useCatalogo.js<br/>Catálogo + enriquecimiento"]
+        THEME["ThemeContext.jsx<br/>Tema dark/light"]
+    end
+
+    subgraph Input["Input Pipeline"]
+        PARSER["erpParser.js<br/>Parseo ERP"]
+        DATA["data/<br/>catalogo · feriados · initialData"]
+    end
+
+    subgraph Output["Export Pipeline"]
+        XLSGEN["xlsxGenerator.ts"]
+        DOCXGEN["docxGenerator.ts"]
+        HTMLGEN["htmlExportBuilder.js"]
+        HISTORY["htmlHistoryStorage.js<br/>IndexedDB"]
+    end
+
+    subgraph UI["UI Layer"]
+        PAGES["pages/HomePage.jsx"]
+        COMPONENTS["components/<br/>ProductTable · TotalsPanel<br/>Sidebar · PaymentSplit<br/>DistributionPage · Modals"]
+    end
+
+    INPUT["ERP Text"] --> PARSER --> PEDIDO
+    DATA --> CATALOGO --> PEDIDO
+    PEDIDO --> AGENTES
+    AGENTES --> XLSGEN
+    AGENTES --> DOCXGEN
+    AGENTES --> HTMLGEN
+    PEDIDO --> UI
+    ENGINE --> UI
+    SKILL --> UI
+```
+
+### Archivos Principales
+
 ```
 src/
-├── components/          # Componentes UI reutilizables
-│   ├── Header/         # Navbar y navegación
-│   ├── Footer/         # Footer con firma G360
-│   ├── ProductTable/   # Tabla de productos
-│   ├── TotalsPanel/    # Paneles de totales
-│   ├── PaymentSplit/   # Calendario de programación de letras
-│   ├── Sidebar/        # Sidebar con exportación y navegación
-│   └── DistributionPage.jsx  # Página de distribución y letras
-├── hooks/              # Hooks personalizados (usePedido, useCatalogo)
-├── constants/          # Constantes y configuraciones compartidas (storage.js, sharedConstants.js)
-├── utils/              # Utilidades (xlsxGenerator, docxGenerator, htmlExportBuilder, etc.)
-├── context/            # Contextos (ThemeContext.jsx)
-├── pages/              # Páginas principales (HomePage)
-├── services/           # Servicios (erpParser)
-├── core/               # Lógica central (G360_ENGINE y skills)
-└── styles/             # CSS global con variables de tema
+├── App.jsx                          # Shell de la app (layout)
+├── index.jsx                        # Entry point: router, temas, render
+│
+├── core/                            # Motor de diseño y negocio
+│   ├── g360-engine.ts              # Sistema de diseño G360 (colores, efectos, layout)
+│   ├── g360-skill-config.js        # Configuración de skills (full/marca/libre)
+│   └── g360-skill-agentes.js       # Cálculos: valor venta, stock, cajas, peso, distribución
+│
+├── hooks/                           # Estado reactivo
+│   ├── usePedido.ts                # Store singleton (cliente, productos, distribución)
+│   └── useCatalogo.js              # Catálogo + enriquecimiento por SKU
+│
+├── services/                        # Integración externa
+│   └── erpParser.js                # Parseo de texto ERP (TSV/Grid, auto-detección)
+│
+├── constants/                       # Reglas y constantes
+│   ├── audit.js                    # 16 reglas de auditoría
+│   ├── sharedConstants.js          # Colores de gráfico, IVA (1.18)
+│   └── storage.js                  # Claves centralizadas de localStorage
+│
+├── data/                            # Datos estáticos
+│   ├── catalogo_productos.json     # Catálogo de 1117+ productos
+│   ├── feriados.json               # Calendario de feriados Perú
+│   └── initialData.json            # Config: datos CIPSA, condiciones comerciales
+│
+├── components/                      # UI SolidJS
+│   ├── Header/                     # Navbar + ClientInfo
+│   ├── Footer/                     # Footer con g360-signature
+│   ├── ProductTable/               # Tabla de productos (header, row, footer)
+│   ├── TotalsPanel/                # Cards: Subtotal, IGV, Disponible
+│   ├── PaymentSplit/               # Programación de letras
+│   ├── Sidebar/                    # Navegación + exportación
+│   ├── DistributionPage.jsx        # Página de distribución
+│   ├── AuditPanel.jsx              # Panel de auditoría
+│   ├── ChartModal.jsx              # Modal de gráficos (butterfly chart)
+│   └── HistoryModal.jsx            # Historial de snapshots HTML
+│
+├── utils/                           # Utilidades puras
+│   ├── xlsxGenerator.ts            # Generación Excel con fórmulas
+│   ├── docxGenerator.ts            # Generación Word corporativa
+│   ├── htmlExportBuilder.js        # Generación HTML autocontenido
+│   ├── htmlHistoryStorage.js       # Persistencia IndexedDB
+│   └── formatters.ts               # Formato moneda/numero (es-PE, S/)
+│
+├── pages/                           # Páginas
+│   └── HomePage.jsx                # Página principal
+│
+├── context/                         # Contextos
+│   └── ThemeContext.jsx            # Proveedor de tema dark/light
+│
+└── styles/                          # Estilos globales
+    └── main.css                    # Variables de tema + estilos base
 ```
 
-### Scripts Disponibles
-- `npm run dev`: Servidor de desarrollo con hot reload
-- `npm run build`: Construir para producción
-- `npm run preview`: Vista previa de la build
-- `npm run test`: Ejecutar tests con Vitest
+---
 
-### Desarrollo con TypeScript
-El proyecto usa TypeScript para tipado fuerte. Los archivos principales están en `.ts/.tsx`, con algunos legacy en `.js/.jsx`.
+## Scripts
 
-### Agregar Nuevas Características
-1. Crear componentes en `src/components/`
-2. Usar hooks para lógica de estado
-3. Agregar rutas en `src/index.jsx` si es necesario
-4. Mantener consistencia con el estilo existente
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Servidor de desarrollo Vite con hot reload |
+| `npm run build` | Build de producción en `dist/` |
+| `npm run preview` | Vista previa de la build de producción |
+| `npm run test` | Ejecutar tests con Vitest |
+| `npm run deploy` | Build + deploy a GitHub Pages |
 
-## Construcción y Despliegue
-
-### Build de Producción
-```bash
-npm run build
-```
-Los archivos se generan en `dist/`.
-
-### Despliegue
-La aplicación es estática y puede desplegarse en cualquier servidor web (Vercel, Netlify, Apache, etc.).
-
-### PWA
-Incluye `manifest.json` para instalación como PWA.
+---
 
 ## Testing
 
-Ejecutar tests:
 ```bash
-npm run test
+npm run test            # Ejecutar todos los tests
+npm run test:watch      # Modo watch
 ```
 
-Los tests usan Vitest y están configurados en `vitest.config.js`.
+Los tests usan **Vitest** y están configurados en `vitest.config.js`.
+
+---
 
 ## Contribución
 
 1. Fork el repositorio
-2. Crear una rama para tu feature: `git checkout -b feature/nueva-funcionalidad`
-3. Commit tus cambios: `git commit -m 'Agregar nueva funcionalidad'`
-4. Push a la rama: `git push origin feature/nueva-funcionalidad`
+2. Crear una rama: `git checkout -b feature/nueva-funcionalidad`
+3. Commit: `git commit -m 'feat: agregar nueva funcionalidad'`
+4. Push: `git push origin feature/nueva-funcionalidad`
 5. Abrir un Pull Request
 
 ### Guías de Código
-- Usar SolidJS patterns (signals, effects, etc.)
-- Mantener tipado fuerte con TypeScript
-- Seguir convenciones de nomenclatura existentes
-- Agregar tests para nuevas funcionalidades
+
+- **Framework**: SolidJS — usar signals y memos, no React hooks
+- **Nomenclatura**: camelCase funciones/variables, PascalCase componentes, kebab-case CSS
+- **Archivos**: `.tsx/.ts` para nuevos, `.jsx/.js` para existentes
+- **Exports**: Named + default exports para componentes
+- **Tests**: Agregar tests para nuevas funcionalidades
+- **Commits**: Convención `feat:`, `fix:`, `docs:`, `refactor:`, `test:`
+
+---
 
 ## Licencia
 
 Este proyecto es parte del ecosistema G360 y está sujeto a las políticas internas de la organización.
 
-## Soporte
-
-Para soporte técnico o preguntas, contactar al equipo de desarrollo de G360.
-
 ---
 
-## Familia G360
+## Ecosistema G360
 
 Este proyecto forma parte de la familia de microherramientas **G360** para apoyo CRM y gestión de datos en escritorio, enfocadas en áreas como ventas, finanzas y logística.
 
@@ -239,11 +349,13 @@ Este proyecto forma parte de la familia de microherramientas **G360** para apoyo
 - **[g360-cli](https://github.com/carloscus/g360-cli)**: Bootstrap de proyectos G360
 - **[g360-signature](https://github.com/carloscus/g360-signature)**: Web component de branding G360
 - **[g360-order-form](https://github.com/carloscus/g360-order-form)**: Sistema de gestión de pedidos con interfaz móvil
+- **[g360-stock-reporter-lit](https://github.com/carloscus/g360-stock-reporter-lit)**: Reportes de stock con Lit
 
 ---
-**Marca**: G360
-**Isotipo**: 3 puntos verticales paralelos (gris-verde-gris) + chevron `>`
-**Autor**: Carlos Cusi
-**Desarrollo**: Con asistencia de herramientas de código IA (Vibe Code)
-**Powered by**: [g360-signature](https://github.com/carloscus/g360-signature)</content>
-<parameter name="filePath">README.md
+
+**Marca**: G360 · Microherramientas para apoyo CRM y datos en escritorio  
+**Isotipo**: 3 puntos verticales paralelos (gris-verde-gris) + chevron `>`  
+**Signature**: G360 by ccusi (`mode: own`)  
+**Autor**: Carlos Cusi  
+**Desarrollo**: Con asistencia de herramientas de código IA (Vibe Code)  
+**Powered by**: [g360-signature](https://github.com/carloscus/g360-signature)
