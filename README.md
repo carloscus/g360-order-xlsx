@@ -17,7 +17,9 @@
 flowchart TD
     ERP["Datos ERP<br/>Texto pegado TSV/Grid"]
     PARSER["erpParser<br/>Detección de formato y parseo"]
-    CATALOG["useCatalogo<br/>Enriquecimiento por SKU"]
+    API["g360-stock-api<br/>GET /api/v1/stock?fuente=todas"]
+    FALLBACK["catalogo_productos.json<br/>Fallback offline (1117 SKUs)"]
+    CATALOG["useCatalogo<br/>API-first + fallback local"]
     STATE["usePedido<br/>Store singleton + localStorage"]
     AGENTS["g360-skill-agentes<br/>Cálculos: stock, precio, cajas, peso"]
     AUDIT["audit.js<br/>16 reglas de validación"]
@@ -28,6 +30,9 @@ flowchart TD
 
     ERP --> PARSER
     PARSER --> CATALOG
+    API -->|OK| CATALOG
+    API -->|ERROR| FALLBACK
+    FALLBACK --> CATALOG
     CATALOG --> STATE
     STATE --> AGENTS
     AGENTS --> AUDIT
@@ -56,7 +61,7 @@ flowchart TD
 
 **G360 Order XLSX** es una aplicación web desarrollada en **SolidJS** para el procesamiento inteligente de cotizaciones ERP/CRM. Proporciona una interfaz para gestionar pedidos, distribuir productos, calcular totales, generar reportes en formato XLSX/DOCX/HTML y programar letras de pago.
 
-La aplicación parsea texto pegado desde el ERP de CIPSA, enriquece los datos con un catálogo local de 1117+ productos, ejecuta cálculos de negocio (stock, precio, cajas, peso, distribución), valida el pedido con 16 reglas de auditoría, y exporta a múltiples formatos con branding corporativo.
+La aplicación parsea texto pegado desde el ERP de CIPSA, enriquece los datos con un catálogo de 2200+ productos desde **g360-stock-api** (fallback a JSON local de 1117 SKUs), ejecuta cálculos de negocio (stock, precio, cajas, peso, distribución), valida el pedido con 16 reglas de auditoría, y exporta a múltiples formatos con branding corporativo.
 
 **Tipo**: Aplicación Web / Herramienta ERP  
 **Plataforma**: Navegador web (SPA)  
@@ -182,14 +187,16 @@ g360-order-xlsx/
 │   │   └── g360-skill-agentes.js  # Cálculos de negocio
 │   ├── hooks/
 │   │   ├── usePedido.ts           # Store singleton
-│   │   └── useCatalogo.js         # Catálogo + enriquecimiento
+│   │   └── useCatalogo.js         # Catálogo API-first + fallback JSON
 │   ├── services/
+│   │   ├── apiClient.js           # Cliente HTTP (fetch, retry, timeout)
 │   │   └── erpParser.js           # Parseo de texto ERP
 │   ├── constants/
+│   │   ├── apiConfig.js           # URL + API key de g360-stock-api
 │   │   ├── audit.js               # 16 reglas de auditoría
 │   │   └── sharedConstants.js     # Colores, IVA
 │   ├── data/
-│   │   ├── catalogo_productos.json
+│   │   ├── catalogo_productos.json # Fallback offline (1117 SKUs)
 │   │   ├── feriados.json
 │   │   └── initialData.json
 │   ├── components/
@@ -232,6 +239,32 @@ npm run test:watch      # Modo watch
 
 ---
 
+## API (g360-stock-api)
+
+La aplicación consume **g360-stock-api** para obtener catálogo enriquecido en tiempo real.
+
+| Endpoint | Descripción |
+|----------|-------------|
+| `GET /api/v1/stock?fuente=todas` | Catálogo completo (2200+ SKUs) |
+| `GET /api/v1/stock/{sku}` | Búsqueda individual por SKU |
+
+**Configuración**: `src/constants/apiConfig.js`  
+**Fallback**: Si la API no responde (timeout 10s), usa `catalogo_productos.json` local.
+
+### Flujo de datos
+
+```
+Carga inicial → API /api/v1/stock → Map de 2200+ SKUs
+                 ↓ (si falla)
+              catalogo_productos.json (1117 SKUs)
+
+SKU no encontrado → GET /api/v1/stock/{sku} → agregar al Map
+                     ↓ (si falla)
+                  Marcar como "sin catálogo"
+```
+
+---
+
 ## Ecosistema G360
 
 Este proyecto forma parte del ecosistema **G360** para apoyo CRM y gestión de datos en CIPSA.
@@ -240,6 +273,8 @@ Este proyecto forma parte del ecosistema **G360** para apoyo CRM y gestión de d
 
 - **[g360-cli](https://github.com/carloscus/g360-cli)** — Bootstrap de proyectos G360
 - **[g360-signature](https://github.com/carloscus/g360-signature)** — Web component de branding G360
+- **[g360-stock-api](https://github.com/carloscus/g360-stock-api)** — API REST de stock CIPSA
+- **[g360-master-data](https://github.com/carloscus/g360-master-data)** — Catálogo maestro de productos
 - **[g360-order-form](https://github.com/carloscus/g360-order-form)** — Sistema de gestión de pedidos
 - **[g360-stock-reporter-lit](https://github.com/carloscus/g360-stock-reporter-lit)** — Reportes de stock con Lit
 - **[g360-day-calculator](https://github.com/carloscus/g360-day-calculator)** — Calculadora de días laborables
