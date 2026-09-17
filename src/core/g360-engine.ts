@@ -105,16 +105,16 @@ export const G360_ENGINE: G360Engine = {
     clientName: 'CIPSA'
   },
 
-  // Colores G360 inmutables
+  // Colores G360 Corporativa Moderna
   colors: {
-    bg: '#0b1220',
-    surface: '#151e2e',
-    accent: '#00d084',        // Verde neón
-    text: '#f0f4f8',
-    muted: '#94a3b8',
-    apt: '#10b981',           // Verde apt
-    qc: '#f59e0b',            // Naranja qc
-    ves: '#06b6d4'            // Azul ves
+    bg: '#0F172A',
+    surface: '#1E293B',
+    accent: '#00796B',        // Teal 700
+    text: '#F1F5F9',
+    muted: '#94A3B8',
+    apt: '#10B981',           // Emerald 500
+    qc: '#F59E0B',            // Amber 500
+    ves: '#3B82F6'            // Blue 500
   },
 
   // Efectos visuales

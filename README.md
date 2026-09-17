@@ -6,7 +6,7 @@
 
 > Aplicación web SolidJS para procesamiento inteligente de cotizaciones ERP/CRM de CIPSA.
 
-[![Version](https://img.shields.io/badge/version-5.0.0-blue)](https://github.com/carloscus/g360-order-xlsx)
+[![Version](https://img.shields.io/badge/version-6.0.0-blue)](https://github.com/carloscus/g360-order-xlsx)
 [![Skill](https://img.shields.io/badge/skill-cipsa-green)](https://github.com/carloscus/g360-cli)
 [![Framework: SolidJS](https://img.shields.io/badge/SolidJS-1.8-2c4f7c?logo=solidjs)](https://www.solidjs.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -15,100 +15,128 @@
 
 ```mermaid
 flowchart TD
-    ERP["Datos ERP<br/>Texto pegado TSV/Grid"]
-    PARSER["erpParser<br/>Detección de formato y parseo"]
-    API["g360-stock-api<br/>GET /api/v1/stock?fuente=todas"]
-    FALLBACK["catalogo_productos.json<br/>Fallback offline (1117 SKUs)"]
-    CATALOG["useCatalogo<br/>API-first + fallback local"]
-    STATE["usePedido<br/>Store singleton + localStorage"]
-    AGENTS["g360-skill-agentes<br/>Cálculos: stock, precio, cajas, peso"]
-    AUDIT["audit.js<br/>16 reglas de validación"]
-    XLSX["xlsxGenerator<br/>Excel con fórmulas VBA"]
-    DOCX["docxGenerator<br/>Carta corporativa Word"]
-    HTML["htmlExportBuilder<br/>Cronograma HTML autocontenido"]
-    UI["SolidJS UI<br/>ProductTable · TotalsPanel · Sidebar"]
+    ERP["Datos ERP<br/>TSV 28 columnas"]
+    SUPABASE["Supabase<br/>Lookup clientes/vendedores"]
+    PARSER["erpParser<br/>Formato nuevo ERP VES"]
+    API["g360-stock-api<br/>Catálogo 2200+ SKUs"]
+    CATALOG["useCatalogo<br/>API-first + fallback"]
+    STATE["usePedido<br/>Store + localStorage"]
+    AGENTS["g360-skill-agentes<br/>Cálculos stock/precio"]
+    XLSX["xlsxGenerator<br/>Excel profesional"]
+    DOCX["docxGenerator<br/>Carta corporativa"]
+    HTML["htmlExportBuilder<br/>Reporte distribución"]
+    UI["Sidebar expandible<br/>Context-aware exports"]
 
     ERP --> PARSER
+    SUPABASE -->|clientes| STATE
     PARSER --> CATALOG
-    API -->|OK| CATALOG
-    API -->|ERROR| FALLBACK
-    FALLBACK --> CATALOG
+    API --> CATALOG
     CATALOG --> STATE
     STATE --> AGENTS
-    AGENTS --> AUDIT
     AGENTS --> XLSX
     AGENTS --> DOCX
     AGENTS --> HTML
     STATE --> UI
-    AUDIT --> UI
 ```
 
 ## Tabla de Contenidos
 
 - [Descripción](#descripción)
+- [Novedades v6.0](#novedades-v60)
 - [Características](#características)
 - [Tecnologías](#tecnologías)
 - [Instalación](#instalación)
 - [Uso](#uso)
 - [Estructura del Proyecto](#estructura-del-proyecto)
-- [Scripts](#scripts)
-- [Testing](#testing)
 - [Ecosistema G360](#ecosistema-g360)
 
 ---
 
 ## Descripción
 
-**G360 Order XLSX** es una aplicación web desarrollada en **SolidJS** para el procesamiento inteligente de cotizaciones ERP/CRM. Proporciona una interfaz para gestionar pedidos, distribuir productos, calcular totales, generar reportes en formato XLSX/DOCX/HTML y programar letras de pago.
+**G360 Order XLSX** es una aplicación web desarrollada en **SolidJS** para el procesamiento inteligente de cotizaciones ERP/CRM de CIPSA. Integra Supabase para lookup de clientes y vendedores, genera exports profesionales (XLSX, DOCX, HTML), y ofrece una interfaz moderna con sidebar expandible.
 
-La aplicación parsea texto pegado desde el ERP de CIPSA, enriquece los datos con un catálogo de 2200+ productos desde **g360-stock-api** (fallback a JSON local de 1117 SKUs), ejecuta cálculos de negocio (stock, precio, cajas, peso, distribución), valida el pedido con 16 reglas de auditoría, y exporta a múltiples formatos con branding corporativo.
+---
 
-**Tipo**: Aplicación Web / Herramienta ERP  
-**Plataforma**: Navegador web (SPA)  
-**Marca**: CIPSA — Corporación de Industrias Plásticas S.A.
+## Novedades v6.0
+
+### 🆕 Integración Supabase
+- **Lookup de clientes**: Autocomplete por RUC o código
+- **Lookup de vendedores**: Auto-completado por ID
+- Búsqueda prioriza coincidencia exacta en código
+
+### 🎨 Paleta Corporativa Teal
+- Accent: `#00796B` (Teal 700) — profesional, serio
+- Success: `#10B981` (Emerald) — stock OK
+- Warning: `#F59E0B` (Amber) — stock ajustado
+- Error: `#EF4444` (Rose) — agotado
+
+### 📊 XLSX Mejorado
+- KPIs prominentes: Subtotal, Total+IGV, Stock Confirmado
+- Columnas optimizadas (C, H = 125px, L = 160px)
+- Logo tamaño: 2.89cm × 2.14cm
+- Fórmulas corregidas (IGV = Subtotal × 0.18)
+
+### 📝 DOCX Corporativo
+- Carta formal para instituciones
+- Tabla profesional con headers teal
+- Email vendedor con dominio @cipsa.com.pe
+- Logo tamaño: 2.89cm × 2.14cm
+
+### 🌐 HTML Reporte
+- Helper unificado (htmlHelper.js)
+- Tabla optimizada para impresión A4
+- Save + Download en una acción
+- Dark/Light theme
+
+### 🗂️ Sidebar Expandible
+- Iconos + text labels
+- Agrupación: Navegación / Acciones / Exportar / Sistema
+- Context-aware: XLSX/DOCX en Home, HTML en Distribución
+- Estado activo visual
+
+### 🔍 Búsqueda de Productos
+- Filtro por SKU, descripción o línea
+- Contador de resultados
+- Reset automático de paginación
+
+### 🔔 Toast Notifications
+- Feedback visual sin alert() bloqueantes
+- Tipos: success, warning, error, info
+
+### 📱 Formulario Context-Aware
+- Cliente: Autocomplete por RUC/Código
+- Vendedor: Auto-completado por ID
+- Sucursal: Campo manual opcional
+- Email: Dominio fijo @cipsa.com.pe
 
 ---
 
 ## Características
 
 ### Gestión de Pedidos
-- Parseo automático de texto ERP (formato TSV/Grid con auto-detección)
-- Enriquecimiento de productos desde catálogo JSON
+- Parseo de texto ERP (formato nuevo 28 columnas)
+- Lookup de clientes desde Supabase
 - Cálculo automático de subtotales, IGV (18%), y totales
-- Persistencia automática en localStorage
+- Persistencia en localStorage
 
 ### Tabla de Productos
-- Interfaz tabular con 13+ columnas compatible con VBA
-- Agregar, editar y eliminar productos
-- Cálculos automáticos de precios, descuentos y estado de stock
-- Footer con totales resumidos y badge de stock por fila
-
-### Auditoría y Validaciones
-- 16 reglas de auditoría configurables
-- Panel de hallazgos con severidad: ERROR, WARNING, INFO, SUCCESS
-- Categorías: STOCK, PRECIO, DESCUENTO, CANTIDAD, CATALOGO, VALIDACION, LOGISTICA
+- Búsqueda por SKU, descripción o línea
+- 13+ columnas compatible con VBA
+- Badges de stock con colores
+- Paginación automática
 
 ### Exportaciones
-- **XLSX**: Excel con logo CIPSA, fórmulas SUMPRODUCT, badge de stock y formato condicional
-- **DOCX**: Carta corporativa en Word con formato A4 y condiciones comerciales
-- **HTML**: Cronograma autocontenido con toggle dark/light y gráficos
-- **Impresión A4**: Print directo con tema claro forzado via `@media print`
+- **XLSX**: Excel con fórmulas, KPIs, logo CIPSA
+- **DOCX**: Carta corporativa con condiciones comerciales
+- **HTML**: Reporte de distribución con gráficos
+- **Print A4**: Impresión optimizada
 
-### Distribución y Programación de Letras
-- Calendario interactivo para selección de fechas de vencimiento
-- Rango máximo de 12 meses consecutivos con indicador visual
-- Cálculo automático de montos equitativos por letra
-- KPIs: valor neto, unidades/caja, masa logística, total a financiar
-
-### Distribución Visual (Butterfly Chart)
-- Gráfico simétrico valor vs volumen por línea de producto
-- Agrupamiento por línea, categoría y estado de línea
-
-### UI/UX
-- Tema oscuro/claro automático con persistencia en localStorage
-- Sidebar navegable con acceso rápido a exportación
-- Componentes modales arrastrables
-- Diseño responsivo para móviles y desktop
+### Distribución
+- Calendario de letras de pago
+- Gráfico mariposa por línea
+- KPIs y categorías
+- Bóveda de reportes HTML
 
 ---
 
@@ -119,58 +147,48 @@ La aplicación parsea texto pegado desde el ERP de CIPSA, enriquece los datos co
 | **Framework** | SolidJS | 1.8.0 |
 | **Router** | @solidjs/router | 0.16.1 |
 | **Build Tool** | Vite | 5.0.0 |
-| **Lenguajes** | TypeScript + JavaScript | TS 5.4.0 |
-| **Testing** | Vitest | 1.2.0 |
+| **Base de Datos** | Supabase | @supabase/supabase-js |
 | **Export XLSX** | ExcelJS | 4.4.0 |
 | **Export DOCX** | docx | 9.7.1 |
-| **Identidad** | g360-signature | submodule |
+| **Identidad** | G360 Design | Teal Corporativo |
 
 ---
 
 ## Instalación
 
-### Prerrequisitos
-
-- Node.js 18+ y npm
-- Git
-
-### Pasos
-
 ```bash
-# 1. Clonar el repositorio
+# 1. Clonar
 git clone https://github.com/carloscus/g360-order-xlsx.git
 cd g360-order-xlsx
 
-# 2. Instalar dependencias
+# 2. Instalar
 npm install
 
-# 3. Configurar submódulos (branding G360)
-git submodule update --init --recursive
+# 3. Configurar Supabase (crear .env.local)
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=tu-anon-key
 
-# 4. Ejecutar en desarrollo
+# 4. Ejecutar
 npm run dev
 ```
-
-La aplicación estará disponible en `http://localhost:5173`.
 
 ---
 
 ## Uso
 
-### Flujo Básico
+### Flujo Principal
 
-1. **Cargar datos del RPE**: Pegar texto del ERP en el área de importación (Ctrl+V)
-2. **Revisar productos**: Editar precios, descuentos y cantidades en la tabla
-3. **Auditar**: Verificar hallazgos del panel de auditoría
-4. **Distribuir**: Navegar a `/distribucion` para programar letras de pago
-5. **Exportar**: Generar XLSX, DOCX, HTML o imprimir en A4
+1. **Buscar cliente**: Escribir RUC o código en el autocomplete
+2. **Cargar datos ERP**: Pegar texto del ERP (Ctrl+V)
+3. **Completar pedido**: N° Pedido, Correo Vendedor
+4. **Exportar**: XLSX (Home) o HTML (Distribución)
 
-### Rutas
+### Sidebar
 
-| Ruta | Descripción |
-|------|-------------|
-| `/` | Página principal — carga ERP, gestión de productos, auditoría |
-| `/distribucion` | Programación de letras, KPIs, butterfly chart, exportaciones |
+| Página | Acciones |
+|--------|----------|
+| **Home** | Exportar → XLSX / DOCX |
+| **Distribución** | Reporte → Guardar + Descargar HTML |
 
 ---
 
@@ -179,114 +197,39 @@ La aplicación estará disponible en `http://localhost:5173`.
 ```
 g360-order-xlsx/
 ├── src/
-│   ├── App.jsx                    # Shell de la app (layout)
-│   ├── index.jsx                  # Entry point
-│   ├── core/
-│   │   ├── g360-engine.ts         # Sistema de diseño G360
-│   │   ├── g360-skill-config.js   # Configuración de skills
-│   │   └── g360-skill-agentes.js  # Cálculos de negocio
-│   ├── hooks/
-│   │   ├── usePedido.ts           # Store singleton
-│   │   └── useCatalogo.js         # Catálogo API-first + fallback JSON
-│   ├── services/
-│   │   ├── apiClient.js           # Cliente HTTP (fetch, retry, timeout)
-│   │   └── erpParser.js           # Parseo de texto ERP
-│   ├── constants/
-│   │   ├── apiConfig.js           # URL + API key de g360-stock-api
-│   │   ├── audit.js               # 16 reglas de auditoría
-│   │   └── sharedConstants.js     # Colores, IVA
-│   ├── data/
-│   │   ├── catalogo_productos.json # Fallback offline (1117 SKUs)
-│   │   ├── feriados.json
-│   │   └── initialData.json
 │   ├── components/
-│   │   ├── Header/
-│   │   ├── Footer/
-│   │   ├── ProductTable/
-│   │   ├── TotalsPanel/
-│   │   ├── PaymentSplit/
-│   │   ├── Sidebar/
-│   │   └── DistributionPage.jsx
-│   └── utils/
-│       ├── xlsxGenerator.ts
-│       ├── docxGenerator.ts
-│       └── htmlExportBuilder.js
-├── package.json
-├── vite.config.js
-└── vitest.config.js
-```
-
----
-
-## Scripts
-
-| Comando | Descripción |
-|---------|-------------|
-| `npm run dev` | Servidor de desarrollo con HMR |
-| `npm run build` | Build de producción en `dist/` |
-| `npm run preview` | Vista previa de producción |
-| `npm run test` | Tests con Vitest |
-| `npm run deploy` | Build + deploy a GitHub Pages |
-
----
-
-## Testing
-
-```bash
-npm run test            # Ejecutar todos los tests
-npm run test:watch      # Modo watch
-```
-
----
-
-## API (g360-stock-api)
-
-La aplicación consume **g360-stock-api** para obtener catálogo enriquecido en tiempo real.
-
-| Endpoint | Descripción |
-|----------|-------------|
-| `GET /api/v1/stock?fuente=todas` | Catálogo completo (2200+ SKUs) |
-| `GET /api/v1/stock/{sku}` | Búsqueda individual por SKU |
-
-**Configuración**: `src/constants/apiConfig.js`  
-**Fallback**: Si la API no responde (timeout 10s), usa `catalogo_productos.json` local.
-
-### Flujo de datos
-
-```
-Carga inicial → API /api/v1/stock → Map de 2200+ SKUs
-                 ↓ (si falla)
-              catalogo_productos.json (1117 SKUs)
-
-SKU no encontrado → GET /api/v1/stock/{sku} → agregar al Map
-                     ↓ (si falla)
-                  Marcar como "sin catálogo"
+│   │   ├── Header/ClientInfo.jsx    # Autocomplete Supabase
+│   │   ├── Sidebar/Sidebar.jsx      # Expandible context-aware
+│   │   ├── Toast.jsx                # Notificaciones
+│   │   └── ProductTable/            # Búsqueda + paginación
+│   ├── hooks/
+│   │   ├── useClientes.js           # Lookup Supabase
+│   │   ├── useVendedor.js           # Lookup vendedor
+│   │   └── usePedido.ts             # Store + idVendedor
+│   ├── helpers/
+│   │   └── htmlHelper.js            # Helper unificado HTML
+│   ├── lib/
+│   │   └── supabaseClient.js        # Cliente Supabase
+│   ├── utils/
+│   │   ├── xlsxGenerator.ts         # Excel profesional
+│   │   ├── docxGenerator.ts         # Carta corporativa
+│   │   └── htmlExportBuilder.js     # Reporte distribución
+│   └── core/
+│       └── g360-skill-config.js     # Paleta Teal
+├── .env.local                       # Supabase credentials
+└── package.json
 ```
 
 ---
 
 ## Ecosistema G360
 
-Este proyecto forma parte del ecosistema **G360** para apoyo CRM y gestión de datos en CIPSA.
-
-### Herramientas Relacionadas
-
-- **[g360-cli](https://github.com/carloscus/g360-cli)** — Bootstrap de proyectos G360
-- **[g360-signature](https://github.com/carloscus/g360-signature)** — Web component de branding G360
-- **[g360-stock-api](https://github.com/carloscus/g360-stock-api)** — API REST de stock CIPSA
-- **[g360-master-data](https://github.com/carloscus/g360-master-data)** — Catálogo maestro de productos
-- **[g360-order-form](https://github.com/carloscus/g360-order-form)** — Sistema de gestión de pedidos
-- **[g360-stock-reporter-lit](https://github.com/carloscus/g360-stock-reporter-lit)** — Reportes de stock con Lit
-- **[g360-day-calculator](https://github.com/carloscus/g360-day-calculator)** — Calculadora de días laborables
+- **[g360-cli](https://github.com/carloscus/g360-cli)** — Bootstrap de proyectos
+- **[g360-stock-api](https://github.com/carloscus/g360-stock-api)** — API REST stock
+- **[g360-master-data](https://github.com/carloscus/g360-master-data)** — Catálogo productos
 
 ---
 
-## Licencia
-
-Este proyecto es parte del ecosistema G360 y está sujeto a las políticas internas de la organización.
-
----
-
-**Marca**: G360 · Microherramientas para apoyo CRM y datos en CIPSA  
-**Isotipo**: 3 puntos verticales paralelos (gris-verde-gris) + chevron `>`  
-**Signature**: G360 by ccusi · **Powered by**: [g360-signature](https://github.com/carloscus/g360-signature)
+**Marca**: G360 · Microherramientas para apoyo CRM en CIPSA  
+**Paleta**: Teal Corporativo (#00796B)  
+**Signature**: G360 by ccusi

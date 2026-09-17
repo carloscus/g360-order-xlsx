@@ -5,6 +5,7 @@ import { usePedido } from './hooks/usePedido'
 import { Navbar } from './components/Header/Navbar'
 import { Footer } from './components/Footer/Footer'
 import { Sidebar } from './components/Sidebar/Sidebar'
+import { Toast } from './components/Toast'
 import { useTheme } from './context/ThemeContext'
 import './styles/main.css'
 
@@ -33,6 +34,7 @@ function App(props) {
       </main>
 
       <Footer />
+      <Toast />
     </div>
   )
 }

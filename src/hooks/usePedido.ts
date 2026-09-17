@@ -43,6 +43,7 @@ interface DatosPedido {
   numeroPedido: string
   idCliente: string
   sucursal: string
+  idVendedor: string
   vendedor: string
   emailVendedor: string
   telefonoVendedor: string
@@ -204,6 +205,7 @@ export const usePedido = () => {
       numeroPedido: savedData?.numeroPedido || '',
       idCliente: savedData?.idCliente || '',
       sucursal: savedData?.sucursal || 'PRINCIPAL',
+      idVendedor: savedData?.idVendedor || '',
       vendedor: savedData?.vendedor || '',
       emailVendedor: savedData?.emailVendedor || '',
       telefonoVendedor: savedData?.telefonoVendedor || '',
@@ -222,6 +224,7 @@ export const usePedido = () => {
         numeroPedido: state.numeroPedido,
         idCliente: state.idCliente,
         sucursal: state.sucursal,
+        idVendedor: state.idVendedor,
         vendedor: state.vendedor,
         emailVendedor: state.emailVendedor,
         telefonoVendedor: state.telefonoVendedor,
@@ -328,6 +331,7 @@ export const usePedido = () => {
       get idCliente() { return state.idCliente },
       get sucursal() { return state.sucursal },
       get vendedor() { return state.vendedor },
+      get idVendedor() { return state.idVendedor },
       get emailVendedor() { return state.emailVendedor },
       get telefonoVendedor() { return state.telefonoVendedor },
       get productos() { return productosCalculados() },
@@ -341,6 +345,7 @@ export const usePedido = () => {
       setIdCliente: (v: string) => setState('idCliente', v),
       setSucursal: (v: string) => setState('sucursal', v),
       setVendedor: (v: string) => setState('vendedor', v),
+      setIdVendedor: (v: string) => setState('idVendedor', v),
       setEmailVendedor: (v: string) => setState('emailVendedor', v),
       setTelefonoVendedor: (v: string) => setState('telefonoVendedor', v),
       actualizarProductosDesdeTexto,

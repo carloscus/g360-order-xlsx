@@ -3,37 +3,36 @@ import { useNavigate, useLocation } from '@solidjs/router'
 import { usePedido, setTareaPendiente } from '../../hooks/usePedido'
 import { useTheme } from '../../context/ThemeContext'
 import { HistoryModal } from '../HistoryModal'
-import { buildCronogramaHTML } from '../../utils/htmlExportBuilder'
+import { Toast, showToast } from '../Toast'
 import { guardarHTMLSnapshot, listarHTMLSnapshots } from '../../utils/htmlHistoryStorage'
 import { STORAGE_KEYS } from '../../constants/storage'
 import { useCatalogo } from '../../hooks/useCatalogo'
 import { getAgentesSkill } from '../../core/g360-skill-agentes'
 import { generarXLSX } from '../../utils/xlsxGenerator'
 import { generarDOCX } from '../../utils/docxGenerator'
+import { generarContenidoHTML, validarPedidoParaHTML, generarNombreArchivo, descargarHTML } from '../../helpers/htmlHelper'
 
 const { CUOTAS_PERSIST: STORAGE_CUOTAS_KEY } = STORAGE_KEYS
 
-const sidebarActions = [
-  { id: 'analisis', icon: '📊', label: 'Análisis', shortcut: 'Alt+3', action: 'chart', page: 'home', tooltip: 'Ver gráficos de disponibilidad' },
-  { id: 'cuotas', icon: '📋', label: 'Distribución', shortcut: 'Alt+4', action: 'dist', page: 'home', tooltip: 'Calcular distribución de cuotas' },
-  { id: 'stock', icon: '⚠️', label: 'Stock', shortcut: 'Alt+5', action: 'stock', badge: true, page: 'all', tooltip: 'Ver productos con stock bajo' },
-  { id: 'guardar', icon: '💾', label: 'Guardar', shortcut: 'Alt+G', action: 'guardar', page: 'all', tooltip: 'Guardar HTML en bóveda' },
-  { id: 'cargar', icon: '📂', label: 'Cargar', shortcut: 'Alt+L', action: 'cargar', page: 'all', tooltip: 'Abrir bóveda HTML' },
-  { id: 'nuevo', icon: '🗑️', label: 'Limpiar', shortcut: 'Alt+N', action: 'nuevo', page: 'all', tooltip: 'Limpiar y cargar nuevo pedido' },
-]
-
-const ExportMenuInline = (props) => {
+/**
+ * Panel de exportación context-aware
+ * Home: XLSX + DOCX
+ * Distribución: Guardar HTML + Descargar HTML
+ */
+const ExportPanel = (props) => {
   const pedido = usePedido()
   const { enriquecerProducto } = useCatalogo()
-  const { calculos } = getAgentesSkill()
-  const { darkTheme } = useTheme()
+  const [loadingXlsx, setLoadingXlsx] = createSignal(false)
+  const [loadingDocx, setLoadingDocx] = createSignal(false)
+  const [loadingHtml, setLoadingHtml] = createSignal(false)
 
   const exportXLSX = async () => {
     try {
-      if (!pedido.numeroPedido) { alert('⚠️ XLSX requiere: N° Pedido'); props.onClose(); return }
-      if (!pedido.cliente) { alert('⚠️ XLSX requiere: Cliente'); props.onClose(); return }
+      if (!pedido.numeroPedido) { showToast('XLSX requiere: N° Pedido', 'warning'); props.onClose(); return }
+      if (!pedido.cliente) { showToast('XLSX requiere: Cliente', 'warning'); props.onClose(); return }
       const prods = pedido.productos
-      if (!prods.length) { alert('No hay productos para exportar'); props.onClose(); return }
+      if (!prods.length) { showToast('No hay productos para exportar', 'warning'); props.onClose(); return }
+      setLoadingXlsx(true)
       const prodsEnriquecidos = prods.map(p => ({ ...p, ...enriquecerProducto(p) }))
       await generarXLSX({
         cliente: pedido.cliente,
@@ -41,11 +40,14 @@ const ExportMenuInline = (props) => {
         numeroPedido: pedido.numeroPedido,
         sucursal: pedido.sucursal,
         vendedor: pedido.vendedor,
+        emailVendedor: pedido.emailVendedor,
         productos: prodsEnriquecidos,
         tipo: 'cotizacion'
       })
+      showToast('Excel descargado correctamente', 'success')
       props.onClose()
-    } catch (e) { alert('Error exportando: ' + e.message); props.onClose() }
+    } catch (e) { showToast('Error exportando: ' + e.message, 'error'); props.onClose() }
+    finally { setLoadingXlsx(false) }
   }
 
   const exportDOC = async () => {
@@ -57,9 +59,10 @@ const ExportMenuInline = (props) => {
       if (!pedido.vendedor) faltantes.push('Vendedor')
       if (!pedido.emailVendedor) faltantes.push('Email')
       if (!pedido.telefonoVendedor) faltantes.push('Teléfono')
-      if (faltantes.length) { alert(`⚠️ Word / Carta requiere:\n• ${faltantes.join('\n• ')}`); props.onClose(); return }
+      if (faltantes.length) { showToast(`Word requiere: ${faltantes.join(', ')}`, 'warning'); props.onClose(); return }
       const prods = pedido.productos
-      if (!prods.length) { alert('No hay productos para exportar'); props.onClose(); return }
+      if (!prods.length) { showToast('No hay productos para exportar', 'warning'); props.onClose(); return }
+      setLoadingDocx(true)
       const prodsEnriquecidos = prods.map(p => ({ ...p, ...enriquecerProducto(p) }))
       await generarDOCX({
         cliente: pedido.cliente,
@@ -70,14 +73,79 @@ const ExportMenuInline = (props) => {
         telefonoVendedor: pedido.telefonoVendedor,
         productos: prodsEnriquecidos
       })
+      showToast('Word descargado correctamente', 'success')
       props.onClose()
-    } catch (e) { alert('Error exportando DOC: ' + e.message); props.onClose() }
+    } catch (e) { showToast('Error exportando DOC: ' + e.message, 'error'); props.onClose() }
+    finally { setLoadingDocx(false) }
   }
 
+  const guardarYDescargarHTML = async () => {
+    try {
+      const faltantes = validarPedidoParaHTML(pedido)
+      if (faltantes.length) { showToast(`HTML requiere: ${faltantes.join(', ')}`, 'warning'); props.onClose(); return }
+      const cuotas = JSON.parse(localStorage.getItem(STORAGE_CUOTAS_KEY) || '[]')
+      const cuotasConMonto = cuotas.filter(c => parseFloat(c.monto) > 0)
+      if (!cuotasConMonto.length) {
+        showToast('Distribuya montos antes de guardar', 'warning')
+        props.onClose()
+        return
+      }
+      setLoadingHtml(true)
+      const htmlContent = generarContenidoHTML(pedido, cuotas)
+      const nombreArchivo = generarNombreArchivo(pedido.ruc, pedido.numeroPedido)
+
+      await guardarHTMLSnapshot({
+        cliente: pedido.cliente || 'Sin cliente',
+        ruc: pedido.ruc,
+        numeroPedido: pedido.numeroPedido,
+        html: htmlContent
+      })
+
+      descargarHTML(htmlContent, nombreArchivo)
+      showToast('HTML guardado y descargado', 'success')
+      props.onClose()
+    } catch (e) {
+      console.error('Error guardando HTML:', e)
+      showToast('Error guardando HTML: ' + e.message, 'error')
+      props.onClose()
+    }
+    finally { setLoadingHtml(false) }
+  }
+
+  // Home page: XLSX + DOCX
+  if (props.isHome) {
+    return (
+      <div class="export-panel">
+        <div class="export-panel-header">EXPORTAR PEDIDO</div>
+        <button class="export-option" onClick={exportXLSX} disabled={loadingXlsx()}>
+          <span class="export-icon">{loadingXlsx() ? '⏳' : '📊'}</span>
+          <span class="export-text">
+            <span class="export-label">{loadingXlsx() ? 'Generando...' : 'Excel'}</span>
+            <span class="export-desc">XLSX con fórmulas</span>
+          </span>
+        </button>
+        <button class="export-option" onClick={exportDOC} disabled={loadingDocx()}>
+          <span class="export-icon">{loadingDocx() ? '⏳' : '📝'}</span>
+          <span class="export-text">
+            <span class="export-label">{loadingDocx() ? 'Generando...' : 'Word'}</span>
+            <span class="export-desc">Carta corporativa</span>
+          </span>
+        </button>
+      </div>
+    )
+  }
+
+  // Distribution page: Guardar + Descargar HTML
   return (
-    <div class="export-menu">
-      <button class="export-menu-item" onClick={exportXLSX} title="Exportar a Excel">XLSX</button>
-      <button class="export-menu-item" onClick={exportDOC} title="Exportar a Word">DOC</button>
+    <div class="export-panel">
+      <div class="export-panel-header">REPORTE HTML</div>
+      <button class="export-option" onClick={guardarYDescargarHTML} disabled={loadingHtml()}>
+        <span class="export-icon">{loadingHtml() ? '⏳' : '💾'}</span>
+        <span class="export-text">
+          <span class="export-label">{loadingHtml() ? 'Generando...' : 'Guardar y Descargar'}</span>
+          <span class="export-desc">Bóveda + archivo local</span>
+        </span>
+      </button>
     </div>
   )
 }
@@ -87,9 +155,8 @@ export const Sidebar = () => {
   const location = useLocation()
   const pedido = usePedido()
   const { toggleTheme, darkTheme } = useTheme()
-  const { enriquecerProducto } = useCatalogo()
-  const { calculos } = getAgentesSkill()
 
+  const [expanded, setExpanded] = createSignal(true)
   const [showExport, setShowExport] = createSignal(false)
   const [showHistory, setShowHistory] = createSignal(false)
   const [htmlCount, setHtmlCount] = createSignal(0)
@@ -98,68 +165,6 @@ export const Sidebar = () => {
     listarHTMLSnapshots().then(items => setHtmlCount(items.length))
   })
 
-  const guardarHTML = async () => {
-    try {
-      const faltantes = []
-      if (!pedido.cliente) faltantes.push('Cliente')
-      if (!pedido.ruc) faltantes.push('Documento (RUC/DNI)')
-      if (!pedido.numeroPedido) faltantes.push('N° Pedido')
-      if (!pedido.vendedor) faltantes.push('Vendedor')
-      if (faltantes.length) { alert(`⚠️ HTML / Distribución requiere:\n• ${faltantes.join('\n• ')}`); return false }
-      const cuotas = JSON.parse(localStorage.getItem(STORAGE_CUOTAS_KEY) || '[]')
-      const cuotasConMonto = cuotas.filter(c => parseFloat(c.monto) > 0)
-      if (!cuotasConMonto.length) {
-        alert('📅 GUÍA: El calendario está vacío o sin montos asignados. Marca fechas y distribuye montos antes de guardar.')
-        return false
-      }
-
-      const prodsEnriquecidos = pedido.productos.map(p => ({ ...p, ...enriquecerProducto(p) }))
-      const consolidado = calculos.pedido.consolidado(prodsEnriquecidos)
-
-      const htmlContent = buildCronogramaHTML({
-        cliente: pedido.cliente,
-        ruc: pedido.ruc,
-        numeroPedido: pedido.numeroPedido,
-        vendedor: pedido.vendedor,
-        emailVendedor: pedido.emailVendedor,
-        telefonoVendedor: pedido.telefonoVendedor,
-        cuotas,
-        consolidado,
-        productosCalculados: prodsEnriquecidos
-      })
-
-      await guardarHTMLSnapshot({
-        cliente: pedido.cliente || 'Sin cliente',
-        ruc: pedido.ruc,
-        numeroPedido: pedido.numeroPedido,
-        html: htmlContent
-      })
-      setHtmlCount(c => c + 1)
-
-      const now = new Date()
-      const fechaArchivo = now.toISOString().split('T')[0].replace(/-/g, '')
-      const rucLimpio = (pedido.ruc || '').replace(/\D/g, '')
-      const docValido = (rucLimpio.length === 8 || rucLimpio.length === 11) ? rucLimpio : 'DOC'
-      const pedidoLimpio = (pedido.numeroPedido || 'PEDIDO').replace(/[^a-zA-Z0-9\-_]/g, '').trim().substring(0, 12)
-      const nombreArchivo = `cronograma_${docValido}_${pedidoLimpio}_${fechaArchivo}.html`
-
-      const blob = new Blob([htmlContent], { type: 'text/html' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = nombreArchivo
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-
-      return true
-    } catch (e) {
-      console.error('Error guardando HTML:', e)
-      return false
-    }
-  }
-
   const stockAlerts = createMemo(() => {
     const prods = pedido.productos
     if (!prods.length) return 0
@@ -167,18 +172,19 @@ export const Sidebar = () => {
   })
 
   const isHomePage = () => location.pathname === '/'
+  const isDistPage = () => location.pathname === '/distribucion'
   const hasProducts = () => pedido.productos.length > 0
 
   const handleAction = async (action) => {
     switch (action) {
       case 'chart':
-        if (!hasProducts()) { alert('Primero carga productos para ver el analisis grafico'); return }
+        if (!hasProducts()) { alert('Primero carga productos para ver el análisis gráfico'); return }
         if (window.showChartModal) window.showChartModal()
         break
       case 'dist':
         if (isHomePage()) {
           if (pedido.tieneDistPendiente()) {
-            const continuar = confirm('Hay una DISTRIBUCION en proceso')
+            const continuar = confirm('Hay una DISTRIBUCIÓN en proceso')
             if (!continuar) return
           } else {
             pedido.iniciarDistribucion()
@@ -195,13 +201,8 @@ export const Sidebar = () => {
           const agotados = prodsStock.filter(p => p.estadoStock === 'Agotado').length
           const porConfirmar = prodsStock.filter(p => p.estadoStock === 'AJ').length
           const lista = prodsStock.slice(0, 5).map(p => `${p.codigo} ${(p.descripcion || '').slice(0, 25)} (${p.estadoStock})`).join('\n')
-          const mas = prodsStock.length > 5 ? `...y ${prodsStock.length - 5} mas` : ''
+          const mas = prodsStock.length > 5 ? `...y ${prodsStock.length - 5} más` : ''
           alert(`STOCK BAJO\nAgotados: ${agotados}\nPor confirmar: ${porConfirmar}\n${lista}${mas}`)
-        }
-        break
-      case 'guardar':
-        if (await guardarHTML()) {
-          alert('✅ HTML guardado correctamente en la bóveda')
         }
         break
       case 'cargar':
@@ -217,45 +218,135 @@ export const Sidebar = () => {
           setTareaPendiente(false)
         }
         break
-      case 'theme':
-        toggleTheme()
-        break
     }
   }
 
-  const toggleExport = (e) => { e.stopPropagation(); setShowExport(!showExport()) }
-  const closeExport = () => setShowExport(false)
+  const exportLabel = isDistPage() ? 'Reporte' : 'Exportar'
+  const exportIcon = isDistPage() ? '📄' : '📥'
+
+  // Calcular posición del panel basado en el botón
+  const [panelPos, setPanelPos] = createSignal({ top: 100, left: 64 })
+  let exportBtnRef = null
+
+  const toggleExportPanel = () => {
+    if (exportBtnRef) {
+      const rect = exportBtnRef.getBoundingClientRect()
+      setPanelPos({ top: rect.top, left: rect.right + 8 })
+    }
+    setShowExport(!showExport())
+  }
 
   return (
-    <aside class="g360-sidebar">
-      <div class="sidebar-inner">
-        <div class="export-menu-wrapper">
-          <button class="sidebar-btn export-btn" onClick={toggleExport} title="Exportar pedido"><span class="sidebar-icon">📥</span></button>
-          <Show when={showExport()}><ExportMenuInline onClose={closeExport} /></Show>
-        </div>
-        <button class="sidebar-btn" onClick={toggleTheme} title="Cambiar tema"><span class="sidebar-icon">{darkTheme() ? '☀️' : '🌙'}</span></button>
-        <Show when={!isHomePage()}><button class="sidebar-btn" onClick={() => navigate('/')} title="Volver"><span class="sidebar-icon">↩️</span></button></Show>
-        <For each={sidebarActions}>
-          {(item) => (
-            <Show when={item.id !== 'analisis' || isHomePage()}>
-              <Show when={item.id !== 'cuotas' || isHomePage()}>
-                <button class={item.id === 'stock' && stockAlerts() > 0 ? 'sidebar-btn has-badge' : 'sidebar-btn'}
-                  onClick={() => handleAction(item.action)}
-                  title={(() => {
-                    if (item.id === 'guardar' && isHomePage()) return '💾 Guía: Entra a Distribución para guardar HTML'
-                    return item.tooltip
-                  })()}
-                  data-action={item.action} data-icon={item.icon}>
-                  <span class="sidebar-icon">{item.icon}</span>
-                  <Show when={item.id === 'cargar' && htmlCount() > 0}>
-                    <span class="sidebar-badge" style="background: var(--g360-accent); font-size: 0.5rem; width: 14px; height: 14px; top: -2px; right: -2px;">{htmlCount()}</span>
-                  </Show>
-                </button>
-              </Show>
-            </Show>
-          )}
-        </For>
+    <aside class={`g360-sidebar ${expanded() ? 'expanded' : 'collapsed'}`}>
+      {/* Header */}
+      <div class="sidebar-header">
+        <Show when={expanded()}>
+          <div class="sidebar-brand">
+            <span class="brand-icon">☰</span>
+            <span class="brand-text">Menú</span>
+          </div>
+        </Show>
+        <button class="sidebar-toggle" onClick={() => setExpanded(!expanded())} title={expanded() ? 'Colapsar' : 'Expandir'}>
+          <span class="toggle-icon">{expanded() ? '«' : '»'}</span>
+        </button>
       </div>
+
+      <div class="sidebar-nav">
+        {/* NAVEGACIÓN */}
+        <Show when={expanded()}>
+          <div class="nav-section-label">NAVEGACIÓN</div>
+        </Show>
+        
+        <button
+          class={`nav-item ${isHomePage() ? 'active' : ''}`}
+          onClick={() => navigate('/')}
+          title="Pedidos y Cotizaciones"
+        >
+          <span class="nav-icon">📦</span>
+          <Show when={expanded()}><span class="nav-label">Pedidos</span></Show>
+        </button>
+
+        <Show when={hasProducts()}>
+          <button
+            class={`nav-item ${isDistPage() ? 'active' : ''}`}
+            onClick={() => handleAction('dist')}
+            title="Distribución de Letras"
+          >
+            <span class="nav-icon">📅</span>
+            <Show when={expanded()}><span class="nav-label">Distribución</span></Show>
+          </button>
+        </Show>
+
+        {/* ACCIONES */}
+        <Show when={expanded()}>
+          <div class="nav-section-label">ACCIONES</div>
+        </Show>
+
+        <Show when={hasProducts()}>
+          <button class="nav-item" onClick={() => handleAction('chart')} title="Análisis gráfico">
+            <span class="nav-icon">📊</span>
+            <Show when={expanded()}><span class="nav-label">Análisis</span></Show>
+          </button>
+        </Show>
+
+        <button
+          class={`nav-item ${stockAlerts() > 0 ? 'has-alert' : ''}`}
+          onClick={() => handleAction('stock')}
+          title={`Stock: ${stockAlerts()} alertas`}
+        >
+          <span class="nav-icon">⚠️</span>
+          <Show when={expanded()}><span class="nav-label">Stock</span></Show>
+          <Show when={stockAlerts() > 0}>
+            <span class="nav-badge">{stockAlerts()}</span>
+          </Show>
+        </button>
+
+        {/* EXPORTAR — Context-aware */}
+        <Show when={expanded()}>
+          <div class="nav-section-label">{isDistPage() ? 'REPORTE' : 'EXPORTAR'}</div>
+        </Show>
+
+        <div class="export-wrapper">
+          <button ref={exportBtnRef} class="nav-item" onClick={toggleExportPanel} title={isDistPage() ? 'Generar reporte HTML' : 'Exportar pedido'}>
+            <span class="nav-icon">{exportIcon}</span>
+            <Show when={expanded()}><span class="nav-label">{exportLabel}</span></Show>
+          </button>
+        </div>
+
+        {/* Panel de exportación - fuera del sidebar */}
+        <Show when={showExport()}>
+          <div class="export-overlay" onClick={() => setShowExport(false)} />
+          <div class="export-panel" style={{ top: `${panelPos().top}px`, left: `${panelPos().left}px` }}>
+            <ExportPanel isHome={isHomePage()} onClose={() => setShowExport(false)} />
+          </div>
+        </Show>
+
+        <Show when={isDistPage()}>
+          <button class="nav-item" onClick={() => handleAction('cargar')} title="Bóveda de reportes">
+            <span class="nav-icon">📂</span>
+            <Show when={expanded()}><span class="nav-label">Bóveda</span></Show>
+            <Show when={htmlCount() > 0}>
+              <span class="nav-badge">{htmlCount()}</span>
+            </Show>
+          </button>
+        </Show>
+
+        {/* SISTEMA */}
+        <Show when={expanded()}>
+          <div class="nav-section-label">SISTEMA</div>
+        </Show>
+
+        <button class="nav-item" onClick={toggleTheme} title="Cambiar tema">
+          <span class="nav-icon">{darkTheme() ? '☀️' : '🌙'}</span>
+          <Show when={expanded()}><span class="nav-label">{darkTheme() ? 'Claro' : 'Oscuro'}</span></Show>
+        </button>
+
+        <button class="nav-item nav-danger" onClick={() => handleAction('nuevo')} title="Limpiar todo">
+          <span class="nav-icon">🗑️</span>
+          <Show when={expanded()}><span class="nav-label">Limpiar</span></Show>
+        </button>
+      </div>
+
       <HistoryModal show={showHistory()} onClose={() => setShowHistory(false)} />
     </aside>
   )

@@ -86,6 +86,7 @@ const HomePage = () => {
           numeroPedido={pedido.numeroPedido}
           idCliente={pedido.idCliente}
           sucursal={pedido.sucursal}
+          idVendedor={pedido.idVendedor}
           vendedor={pedido.vendedor}
           emailVendedor={pedido.emailVendedor}
           telefonoVendedor={pedido.telefonoVendedor}
@@ -94,6 +95,7 @@ const HomePage = () => {
           onNumeroPedidoChange={pedido.setNumeroPedido}
           onIdClienteChange={pedido.setIdCliente}
           onSucursalChange={pedido.setSucursal}
+          onIdVendedorChange={pedido.setIdVendedor}
           onVendedorChange={pedido.setVendedor}
           onEmailVendedorChange={pedido.setEmailVendedor}
           onTelefonoVendedorChange={pedido.setTelefonoVendedor}

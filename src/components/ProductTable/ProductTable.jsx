@@ -117,15 +117,27 @@ const LineaGroup = (props) => {
 export const ProductTable = (props) => {
   const [currentPage, setCurrentPage] = createSignal(1)
   const [expandedLineas, setExpandedLineas] = createSignal({})
+  const [searchTerm, setSearchTerm] = createSignal('')
   const itemsPerPage = 75
 
   const productos = () => props.productos || []
   const totales = () => props.totales || { subtotal: 0, totalIGV: 0, totalDisponible: 0 }
 
+  // Filtrar productos por búsqueda
+  const productosFiltrados = createMemo(() => {
+    const term = searchTerm().toLowerCase().trim()
+    if (!term) return props.productos || []
+    return (props.productos || []).filter(p => 
+      (p.codigo || '').toLowerCase().includes(term) ||
+      (p.descripcion || '').toLowerCase().includes(term) ||
+      (p.linea || '').toLowerCase().includes(term)
+    )
+  })
+
   // Agrupar productos por línea
    const productosPorLinea = createMemo(() => {
-     if (!props.productos) return {}
-     return props.productos.reduce((acc, p) => {
+     const prods = productosFiltrados()
+     return prods.reduce((acc, p) => {
        const linea = p.linea || 'Sin Línea'
        if (!acc[linea]) acc[linea] = []
        acc[linea].push(p)
@@ -150,10 +162,10 @@ export const ProductTable = (props) => {
   })
 
   // Pagination solo para vista sin grupo
-  const totalPages = () => Math.ceil(props.productos.length / itemsPerPage)
+  const totalPages = () => Math.ceil(productosFiltrados().length / itemsPerPage)
   const startIndex = () => (currentPage() - 1) * itemsPerPage
   const endIndex = () => startIndex() + itemsPerPage
-  const currentProducts = () => props.productos.slice(startIndex(), endIndex())
+  const currentProducts = () => productosFiltrados().slice(startIndex(), endIndex())
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -161,6 +173,20 @@ export const ProductTable = (props) => {
 
   return (
     <div class="product-table-container">
+      {/* Barra de búsqueda */}
+      <div class="product-search">
+        <input
+          type="text"
+          class="product-search-input"
+          placeholder="Buscar por SKU, descripción o línea..."
+          value={searchTerm()}
+          onInput={(e) => { setSearchTerm(e.currentTarget.value); setCurrentPage(1) }}
+        />
+        <Show when={searchTerm()}>
+          <button class="product-search-clear" onClick={() => { setSearchTerm(''); setCurrentPage(1) }}>×</button>
+        </Show>
+      </div>
+
       <Show 
         when={!props.lineaActiva} 
         fallback={
@@ -187,7 +213,12 @@ export const ProductTable = (props) => {
         }
       >
         <div class="table-info">
-          Mostrando {startIndex() + 1}-{Math.min(endIndex(), props.productos.length)} de {props.productos.length} productos
+          <Show when={searchTerm()}>
+            {productosFiltrados().length} resultados para "{searchTerm()}"
+          </Show>
+          <Show when={!searchTerm()}>
+            Mostrando {startIndex() + 1}-{Math.min(endIndex(), productosFiltrados().length)} de {productosFiltrados().length} productos
+          </Show>
         </div>
 
         <table class="product-table">

@@ -9,11 +9,11 @@ export const G360_SKILL_CONFIG = {
       signature: 'CCUSI',
       brand: 'G360',
       colors: {
-        bg: '#0b1220',
-        surface: '#151e2e',
-        accent: '#00d084',
-        text: '#f0f4f8',
-        muted: '#94a3b8'
+        bg: '#0F172A',
+        surface: '#1E293B',
+        accent: '#00796B',
+        text: '#F1F5F9',
+        muted: '#94A3B8'
       },
       effects: {
         glassmorphism: true,
@@ -45,11 +45,11 @@ export const G360_SKILL_CONFIG = {
       signature: 'CCUSI',
       brand: 'G360',
       colors: {
-        bg: '#0b1220',
-        surface: '#151e2e',
-        accent: '#00d084',
-        text: '#f0f4f8',
-        muted: '#94a3b8'
+        bg: '#0F172A',
+        surface: '#1E293B',
+        accent: '#00796B',
+        text: '#F1F5F9',
+        muted: '#94A3B8'
       },
       effects: {
         glassmorphism: true,
@@ -86,11 +86,11 @@ export const G360_SKILL_CONFIG = {
       signature: 'optional',
       brand: 'none',
       colors: {
-        bg: '#ffffff',
-        surface: '#ffffff',
-        accent: '#2563eb',
-        text: '#1f2937',
-        muted: '#6b7280'
+        bg: '#FFFFFF',
+        surface: '#F8FAFC',
+        accent: '#00796B',
+        text: '#0F172A',
+        muted: '#64748B'
       },
       effects: {
         glassmorphism: false,

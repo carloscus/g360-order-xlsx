@@ -11,7 +11,7 @@ import { getAgentesSkill } from '../core/g360-skill-agentes'
 import initialData from '../data/initialData.json'
 import { CHART_COLORS } from '../constants/sharedConstants'
 import { generarXLSX } from '../utils/xlsxGenerator'
-import { buildCronogramaHTML } from '../utils/htmlExportBuilder'
+import { generarContenidoHTML, validarPedidoParaHTML, generarNombreArchivo, descargarHTML } from '../helpers/htmlHelper'
 
 import { STORAGE_KEYS } from '../constants/storage'
 
@@ -74,7 +74,11 @@ export const DistributionPage = () => {
   const getRuc = () => pedido.ruc || ''
   const getNumeroPedido = () => pedido.numeroPedido || ''
   const getVendedor = () => pedido.vendedor || ''
-  const getEmailVendedor = () => pedido.emailVendedor || ''
+  const getEmailVendedor = () => {
+    const email = pedido.emailVendedor || ''
+    if (!email) return ''
+    return email.includes('@') ? email : `${email}@cipsa.com.pe`
+  }
   const getTelefonoVendedor = () => pedido.telefonoVendedor || ''
   const getProductos = () => pedido.productos || []
 
@@ -162,17 +166,8 @@ export const DistributionPage = () => {
     window.print()
   }
 
-  const handleDownloadHTML = () => { // Removed redundant async
-    const cliente = getCliente()
-    const ruc = getRuc()
-    const numeroPedido = getNumeroPedido()
-    const vendedor = getVendedor()
-    
-    const faltantes = []
-    if (!cliente) faltantes.push('Cliente')
-    if (!ruc) faltantes.push('Documento (RUC/DNI)')
-    if (!numeroPedido) faltantes.push('N° Pedido')
-    if (!vendedor) faltantes.push('Vendedor')
+  const handleDownloadHTML = () => {
+    const faltantes = validarPedidoParaHTML(pedido)
     if (faltantes.length) {
       alert(`⚠️ HTML / Distribución requiere:\n• ${faltantes.join('\n• ')}`)
       return
@@ -185,37 +180,9 @@ export const DistributionPage = () => {
       return
     }
 
-    const now = new Date()
-    const fechaArchivo = now.toISOString().split('T')[0].replace(/-/g, '')
-    const rucLimpio = ruc ? ruc.replace(/\D/g, '') : ''
-    const documentoValido = (rucLimpio.length === 8 || rucLimpio.length === 11) ? rucLimpio : 'DOC'
-    const pedidoLimpio = numeroPedido 
-      ? numeroPedido.replace(/[^a-zA-Z0-9\-_]/g, '').trim().substring(0, 12)
-      : 'PEDIDO'
-    
-    const nombreArchivo = `cronograma_${documentoValido}_${pedidoLimpio}_${fechaArchivo}.html`
-
-    const htmlContent = buildCronogramaHTML({
-      cliente, ruc, numeroPedido,
-      idCliente: pedido.idCliente,
-      sucursal: pedido.sucursal,
-      vendedor: getVendedor(),
-      emailVendedor: getEmailVendedor(),
-      telefonoVendedor: getTelefonoVendedor(),
-      cuotas: cuotas(),
-      consolidado: datosOriginales(),
-      productosCalculados: productosCalculados()
-    })
-
-    const blob = new Blob([htmlContent], { type: 'text/html' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = nombreArchivo
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+    const htmlContent = generarContenidoHTML(pedido, cuotas())
+    const nombreArchivo = generarNombreArchivo(pedido.ruc, pedido.numeroPedido)
+    descargarHTML(htmlContent, nombreArchivo)
   }
 
   // UX: Memorizar máximos para el gráfico de barras fuera del bucle For
@@ -491,10 +458,15 @@ export const DistributionPage = () => {
                 <ProductTable productos={productosCalculados()} totales={datosFiltrados().totales} />
               </div>
             </div>
+
+            {/* Botón descargar HTML */}
+            <div class="dist-actions">
+              <button class="btn-primary" onClick={handleDownloadHTML}>
+                📥 Descargar Reporte HTML
+              </button>
+            </div>
           </div>
         </div>
-
-        
 
       </Show>
     </Show>

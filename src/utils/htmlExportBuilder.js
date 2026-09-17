@@ -214,9 +214,9 @@ const renderTablaProductos = (productos) => {
     const _estado = p.estadoLinea
     const _colorEstado = p.colorEstadoLinea || COLORES_ESTADO_FALLBACK[_estado] || '#6b7280'
     const badgeTipo = _estado
-      ? `<span class="badge" style="background:${_colorEstado}20;color:${_colorEstado};border:1px solid ${_colorEstado}40;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">${_estado}</span>`
+      ? `<span class="badge" style="background:${_colorEstado}20;color:${_colorEstado};border:1px solid ${_colorEstado}40;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;white-space:nowrap">${_estado}</span>`
       : ''
-    return `<tr><td style="text-align:center;color:var(--g360-muted);font-size:var(--text-xs)">${idx + 1}</td><td style="text-align:right"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${p.cantidad}</td><td>${p.unidadMedida || p.unBx ? 'UND' : ''}</td><td style="font-family:monospace;font-size:var(--text-xs)">${p.codigo}</td><td title="${(p.descripcion || '').replace(/"/g, '"')}">${(p.descripcion || '').slice(0, 60)}${(p.descripcion || '').length > 60 ? '...' : ''}</td><td style="text-align:right">${formatear4(p.precioUnitario || 0)}</td><td style="text-align:center">${redondear2(p.descuento1 || 0)}</td><td style="text-align:center">${redondear2(p.descuento2 || 0)}</td><td style="text-align:right;font-weight:var(--fw-bold)">${formatear(totalNeto)}</td><td style="text-align:right">${formatear4(precioUnitCIGV)}</td><td style="text-align:right">${formatear(totalVenta)}</td><td style="text-align:center">${badgeTipo}</td></tr>`
+    return `<tr><td class="td-center">${idx + 1}</td><td class="td-right"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${p.cantidad}</td><td class="td-center">${p.unidadMedida || 'UND'}</td><td class="td-mono">${p.codigo}</td><td class="td-desc" title="${(p.descripcion || '').replace(/"/g, '&quot;')}">${(p.descripcion || '').slice(0, 45)}${(p.descripcion || '').length > 45 ? '…' : ''}</td><td class="td-right">${formatear4(p.precioUnitario || 0)}</td><td class="td-center">${redondear2(p.descuento1 || 0)}</td><td class="td-center">${redondear2(p.descuento2 || 0)}</td><td class="td-right td-bold">${formatear(totalNeto)}</td><td class="td-right">${formatear4(precioUnitCIGV)}</td><td class="td-right td-total">${formatear(totalVenta)}</td><td class="td-center">${badgeTipo}</td></tr>`
   }).join('')
 
   const totalLinea = redondear2(productos.reduce((s, p) => s + (p.valorVenta || 0), 0))
@@ -229,27 +229,26 @@ const renderTablaProductos = (productos) => {
   <div class="table-container">
     <table>
       <thead><tr>
-        <th style="width:30px">#</th>
-        <th style="width:60px;text-align:right">Cant.</th>
-        <th style="width:70px">U/M</th>
-        <th style="width:80px">SKU</th>
-        <th style="min-width:200px">Descripción</th>
-        <th style="width:90px;text-align:right">P. Lista (S/.)</th>
-        <th style="width:70px;text-align:center">Desc 01 (%)</th>
-        <th style="width:70px;text-align:center">Desc 02 (%)</th>
-        <th style="width:110px;text-align:right">Total Neto (S/.)</th>
-        <th style="width:110px;text-align:right">P. Unit c/IGV (S/.)</th>
-        <th style="width:110px;text-align:right">Total Venta (S/.)</th>
-        <th style="width:70px;text-align:center">Tipo</th>
+        <th class="th-narrow">#</th>
+        <th class="th-right">Cant.</th>
+        <th class="th-center">U/M</th>
+        <th class="th-sku">SKU</th>
+        <th class="th-desc">Descripción</th>
+        <th class="th-right">P. Lista</th>
+        <th class="th-center">Dto1</th>
+        <th class="th-center">Dto2</th>
+        <th class="th-right">Neto</th>
+        <th class="th-right">P.Unit</th>
+        <th class="th-right th-total">TOTAL</th>
+        <th class="th-center">Tipo</th>
       </tr></thead>
       <tbody>${rows}</tbody>
       <tfoot>
         <tr>
-          <td colspan="6" class="tf-label">TOTALES (${productos.length} productos)</td>
-          <td></td><td></td><td></td>
+          <td colspan="9" class="tf-label">TOTALES (${productos.length} productos)</td>
           <td class="tf-value" style="text-align:right">S/ ${formatear(totalLinea)}</td>
           <td></td>
-          <td class="tf-value" style="text-align:right">S/ ${formatear(totalVentaFinal)}</td>
+          <td class="tf-value tf-total" style="text-align:right">S/ ${formatear(totalVentaFinal)}</td>
         </tr>
       </tfoot>
     </table>
@@ -262,6 +261,7 @@ const renderTablaProductos = (productos) => {
  */
 function buildContent(data) {
   const { cliente, ruc, numeroPedido, idCliente, sucursal, vendedor, emailVendedor, telefonoVendedor, cuotas, consolidado, productosCalculados } = data
+  const emailFull = emailVendedor ? (emailVendedor.includes('@') ? emailVendedor : `${emailVendedor}@cipsa.com.pe`) : ''
   const now = new Date()
   const fechaStr = now.toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
   const totalPedido = consolidado.totales?.totalIGV || 1
@@ -412,13 +412,15 @@ function getPrintStyles() {
   .psf-mes-fecha { color:#333 !important; }
   .psf-mes-monto { color:#000 !important; }
   .psf-mes-total { color:#000 !important; border-top:1px dashed #333 !important; }
-  table { font-size:9px !important; }
-  thead th { background:#333 !important; color:white !important; padding:4px 4px !important; font-size:8px !important; }
-  tbody td { border-color:#ccc !important; padding:4px 4px !important; font-size:9px !important; }
+  table { font-size:8px !important; table-layout:fixed !important; width:100% !important; }
+  thead th { background:#333 !important; color:white !important; padding:3px 3px !important; font-size:7px !important; }
+  tbody td { border-color:#ccc !important; padding:3px 3px !important; font-size:8px !important; }
   tbody tr:nth-child(even) { background:#f5f5f5 !important; }
-  tfoot td { border-color:#000 !important; padding:4px 4px !important; }
+  tfoot td { border-color:#000 !important; padding:4px 3px !important; font-size:9px !important; }
+  .td-desc { max-width:120px !important; white-space:normal !important; }
+  .stock-dot { width:6px !important; height:6px !important; }
   .footer { color:#666 !important; border-color:#ccc !important; padding:8px 0 4px !important; margin-top:12px !important; font-size:8px !important; }
-  .section { page-break-inside:avoid; }
+  .section { page-break-inside:avoid; margin-bottom:8px !important; padding:6px !important; }
   thead { display:table-header-group; }
   tr { page-break-inside:avoid; }
   h3,h4 { page-break-after:avoid; }
@@ -584,17 +586,41 @@ export const buildCronogramaHTML = (data) => {
     .psf-mes-fecha { color:var(--g360-text); font-weight:var(--fw-medium); }
     .psf-mes-monto { color:var(--g360-accent); font-weight:var(--fw-bold); }
     .psf-mes-total { text-align:right; font-size:var(--text-sm); font-weight:var(--fw-bold); color:var(--g360-accent); padding-top:6px; margin-top:6px; border-top:1px dashed var(--g360-border); }
-    .table-container { overflow-x:auto; margin-top:16px; }
-    table { width:100%; border-collapse:collapse; font-size:var(--text-sm); }
+    .table-container { margin-top:12px; }
+    table { width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed; }
+    colgroup .col-narrow { width:28px; }
+    colgroup .col-cant { width:50px; }
+    colgroup .col-um { width:38px; }
+    colgroup .col-sku { width:58px; }
+    colgroup .col-desc { width:auto; }
+    colgroup .col-price { width:62px; }
+    colgroup .col-dto { width:38px; }
+    colgroup .col-neto { width:70px; }
+    colgroup .col-unit { width:58px; }
+    colgroup .col-total { width:75px; }
+    colgroup .col-tipo { width:70px; }
     thead { background:var(--g360-surface); }
-    thead th { padding:12px 8px; text-align:left; font-size:var(--text-xs); font-weight:var(--fw-bold); color:var(--g360-muted); text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid var(--g360-accent); white-space:nowrap; }
-    tbody td { padding:10px 8px; border-bottom:1px solid var(--g360-border); color:var(--g360-text); }
+    thead th { padding:6px 4px; text-align:left; font-size:9px; font-weight:var(--fw-bold); color:var(--g360-muted); text-transform:uppercase; letter-spacing:0.3px; border-bottom:2px solid var(--g360-accent); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .th-narrow { text-align:center; width:28px; }
+    .th-right { text-align:right; }
+    .th-center { text-align:center; }
+    .th-sku { width:58px; }
+    .th-desc { width:auto; }
+    .th-total { color:var(--g360-accent); }
+    tbody td { padding:5px 4px; border-bottom:1px solid var(--g360-border); color:var(--g360-text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .td-center { text-align:center; }
+    .td-right { text-align:right; }
+    .td-mono { font-family:monospace; font-size:9px; text-align:center; }
+    .td-desc { white-space:normal; overflow:hidden; text-overflow:ellipsis; max-width:180px; font-size:10px; }
+    .td-bold { font-weight:var(--fw-bold); }
+    .td-total { color:var(--g360-accent); font-weight:var(--fw-bold); }
     tbody tr:hover { background:rgba(0,208,132,0.05); }
     tbody tr:nth-child(even) { background:rgba(128,128,128,0.03); }
-    tfoot td { padding:12px 8px; border-top:2px solid var(--g360-accent); font-weight:var(--fw-bold); }
-    .tf-label { color:var(--g360-muted); text-transform:uppercase; font-size:var(--text-xs); letter-spacing:0.5px; }
-    .tf-value { color:var(--g360-accent); font-size:var(--text-base); }
-    .stock-dot { display:inline-block; width:10px; height:10px; border-radius:50%; }
+    tfoot td { padding:8px 4px; border-top:2px solid var(--g360-accent); font-weight:var(--fw-bold); font-size:11px; }
+    .tf-label { color:var(--g360-muted); text-transform:uppercase; font-size:9px; letter-spacing:0.5px; }
+    .tf-value { color:var(--g360-accent); font-size:12px; }
+    .tf-total { font-size:13px; color:var(--g360-accent); }
+    .stock-dot { display:inline-block; width:8px; height:8px; border-radius:50%; vertical-align:middle; }
     .stock-ok { background:#22c55e; }
     .stock-aj { background:#f59e0b; }
     .stock-agotado { background:#ef4444; }
