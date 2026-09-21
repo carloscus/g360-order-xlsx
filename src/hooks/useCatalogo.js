@@ -129,11 +129,13 @@ export const useCatalogo = () => {
   const lookupQueue = []
   let lookupRunning = 0
   const MAX_CONCURRENT = 3
+  const skusEnCola = new Set() // Evitar duplicar SKUs en la cola
 
   const procesarLookup = async () => {
     if (lookupRunning >= MAX_CONCURRENT || lookupQueue.length === 0) return
     lookupRunning++
     const { sku, resolve } = lookupQueue.shift()
+    skusEnCola.delete(sku)
     try {
       const response = await apiClient.fetchStockBySku(sku)
       if (response && response.sku) {
@@ -157,6 +159,15 @@ export const useCatalogo = () => {
   }
 
   const buscarProductoIndividual = (sku) => {
+    // Si ya está en skusEnriched, no buscar de nuevo
+    if (skusEnriched().has(sku)) {
+      return Promise.resolve(skusEnriched().get(sku))
+    }
+    // Si ya está en la cola, no duplicar
+    if (skusEnCola.has(sku)) {
+      return Promise.resolve(null)
+    }
+    skusEnCola.add(sku)
     return new Promise((resolve) => {
       lookupQueue.push({ sku, resolve })
       procesarLookup()
