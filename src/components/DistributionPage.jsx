@@ -270,7 +270,7 @@ export const DistributionPage = () => {
 <div class="dist-kpi-card blue">
                    <div class="dist-kpi-label">📦 Cajas Totales</div>
                    <div class="dist-kpi-value">
-                     {datosFiltrados().totalGeneral.cajasCompletas} BX
+                     {datosFiltrados().totalGeneral.cajasCompletas || 0} BX
                      <Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}>
                        <span style={{ "font-size": '0.75em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {datosFiltrados().totalGeneral.unidadesSueltas} und</span>
                      </Show>
@@ -376,7 +376,7 @@ export const DistributionPage = () => {
                       <span class="dist-butterfly-total-value" style={{ color: 'var(--g360-accent)', "font-size": 'var(--g360-font-sm)' }}>TOTAL</span>
                     </div>
                     <div class="dist-butterfly-total-right">
-                      <div class="dist-butterfly-total-value">{datosFiltrados().totalGeneral.cajasCompletas} BX<Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}><span style={{ "font-size": '0.85em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {datosFiltrados().totalGeneral.unidadesSueltas} und</span></Show> | {datosFiltrados().totalGeneral.peso.toFixed(1)} kg</div>
+                      <div class="dist-butterfly-total-value">{datosFiltrados().totalGeneral.cajasCompletas || datosFiltrados().totalGeneral.cajas || 0} BX<Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}><span style={{ "font-size": '0.85em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {datosFiltrados().totalGeneral.unidadesSueltas} und</span></Show> | {datosFiltrados().totalGeneral.peso.toFixed(1)} kg</div>
                       <div class="dist-butterfly-total-label">Total Volumen (100%)</div>
                     </div>
                   </div>
@@ -414,7 +414,7 @@ export const DistributionPage = () => {
                     <span class="dist-category-name">TOTAL</span>
                     <span class="dist-category-monto">{formatSoles(datosFiltrados().subtotal)}</span>
                     <span class="dist-category-sep">|</span>
-<span class="dist-category-bx">{datosFiltrados().totalGeneral.cajasCompletas} BX<Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}> + {datosFiltrados().totalGeneral.unidadesSueltas} und</Show></span>
+<span class="dist-category-bx">{datosFiltrados().totalGeneral.cajasCompletas || datosFiltrados().totalGeneral.cajas || 0} BX<Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}> + {datosFiltrados().totalGeneral.unidadesSueltas} und</Show></span>
                     <span class="dist-category-bx">{datosFiltrados().totalGeneral.peso.toFixed(1)} kg</span>
                   </span>
                 </div>
@@ -453,7 +453,7 @@ export const DistributionPage = () => {
                       <span class="dist-category-name">TOTAL</span>
                       <span class="dist-category-monto">{formatSoles(datosFiltrados().subtotal)}</span>
                       <span class="dist-category-sep">|</span>
-<span class="dist-category-bx">{datosFiltrados().totalGeneral.cajasCompletas} BX<Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}> + {datosFiltrados().totalGeneral.unidadesSueltas} und</Show></span>
+<span class="dist-category-bx">{datosFiltrados().totalGeneral.cajasCompletas || datosFiltrados().totalGeneral.cajas || 0} BX<Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}> + {datosFiltrados().totalGeneral.unidadesSueltas} und</Show></span>
                       <span class="dist-category-bx">{datosFiltrados().totalGeneral.peso.toFixed(1)} kg</span>
                     </span>
                   </div>

@@ -57,6 +57,7 @@ const calcularTotalesPedido = (productos) => {
   const totalDisponible = disponibles.reduce((sum, p) => sum + (p.precioVenta || 0), 0)
 
   const totalCajas = productos.reduce((sum, p) => sum + (p.cajas || 0), 0)
+  const totalCajasCompletas = productos.reduce((sum, p) => sum + (p.cajasCompletas || 0), 0)
   const totalUnidadesSueltas = productos.reduce((sum, p) => sum + (p.unidadesSueltas || 0), 0)
   const totalPeso = productos.reduce((sum, p) => sum + (p.pesoTotal || 0), 0)
 
@@ -66,6 +67,7 @@ const calcularTotalesPedido = (productos) => {
     totalIGV,
     totalDisponible,
     totalCajas,
+    totalCajasCompletas,
     totalUnidadesSueltas,
     totalPeso,
     productosTotal: productos.length,
@@ -159,7 +161,7 @@ const calcularConsolidadoPedido = (productos) => {
     totales: totales,
     datosLinea: calcularDistribucionPorLinea(productos),
     datosCategoria: calcularMetricasPorCategoria(productos),
-    totalGeneral: { cajas: totales.totalCajas, unidadesSueltas: totales.totalUnidadesSueltas, peso: totales.totalPeso }
+    totalGeneral: { cajas: totales.totalCajas, cajasCompletas: totales.totalCajasCompletas, unidadesSueltas: totales.totalUnidadesSueltas, peso: totales.totalPeso }
   }
 }
 
