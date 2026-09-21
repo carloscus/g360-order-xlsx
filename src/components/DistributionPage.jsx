@@ -268,8 +268,8 @@ export const DistributionPage = () => {
                   <div class="dist-kpi-value">{formatSoles(datosFiltrados().subtotal)}</div>
                 </div>
 <div class="dist-kpi-card blue">
-                   <div class="dist-kpi-label">📦 Cajas / UND</div>
-                   <div class="dist-kpi-value">{datosFiltrados().totalGeneral.cajas}/{datosFiltrados().totalGeneral.unidadesSueltas} BX</div>
+                   <div class="dist-kpi-label">📦 Cajas Totales</div>
+                   <div class="dist-kpi-value">{datosFiltrados().totalGeneral.cajas} BX</div>
                  </div>
                 <div class="dist-kpi-card amber">
                   <div class="dist-kpi-label">⚖️ Masa Logística</div>
