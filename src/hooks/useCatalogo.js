@@ -117,8 +117,15 @@ export const useCatalogo = () => {
     return productosMap().get(sku) || null
   }
 
-  // Lookup individual para SKUs no encontrados en el catálogo principal
-  const buscarProductoIndividual = async (sku) => {
+  // Lookup individual con límite de concurrencia
+  const lookupQueue = []
+  let lookupRunning = 0
+  const MAX_CONCURRENT = 3
+
+  const procesarLookup = async () => {
+    if (lookupRunning >= MAX_CONCURRENT || lookupQueue.length === 0) return
+    lookupRunning++
+    const { sku, resolve } = lookupQueue.shift()
     try {
       const response = await apiClient.fetchStockBySku(sku)
       if (response && response.sku) {
@@ -128,13 +135,24 @@ export const useCatalogo = () => {
           next.set(sku, enriched)
           return next
         })
-        console.log(`[useCatalogo] SKU ${sku} encontrado vía lookup individual: un_bx=${enriched.unBx}`)
-        return enriched
+        console.log(`[useCatalogo] SKU ${sku} encontrado: un_bx=${enriched.unBx}`)
+        resolve(enriched)
+      } else {
+        resolve(null)
       }
     } catch (e) {
-      // SKU no existe en la API
+      resolve(null)
+    } finally {
+      lookupRunning--
+      procesarLookup()
     }
-    return null
+  }
+
+  const buscarProductoIndividual = (sku) => {
+    return new Promise((resolve) => {
+      lookupQueue.push({ sku, resolve })
+      procesarLookup()
+    })
   }
 
   const buscarProductoApi = async (sku) => {
