@@ -10,7 +10,12 @@ const { calculos } = getAgentesSkill()
 const { enriquecerProducto } = useCatalogo()
 
 export const generarContenidoHTML = (pedido, cuotas) => {
-  const prodsEnriquecidos = pedido.productos.map(p => ({ ...p, ...enriquecerProducto(p) }))
+  // Usar productos ya calculados del pedido (ya tienen unBx, cajas, etc.)
+  const prodsEnriquecidos = pedido.productos.map(p => ({
+    ...p,
+    // Asegurar que unBx esté presente para el cálculo de cajas
+    unBx: p.unBx || enriquecerProducto(p).unBx || 1
+  }))
   const consolidado = calculos.pedido.consolidado(prodsEnriquecidos)
 
   return buildCronogramaHTML({
