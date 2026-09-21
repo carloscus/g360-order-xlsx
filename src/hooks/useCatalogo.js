@@ -86,6 +86,7 @@ export const useCatalogo = () => {
   onMount(async () => {
     try {
       setCargando(true)
+      console.log('[useCatalogo] Cargando catálogo desde API...')
       const response = await apiClient.fetchStock({ fuente: 'todas', limit: 5000 })
       const items = response.items || []
       if (items.length > 0) {
@@ -97,6 +98,10 @@ export const useCatalogo = () => {
         setSkusEnriched(mapaApi)
         setFuente('api')
         setError(null)
+        console.log('[useCatalogo] API cargada:', items.length, 'productos')
+      } else {
+        console.warn('[useCatalogo] API sin datos, usando catálogo local')
+        setFuente('local_fallback')
       }
     } catch (err) {
       console.warn('[useCatalogo] API no disponible, usando catálogo local:', err.message)
@@ -104,6 +109,7 @@ export const useCatalogo = () => {
       setError(err.message)
     } finally {
       setCargando(false)
+      console.log('[useCatalogo] Fuente final:', fuente(), '| Productos en mapa:', productosMap().size)
     }
   })
 
@@ -140,8 +146,8 @@ export const useCatalogo = () => {
     const pesoKgERP = productoRPE.pesoKg && productoRPE.pesoKg > 0 ? productoRPE.pesoKg : 0
 
     // Debug: verificar si el producto tiene unBx
-    if (!info && productoRPE.codigo) {
-      console.warn(`[useCatalogo] SKU ${productoRPE.codigo} no encontrado en catálogo`)
+    if (!info) {
+      console.warn(`[useCatalogo] SKU ${productoRPE.codigo} NO encontrado en catálogo (mapa size: ${productosMap().size})`)
     }
 
     return {
