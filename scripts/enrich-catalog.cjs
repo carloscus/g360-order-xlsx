@@ -38,6 +38,7 @@ async function fetchSku(sku) {
       nombre_corto: data.nombre_corto,
       ean13: data.ean13,
       ean14: data.ean14,
+      sin_catalogo: !!data.sin_catalogo,
       keywords: data.keywords || [],
       almacenes: data.almacenes || []
     };

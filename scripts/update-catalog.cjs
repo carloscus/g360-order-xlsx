@@ -46,6 +46,7 @@ async function fetchCatalog() {
       nombre_corto: item.nombre_corto,
       ean13: item.ean13,
       ean14: item.ean14,
+      sin_catalogo: !!item.sin_catalogo,
       keywords: item.keywords || [],
       almacenes: item.almacenes || []
     }));

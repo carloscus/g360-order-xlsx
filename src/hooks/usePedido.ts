@@ -267,7 +267,12 @@ export const usePedido = () => {
         const precioVenta = calculos.basic.precioVenta(valorVenta);
         const cantLogistica = (productoCompleto.cantidadUnd > 0) ? productoCompleto.cantidadUnd : productoCompleto.cantidad;
         const estadoStock = calculos.stock.estado(productoCompleto.stock, cantLogistica);
-        const desglose = calculos.logistica.desglose(cantLogistica, productoCompleto.unBx);
+        // Si el producto NO está en catálogo maestro (sin_catalogo), no dividir por unBx
+        // porque el un_bx=1 es un placeholder y generaría cajas falsas (1 und = 1 caja).
+        // Se trata como 1 caja (envío unitario).
+        const desglose = productoCompleto.sinCatalogo
+          ? { cajas: 1, cajasCompletas: 1, unidadesSueltas: 0 }
+          : calculos.logistica.desglose(cantLogistica, productoCompleto.unBx);
         const pesoTotal = calculos.logistica.pesoTotal(cantLogistica, productoCompleto.pesoKg);
 
         // 3. Retornar el objeto final con todos los campos calculados.

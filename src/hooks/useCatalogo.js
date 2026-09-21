@@ -47,6 +47,7 @@ const crearMapaCatalogo = (productos) => {
           categoria: p.categoria || 'SIN CATEGORÍA',
           pesoKg: p.peso_kg || 0,
           unBx: p.un_bx || 0,
+          sinCatalogo: !!p.sin_catalogo,
           estadoLinea: estadoLinea?.estado || null,
           colorEstadoLinea: estadoLinea?.color || null,
         })
@@ -63,6 +64,7 @@ const normalizarItemApi = (item) => {
     categoria: item.categoria || 'SIN CATEGORÍA',
     pesoKg: item.peso_kg || 0,
     unBx: item.un_bx || 0,
+    sinCatalogo: !!item.sin_catalogo,
     estadoLinea: estadoLinea?.estado || null,
     colorEstadoLinea: estadoLinea?.color || null,
   }
@@ -253,6 +255,7 @@ export const useCatalogo = () => {
       linea: erpTieneLineaValida ? lineaERP.toUpperCase() : (info?.linea || 'SIN LÍNEA'),
       pesoKg: pesoKgERP > 0 ? pesoKgERP : (info?.pesoKg || 0),
       unBx: info?.unBx || 0,
+      sinCatalogo: !!info?.sinCatalogo,
       categoria: info?.categoria || 'SIN CATEGORÍA',
       tieneDatosCatalogo: !!info,
       estadoLinea: info?.estadoLinea || 'PENDIENTE',
