@@ -11,6 +11,8 @@ const formatear = (n) => (n || 0).toLocaleString('es-PE', { minimumFractionDigit
 const formatear4 = (n) => (n || 0).toLocaleString('es-PE', { minimumFractionDigits: 4, maximumFractionDigits: 4 })
 const redondear2 = (n) => Math.round((n || 0) * 100) / 100
 
+const COLORES_ESTADO_FALLBACK = { 'NACIONAL': '#059669', 'NUEVO': '#0891b2', 'IMPORTADO': '#d97706', 'TRADICIONAL': '#7c3aed', 'PENDIENTE': '#6b7280', '': '#6b7280' }
+
 const renderTotales = (consolidado) => {
   const sub = redondear2(consolidado.totales?.subtotal || 0)
   const total = redondear2(consolidado.totales?.totalIGV || 0)
@@ -139,7 +141,6 @@ const renderEstadoLinea = (productos, subtotal) => {
     porcentaje: totalValor > 0 ? (g.valorTotal / totalValor) * 100 : 0
   })).sort((a, b) => b.valorTotal - a.valorTotal)
 
-  const COLORES_ESTADO_FALLBACK = { 'NACIONAL': '#059669', 'NUEVO': '#0891b2', 'IMPORTADO': '#d97706', 'TRADICIONAL': '#7c3aed', '': '#6b7280' }
   const badges = datos.map(d => {
     const color = d.color || COLORES_ESTADO_FALLBACK[d.estado] || '#6b7280'
     return `<span class="cat-badge" style="background:${color}15;border:1px solid ${color}40">
@@ -216,6 +217,9 @@ const renderTablaProductos = (productos) => {
     const badgeTipo = _estado
       ? `<span class="badge" style="background:${_colorEstado}20;color:${_colorEstado};border:1px solid ${_colorEstado}40;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;white-space:nowrap">${_estado}</span>`
       : ''
+    // Calcular cajas usando unBx del producto
+    const unBx = p.unBx || 1
+    const cajasCalculadas = Math.ceil((p.cantidad || 0) / unBx)
     return `<tr><td class="td-center">${idx + 1}</td><td class="td-right"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${p.cantidad}</td><td class="td-center">${p.unidadMedida || 'UND'}</td><td class="td-mono">${p.codigo}</td><td class="td-desc" title="${(p.descripcion || '').replace(/"/g, '&quot;')}">${(p.descripcion || '').slice(0, 45)}${(p.descripcion || '').length > 45 ? '…' : ''}</td><td class="td-right">${formatear4(p.precioUnitario || 0)}</td><td class="td-center">${redondear2(p.descuento1 || 0)}</td><td class="td-center">${redondear2(p.descuento2 || 0)}</td><td class="td-right td-bold">${formatear(totalNeto)}</td><td class="td-right">${formatear4(precioUnitCIGV)}</td><td class="td-right td-total">${formatear(totalVenta)}</td><td class="td-center">${badgeTipo}</td></tr>`
   }).join('')
 
