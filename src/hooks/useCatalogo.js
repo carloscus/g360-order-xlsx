@@ -117,6 +117,26 @@ export const useCatalogo = () => {
     return productosMap().get(sku) || null
   }
 
+  // Lookup individual para SKUs no encontrados en el catálogo principal
+  const buscarProductoIndividual = async (sku) => {
+    try {
+      const response = await apiClient.fetchStockBySku(sku)
+      if (response && response.sku) {
+        const enriched = normalizarItemApi(response)
+        setSkusEnriched(prev => {
+          const next = new Map(prev)
+          next.set(sku, enriched)
+          return next
+        })
+        console.log(`[useCatalogo] SKU ${sku} encontrado vía lookup individual: un_bx=${enriched.unBx}`)
+        return enriched
+      }
+    } catch (e) {
+      // SKU no existe en la API
+    }
+    return null
+  }
+
   const buscarProductoApi = async (sku) => {
     const local = buscarProducto(sku)
     if (local) return local
@@ -145,9 +165,14 @@ export const useCatalogo = () => {
 
     const pesoKgERP = productoRPE.pesoKg && productoRPE.pesoKg > 0 ? productoRPE.pesoKg : 0
 
-    // Debug: verificar si el producto tiene unBx
-    if (!info) {
-      console.warn(`[useCatalogo] SKU ${productoRPE.codigo} NO encontrado en catálogo (mapa size: ${productosMap().size})`)
+    // Si no se encontró en el catálogo, intentar lookup individual (async)
+    if (!info && productoRPE.codigo) {
+      console.warn(`[useCatalogo] SKU ${productoRPE.codigo} no en catálogo, intentando lookup individual...`)
+      buscarProductoIndividual(productoRPE.codigo).then(enriched => {
+        if (enriched) {
+          console.log(`[useCatalogo] SKU ${productoRPE.codigo} encontrado: un_bx=${enriched.unBx}`)
+        }
+      })
     }
 
     return {
