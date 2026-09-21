@@ -139,11 +139,16 @@ export const useCatalogo = () => {
 
     const pesoKgERP = productoRPE.pesoKg && productoRPE.pesoKg > 0 ? productoRPE.pesoKg : 0
 
+    // Debug: verificar si el producto tiene unBx
+    if (!info && productoRPE.codigo) {
+      console.warn(`[useCatalogo] SKU ${productoRPE.codigo} no encontrado en catálogo`)
+    }
+
     return {
       ...productoRPE,
       linea: erpTieneLineaValida ? lineaERP.toUpperCase() : (info?.linea || 'SIN LÍNEA'),
       pesoKg: pesoKgERP > 0 ? pesoKgERP : (info?.pesoKg || 0),
-      unBx: info?.unBx || 0,
+      unBx: info?.unBx || 1, // Default a 1 si no se encuentra
       categoria: info?.categoria || 'SIN CATEGORÍA',
       tieneDatosCatalogo: !!info,
       estadoLinea: info?.estadoLinea || 'PENDIENTE',

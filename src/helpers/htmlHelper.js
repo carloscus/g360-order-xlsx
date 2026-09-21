@@ -14,6 +14,7 @@ export const generarContenidoHTML = (pedido, cuotas) => {
   const prodsEnriquecidos = pedido.productos.map(p => ({
     ...p,
     // Asegurar que unBx esté presente para el cálculo de cajas
+    // Default a 1 si no se encuentra en catálogo
     unBx: p.unBx || enriquecerProducto(p).unBx || 1
   }))
   const consolidado = calculos.pedido.consolidado(prodsEnriquecidos)
