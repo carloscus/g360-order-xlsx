@@ -270,9 +270,14 @@ export const DistributionPage = () => {
 <div class="dist-kpi-card blue">
                    <div class="dist-kpi-label">📦 Cajas Totales</div>
                    <div class="dist-kpi-value">
-                     {datosFiltrados().totalGeneral.cajasCompletas || 0} BX
-                     <Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}>
-                       <span style={{ "font-size": '0.75em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {datosFiltrados().totalGeneral.unidadesSueltas} und</span>
+                     <Show when={(datosFiltrados().totalGeneral.cajasCompletas || 0) > 0}>
+                       {datosFiltrados().totalGeneral.cajasCompletas} BX
+                       <Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}>
+                         <span style={{ "font-size": '0.75em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {datosFiltrados().totalGeneral.unidadesSueltas} und</span>
+                       </Show>
+                     </Show>
+                     <Show when={(datosFiltrados().totalGeneral.cajasCompletas || 0) === 0}>
+                       {datosFiltrados().totalGeneral.unidadesSueltas} und
                      </Show>
                    </div>
                  </div>
@@ -353,10 +358,15 @@ export const DistributionPage = () => {
                             <div class="dist-butterfly-bar-right" style={{ width: `${cajasBarWidth()}px`, background: `linear-gradient(90deg, ${CHART_COLORS[idx() % CHART_COLORS.length]}, transparent)` }}></div>
                             <div>
                               <div class="dist-butterfly-cajas">
-                                <span style={{ color: 'var(--g360-accent)', "font-weight": 'bold' }}>{d.cajasCompletas}</span>
-                                <span style={{ "font-size": '0.75em', "margin-left": '2px', opacity: 0.7 }}>BX</span>
-                                <Show when={d.unidadesSueltas > 0}>
-                                  <span style={{ "font-size": '0.75em', "margin-left": '4px', color: '#f59e0b' }}>+ {d.unidadesSueltas} und</span>
+                                <Show when={d.cajasCompletas > 0}>
+                                  <span style={{ color: 'var(--g360-accent)', "font-weight": 'bold' }}>{d.cajasCompletas}</span>
+                                  <span style={{ "font-size": '0.75em', "margin-left": '2px', opacity: 0.7 }}>BX</span>
+                                  <Show when={d.unidadesSueltas > 0}>
+                                    <span style={{ "font-size": '0.75em', "margin-left": '4px', color: '#f59e0b' }}>+ {d.unidadesSueltas} und</span>
+                                  </Show>
+                                </Show>
+                                <Show when={d.cajasCompletas === 0}>
+                                  <span style={{ color: 'var(--g360-muted)', "font-size": '0.85em' }}>{d.unidadesSueltas} und</span>
                                 </Show>
                               </div>
                               <div class="dist-butterfly-peso">{d.peso.toFixed(1)} kg ({((d.cajas / datosFiltrados().totalGeneral.cajas) * 100).toFixed(2)}%)</div>
@@ -376,7 +386,18 @@ export const DistributionPage = () => {
                       <span class="dist-butterfly-total-value" style={{ color: 'var(--g360-accent)', "font-size": 'var(--g360-font-sm)' }}>TOTAL</span>
                     </div>
                     <div class="dist-butterfly-total-right">
-                      <div class="dist-butterfly-total-value">{datosFiltrados().totalGeneral.cajasCompletas || datosFiltrados().totalGeneral.cajas || 0} BX<Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}><span style={{ "font-size": '0.85em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {datosFiltrados().totalGeneral.unidadesSueltas} und</span></Show> | {datosFiltrados().totalGeneral.peso.toFixed(1)} kg</div>
+                      <div class="dist-butterfly-total-value">
+                      <Show when={(datosFiltrados().totalGeneral.cajasCompletas || 0) > 0}>
+                        {datosFiltrados().totalGeneral.cajasCompletas} BX
+                        <Show when={datosFiltrados().totalGeneral.unidadesSueltas > 0}>
+                          <span style={{ "font-size": '0.85em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {datosFiltrados().totalGeneral.unidadesSueltas} und</span>
+                        </Show>
+                      </Show>
+                      <Show when={(datosFiltrados().totalGeneral.cajasCompletas || 0) === 0}>
+                        {datosFiltrados().totalGeneral.unidadesSueltas} und
+                      </Show>
+                      | {datosFiltrados().totalGeneral.peso.toFixed(1)} kg
+                    </div>
                       <div class="dist-butterfly-total-label">Total Volumen (100%)</div>
                     </div>
                   </div>
@@ -399,10 +420,15 @@ export const DistributionPage = () => {
                           <span class="dist-category-monto">{formatSoles(cat.monto)}</span>
                           <span class="dist-category-sep">•</span>
                           <span class="dist-category-bx">
-                            <b style={{ color: 'var(--g360-accent)' }}>{cat.cajasCompletas}</b>
-                            <span style={{ "font-size": '0.75em', "margin-left": '2px', opacity: 0.7 }}>BX</span>
-                            <Show when={cat.unidadesSueltas > 0}>
-                              <span style={{ "font-size": '0.75em', "margin-left": '4px', color: '#f59e0b' }}>+ {cat.unidadesSueltas} und</span>
+                            <Show when={cat.cajasCompletas > 0}>
+                              <b style={{ color: 'var(--g360-accent)' }}>{cat.cajasCompletas}</b>
+                              <span style={{ "font-size": '0.75em', "margin-left": '2px', opacity: 0.7 }}>BX</span>
+                              <Show when={cat.unidadesSueltas > 0}>
+                                <span style={{ "font-size": '0.75em', "margin-left": '4px', color: '#f59e0b' }}>+ {cat.unidadesSueltas} und</span>
+                              </Show>
+                            </Show>
+                            <Show when={cat.cajasCompletas === 0}>
+                              <span style={{ color: 'var(--g360-muted)', "font-size": '0.85em' }}>{cat.unidadesSueltas} und</span>
                             </Show>
                           </span>
                         </span>
@@ -443,7 +469,13 @@ export const DistributionPage = () => {
                             <span class="dist-category-sep">•</span>
                             <span class="dist-category-bx">{d.cantidad} prod.</span>
                             <span class="dist-category-sep">•</span>
-                            <span class="dist-category-bx">{d.cajasCompletas} BX<Show when={d.unidadesSueltas > 0}> + {d.unidadesSueltas} und</Show> | {d.peso.toFixed(1)} kg</span>
+                            <Show when={d.cajasCompletas > 0}>
+                              <span>{d.cajasCompletas} BX</span>
+                              <Show when={d.unidadesSueltas > 0}> + {d.unidadesSueltas} und</Show>
+                            </Show>
+                            <Show when={d.cajasCompletas === 0}>
+                              <span>{d.unidadesSueltas} und</span>
+                            </Show>
                           </span>
                         )
                       }}
