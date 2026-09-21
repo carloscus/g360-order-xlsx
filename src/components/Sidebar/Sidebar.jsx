@@ -208,6 +208,10 @@ export const Sidebar = () => {
       case 'cargar':
         setShowHistory(true)
         break
+      case 'refresh':
+        showToast('Actualizando catálogo...', 'info')
+        window.location.reload()
+        break
       case 'nuevo':
         if (confirm('🗑️ ¿Limpiar todo el trabajo actual?\nEsto borrará los datos del cliente, productos y distribución.')) {
           pedido.resetearPedido()
@@ -335,6 +339,11 @@ export const Sidebar = () => {
         <Show when={expanded()}>
           <div class="nav-section-label">SISTEMA</div>
         </Show>
+
+        <button class="nav-item" onClick={() => handleAction('refresh')} title="Actualizar catálogo desde API">
+          <span class="nav-icon">🔄</span>
+          <Show when={expanded()}><span class="nav-label">Actualizar Catálogo</span></Show>
+        </button>
 
         <button class="nav-item" onClick={toggleTheme} title="Cambiar tema">
           <span class="nav-icon">{darkTheme() ? '☀️' : '🌙'}</span>

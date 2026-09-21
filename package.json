@@ -1,14 +1,15 @@
 {
   "name": "g360-order-xlsx",
   "private": true,
-  "version": "5.0.0",
+  "version": "6.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "deploy": "npm run build && npx gh-pages -d dist"
+    "deploy": "npm run build && npx gh-pages -d dist",
+    "update-catalog": "node scripts/update-catalog.cjs"
   },
   "dependencies": {
     "@solidjs/router": "^0.16.1",
