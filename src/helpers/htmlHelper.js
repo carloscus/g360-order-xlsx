@@ -4,20 +4,13 @@
  */
 import { buildCronogramaHTML } from '../utils/htmlExportBuilder'
 import { getAgentesSkill } from '../core/g360-skill-agentes'
-import { useCatalogo } from '../hooks/useCatalogo'
 
 const { calculos } = getAgentesSkill()
-const { enriquecerProducto } = useCatalogo()
 
 export const generarContenidoHTML = (pedido, cuotas) => {
-  // Usar productos ya calculados del pedido (ya tienen unBx, cajas, etc.)
-  const prodsEnriquecidos = pedido.productos.map(p => ({
-    ...p,
-    // Asegurar que unBx esté presente para el cálculo de cajas
-    // Default a 1 si no se encuentra en catálogo
-    unBx: p.unBx || enriquecerProducto(p).unBx || 1
-  }))
-  const consolidado = calculos.pedido.consolidado(prodsEnriquecidos)
+  // Los productos del pedido YA TIENEN unBx, cajas, pesoTotal calculados en usePedido
+  // NO re-enriquecer aquí, usar directamente lo que viene del pedido
+  const consolidado = calculos.pedido.consolidado(pedido.productos)
 
   return buildCronogramaHTML({
     cliente: pedido.cliente,
@@ -30,7 +23,7 @@ export const generarContenidoHTML = (pedido, cuotas) => {
     telefonoVendedor: pedido.telefonoVendedor,
     cuotas,
     consolidado,
-    productosCalculados: prodsEnriquecidos
+    productosCalculados: pedido.productos
   })
 }
 

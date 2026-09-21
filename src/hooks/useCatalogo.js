@@ -148,7 +148,7 @@ export const useCatalogo = () => {
       ...productoRPE,
       linea: erpTieneLineaValida ? lineaERP.toUpperCase() : (info?.linea || 'SIN LÍNEA'),
       pesoKg: pesoKgERP > 0 ? pesoKgERP : (info?.pesoKg || 0),
-      unBx: info?.unBx || 1, // Default a 1 si no se encuentra
+      unBx: info?.unBx || 0,
       categoria: info?.categoria || 'SIN CATEGORÍA',
       tieneDatosCatalogo: !!info,
       estadoLinea: info?.estadoLinea || 'PENDIENTE',
