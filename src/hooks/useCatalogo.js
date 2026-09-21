@@ -68,6 +68,23 @@ const normalizarItemApi = (item) => {
   }
 }
 
+const CACHE_KEY = 'g360_catalogo_lookup_cache'
+
+// Leer cache de lookups individuales desde localStorage
+const loadLookupCache = () => {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch { return {} }
+}
+
+// Guardar cache de lookups individuales
+const saveLookupCache = (cache) => {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache))
+  } catch { /* quota exceeded, ignorar */ }
+}
+
 export const useCatalogo = () => {
   const [catalogo, setCatalogo] = createSignal(dataEstatica)
   const [cargando, setCargando] = createSignal(false)
@@ -84,6 +101,16 @@ export const useCatalogo = () => {
   })
 
   onMount(async () => {
+    // Cargar cache persistente de lookups individuales primero
+    const lookupCache = loadLookupCache()
+    const cacheSize = Object.keys(lookupCache).length
+    if (cacheSize > 0) {
+      const cacheMap = new Map()
+      Object.entries(lookupCache).forEach(([sku, info]) => cacheMap.set(sku, info))
+      setSkusEnriched(cacheMap)
+      console.log(`[useCatalogo] Cache local cargado: ${cacheSize} SKUs`)
+    }
+
     try {
       setCargando(true)
       console.log('[useCatalogo] Cargando catálogo desde API...')
@@ -103,7 +130,12 @@ export const useCatalogo = () => {
           }
         })
         setCatalogo({ productos: productosFusionados })
-        setSkusEnriched(mapaApi)
+        // Merge: API + cache (cache tiene prioridad para SKUs no en API)
+        setSkusEnriched(prev => {
+          const next = new Map(prev)
+          mapaApi.forEach((v, k) => next.set(k, v))
+          return next
+        })
         setFuente('api')
         setError(null)
         console.log('[useCatalogo] API cargada:', items.length, 'productos | Fusionados:', productosFusionados.length)
@@ -145,7 +177,11 @@ export const useCatalogo = () => {
           next.set(sku, enriched)
           return next
         })
-        console.log(`[useCatalogo] SKU ${sku} encontrado: un_bx=${enriched.unBx}`)
+        // Persistir en cache localStorage
+        const cache = loadLookupCache()
+        cache[sku] = enriched
+        saveLookupCache(cache)
+        console.log(`[useCatalogo] SKU ${sku} encontrado: un_bx=${enriched.unBx} (guardado en cache)`)
         resolve(enriched)
       } else {
         resolve(null)
@@ -249,6 +285,17 @@ export const useCatalogo = () => {
     }
   })
 
+  // Pre-fetch: buscar SKUs faltantes en lote y esperar resultado
+  const prefetchSkus = async (skus) => {
+    const map = productosMap()
+    const faltantes = [...new Set(skus)].filter(sku => sku && !map.has(sku) && !skusEnCola.has(sku))
+    if (faltantes.length === 0) return 0
+    console.log(`[useCatalogo] Pre-fetch de ${faltantes.length} SKUs faltantes...`)
+    await Promise.all(faltantes.map(sku => buscarProductoIndividual(sku)))
+    console.log(`[useCatalogo] Pre-fetch completado`)
+    return faltantes.length
+  }
+
   return {
     catalogo,
     cargando,
@@ -257,6 +304,8 @@ export const useCatalogo = () => {
     productosMap,
     buscarProducto,
     buscarProductoApi,
+    buscarProductoIndividual,
+    prefetchSkus,
     enriquecerProducto,
     lineas,
     categorias,

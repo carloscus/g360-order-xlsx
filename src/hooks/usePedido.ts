@@ -189,7 +189,7 @@ export const usePedido = () => {
     const savedData = loadFromStorage()
     const savedDistActiva = loadDistActiva()
     
-    const { enriquecerProducto } = useCatalogo()
+    const { enriquecerProducto, prefetchSkus } = useCatalogo()
     const { calculos } = getAgentesSkill()
     
     // Forzar re-parseo desde texto ERP guardado para migrar datos legacy
@@ -216,6 +216,11 @@ export const usePedido = () => {
     // Distribución state
     const [distActiva, setDistActiva] = createSignal<Distribucion | null>(savedDistActiva)
     const [distHistorial, setDistHistorial] = createSignal<Distribucion[]>(loadDistHistorial())
+
+    // Pre-fetch de SKUs faltantes al iniciar (si hay productos guardados)
+    if (productosIniciales.length > 0) {
+      prefetchSkus(productosIniciales.map((p: any) => p.codigo))
+    }
 
     createEffect(() => {
       const data = {
@@ -248,6 +253,8 @@ export const usePedido = () => {
       const productos = ERPParserService.parseDataPegada(texto)
       setState('productos', productos)
       saveErpTexto(texto)
+      // Pre-fetch de SKUs faltantes para que el cálculo tenga unBx disponible
+      prefetchSkus(productos.map(p => p.codigo))
     }
 
     const productosCalculados = createMemo(() => {

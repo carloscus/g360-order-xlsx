@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "deploy": "npm run build && npx gh-pages -d dist",
-    "update-catalog": "node scripts/update-catalog.cjs"
+    "update-catalog": "node scripts/update-catalog.cjs",
+    "enrich-catalog": "node scripts/enrich-catalog.cjs"
   },
   "dependencies": {
     "@solidjs/router": "^0.16.1",
