@@ -94,11 +94,19 @@ export const useCatalogo = () => {
         items.forEach(item => {
           if (item.sku) mapaApi.set(item.sku, normalizarItemApi(item))
         })
-        setCatalogo({ productos: items.map(i => ({ sku: i.sku, ...i })) })
+        // FUSIONAR: catálogo local + API (la API tiene prioridad)
+        const localData = dataEstatica.productos || dataEstatica
+        const productosFusionados = [...localData]
+        items.forEach(item => {
+          if (item.sku && !localData.some(p => p.sku === item.sku)) {
+            productosFusionados.push({ sku: item.sku, ...item })
+          }
+        })
+        setCatalogo({ productos: productosFusionados })
         setSkusEnriched(mapaApi)
         setFuente('api')
         setError(null)
-        console.log('[useCatalogo] API cargada:', items.length, 'productos')
+        console.log('[useCatalogo] API cargada:', items.length, 'productos | Fusionados:', productosFusionados.length)
       } else {
         console.warn('[useCatalogo] API sin datos, usando catálogo local')
         setFuente('local_fallback')
