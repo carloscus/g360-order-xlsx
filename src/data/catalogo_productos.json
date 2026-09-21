@@ -1,7 +1,7 @@
 {
   "version": "2026-09-21",
   "fuente": "g360-stock-api",
-  "total": 2221,
+  "total": 2219,
   "productos": [
     {
       "sku": "011019",
@@ -33,9 +33,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1792,
-          "stock": 3352,
-          "predespacho": 1560
+          "disponible": 1670,
+          "stock": 3350,
+          "predespacho": 1680
         },
         {
           "almacen": "118",
@@ -97,8 +97,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3609,
-          "stock": 3909,
+          "disponible": 3610,
+          "stock": 3910,
           "predespacho": 300
         },
         {
@@ -149,8 +149,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 2,
-          "stock": 284,
-          "predespacho": 282
+          "stock": 266,
+          "predespacho": 264
         },
         {
           "almacen": "40",
@@ -313,8 +313,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1127,
-          "stock": 2927,
+          "disponible": 1126,
+          "stock": 2926,
           "predespacho": 1800
         },
         {
@@ -322,6 +322,13 @@
           "tipo": "mktd",
           "disponible": 1,
           "stock": 1,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 3,
+          "stock": 3,
           "predespacho": 0
         },
         {
@@ -578,13 +585,6 @@
       ],
       "almacenes": [
         {
-          "almacen": "VES",
-          "tipo": "venta",
-          "disponible": 78,
-          "stock": 78,
-          "predespacho": 0
-        },
-        {
           "almacen": "S14",
           "tipo": "mktd",
           "disponible": 3,
@@ -810,6 +810,13 @@
       ],
       "almacenes": [
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
           "almacen": "40",
           "tipo": "venta",
           "disponible": 9,
@@ -863,6 +870,13 @@
           "tipo": "mktd",
           "disponible": 3,
           "stock": 3,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 8,
+          "stock": 8,
           "predespacho": 0
         },
         {
@@ -945,6 +959,20 @@
         "VOLEY"
       ],
       "almacenes": [
+        {
+          "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
         {
           "almacen": "40",
           "tipo": "venta",
@@ -1198,9 +1226,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1223,
-          "stock": 5283,
-          "predespacho": 4060
+          "disponible": 1098,
+          "stock": 5278,
+          "predespacho": 4180
         },
         {
           "almacen": "118",
@@ -1282,8 +1310,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1,
-          "stock": 286,
+          "disponible": 0,
+          "stock": 285,
           "predespacho": 285
         },
         {
@@ -1349,6 +1377,13 @@
           "disponible": 1756,
           "stock": 4720,
           "predespacho": 2964
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
         },
         {
           "almacen": "S13",
@@ -2149,9 +2184,16 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4080,
-          "stock": 10176,
+          "disponible": 4082,
+          "stock": 10178,
           "predespacho": 6096
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 2,
+          "stock": 2,
+          "predespacho": 0
         },
         {
           "almacen": "40",
@@ -2202,6 +2244,20 @@
         "VOLEY"
       ],
       "almacenes": [
+        {
+          "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 2,
+          "stock": 2,
+          "predespacho": 0
+        },
         {
           "almacen": "S5",
           "tipo": "mktd",
@@ -2287,8 +2343,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2292,
-          "stock": 2292,
+          "disponible": 2293,
+          "stock": 2293,
           "predespacho": 0
         },
         {
@@ -2351,6 +2407,13 @@
           "tipo": "mktd",
           "disponible": 8,
           "stock": 8,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
           "predespacho": 0
         },
         {
@@ -2953,6 +3016,13 @@
           "predespacho": 24
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
           "almacen": "40",
           "tipo": "venta",
           "disponible": 36,
@@ -2990,8 +3060,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9,
-          "stock": 583,
+          "disponible": 8,
+          "stock": 582,
           "predespacho": 574
         },
         {
@@ -3040,8 +3110,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3,
-          "stock": 1591,
+          "disponible": 0,
+          "stock": 1588,
           "predespacho": 1588
         },
         {
@@ -3331,8 +3401,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 426,
-          "stock": 2346,
+          "disponible": 424,
+          "stock": 2344,
           "predespacho": 1920
         },
         {
@@ -3723,6 +3793,13 @@
           "predespacho": 0
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 2,
+          "stock": 2,
+          "predespacho": 0
+        },
+        {
           "almacen": "S1",
           "tipo": "mktd",
           "disponible": 0,
@@ -4084,8 +4161,8 @@
         {
           "almacen": "121",
           "tipo": "venta",
-          "disponible": 1,
-          "stock": 1,
+          "disponible": 2,
+          "stock": 2,
           "predespacho": 0
         },
         {
@@ -4231,8 +4308,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2032,
-          "stock": 5560,
+          "disponible": 2029,
+          "stock": 5557,
           "predespacho": 3528
         },
         {
@@ -4310,6 +4387,13 @@
           "tipo": "mktd",
           "disponible": 2,
           "stock": 2,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 4,
+          "stock": 4,
           "predespacho": 0
         }
       ]
@@ -4658,8 +4742,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 161,
-          "stock": 1241,
+          "disponible": 160,
+          "stock": 1240,
           "predespacho": 1080
         },
         {
@@ -4877,13 +4961,6 @@
           "predespacho": 0
         },
         {
-          "almacen": "121",
-          "tipo": "venta",
-          "disponible": 32,
-          "stock": 32,
-          "predespacho": 0
-        },
-        {
           "almacen": "40",
           "tipo": "venta",
           "disponible": 12,
@@ -4936,8 +5013,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 549,
-          "stock": 1669,
+          "disponible": 546,
+          "stock": 1666,
           "predespacho": 1120
         },
         {
@@ -5134,8 +5211,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 5570,
-          "stock": 5606,
-          "predespacho": 36
+          "stock": 5570,
+          "predespacho": 0
         },
         {
           "almacen": "40",
@@ -5413,8 +5490,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 8,
-          "stock": 681,
+          "disponible": 0,
+          "stock": 661,
           "predespacho": 673
         },
         {
@@ -5471,8 +5548,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 677,
-          "stock": 1797,
+          "disponible": 672,
+          "stock": 1792,
           "predespacho": 1120
         },
         {
@@ -5577,6 +5654,13 @@
           "disponible": 1654,
           "stock": 3178,
           "predespacho": 1524
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
         },
         {
           "almacen": "40",
@@ -6036,8 +6120,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2162,
-          "stock": 5222,
+          "disponible": 2161,
+          "stock": 5221,
           "predespacho": 3060
         }
       ]
@@ -6114,8 +6198,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 794,
-          "stock": 4250,
+          "disponible": 793,
+          "stock": 4249,
           "predespacho": 3456
         },
         {
@@ -6205,8 +6289,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4,
-          "stock": 715,
+          "disponible": 0,
+          "stock": 711,
           "predespacho": 711
         },
         {
@@ -6268,8 +6352,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 343,
-          "stock": 1559,
+          "disponible": 342,
+          "stock": 1558,
           "predespacho": 1216
         },
         {
@@ -6471,8 +6555,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2050,
-          "stock": 2074,
+          "disponible": 2048,
+          "stock": 2072,
           "predespacho": 24
         },
         {
@@ -6994,6 +7078,13 @@
           "predespacho": 0
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
           "almacen": "S13",
           "tipo": "mktd",
           "disponible": 1,
@@ -7047,8 +7138,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3163,
-          "stock": 5167,
+          "disponible": 3160,
+          "stock": 5164,
           "predespacho": 2004
         },
         {
@@ -7304,8 +7395,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2390,
-          "stock": 6250,
+          "disponible": 2380,
+          "stock": 6240,
           "predespacho": 3860
         },
         {
@@ -7343,7 +7434,7 @@
       "categoria": "VINIBALL",
       "estado_linea": "NACIONAL",
       "un_bx": 60,
-      "peso_kg": 0,
+      "peso_kg": 0.2,
       "precio": 9.16,
       "nombre_corto": "Semideportiva Voley Kawaii 04",
       "ean13": "",
@@ -7462,8 +7553,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5221,
-          "stock": 9021,
+          "disponible": 5219,
+          "stock": 9019,
           "predespacho": 3800
         },
         {
@@ -7509,6 +7600,13 @@
         "VOLEY"
       ],
       "almacenes": [
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
         {
           "almacen": "S5",
           "tipo": "mktd",
@@ -7589,8 +7687,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 129,
-          "stock": 952,
-          "predespacho": 823
+          "stock": 928,
+          "predespacho": 799
         }
       ]
     },
@@ -7624,8 +7722,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2356,
-          "stock": 5916,
+          "disponible": 2345,
+          "stock": 5905,
           "predespacho": 3560
         },
         {
@@ -7771,9 +7869,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1,
-          "stock": 401,
-          "predespacho": 400
+          "disponible": 0,
+          "stock": 388,
+          "predespacho": 388
         }
       ]
     },
@@ -7880,8 +7978,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 512,
-          "stock": 7412,
-          "predespacho": 6900
+          "stock": 7172,
+          "predespacho": 6660
         },
         {
           "almacen": "S3",
@@ -7944,22 +8042,14 @@
       "tipo": "15 - ESPECIAL",
       "familia": "04 - PERFUMADA",
       "categoria": "VINIBALL",
-      "estado_linea": "NACIONAL",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 0.05,
-      "precio": 3.62,
-      "nombre_corto": "Stressball Emoji Felices",
-      "ean13": "7754807157445",
-      "ean14": "17754807157442",
-      "keywords": [
-        "EMOJI",
-        "FELICES",
-        "PELOTA",
-        "PELOTAS",
-        "PVC",
-        "STRESSBALL",
-        "VINIBALL"
-      ],
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -8254,6 +8344,13 @@
           "predespacho": 0
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
           "almacen": "S5",
           "tipo": "mktd",
           "disponible": 4,
@@ -8337,6 +8434,13 @@
           "predespacho": 1106
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 3,
+          "stock": 3,
+          "predespacho": 0
+        },
+        {
           "almacen": "S5",
           "tipo": "mktd",
           "disponible": 2,
@@ -8370,6 +8474,13 @@
         "VINIBALL"
       ],
       "almacenes": [
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 3,
+          "stock": 3,
+          "predespacho": 0
+        },
         {
           "almacen": "S3",
           "tipo": "mktd",
@@ -8421,8 +8532,8 @@
         {
           "almacen": "121",
           "tipo": "venta",
-          "disponible": 48,
-          "stock": 48,
+          "disponible": 4,
+          "stock": 4,
           "predespacho": 0
         },
         {
@@ -8472,8 +8583,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 824,
-          "stock": 1499,
+          "disponible": 825,
+          "stock": 1500,
           "predespacho": 675
         },
         {
@@ -8526,6 +8637,13 @@
           "disponible": 957,
           "stock": 1632,
           "predespacho": 675
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 3,
+          "stock": 3,
+          "predespacho": 0
         },
         {
           "almacen": "40",
@@ -8625,9 +8743,16 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
-          "stock": 267,
+          "disponible": 1,
+          "stock": 268,
           "predespacho": 267
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
         },
         {
           "almacen": "40",
@@ -8997,8 +9122,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7501,
-          "stock": 9181,
+          "disponible": 7502,
+          "stock": 9182,
           "predespacho": 1680
         },
         {
@@ -9072,6 +9197,13 @@
           "predespacho": 0
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
           "almacen": "40",
           "tipo": "venta",
           "disponible": 36,
@@ -9118,6 +9250,13 @@
           "tipo": "mktd",
           "disponible": 7,
           "stock": 7,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 2,
+          "stock": 2,
           "predespacho": 0
         },
         {
@@ -9325,8 +9464,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 281,
-          "stock": 795,
-          "predespacho": 514
+          "stock": 777,
+          "predespacho": 496
         },
         {
           "almacen": "40",
@@ -9376,8 +9515,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 926,
-          "stock": 956,
-          "predespacho": 30
+          "stock": 950,
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -9477,8 +9616,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1,
-          "stock": 168,
+          "disponible": 0,
+          "stock": 167,
           "predespacho": 167
         }
       ]
@@ -9831,6 +9970,13 @@
       ],
       "almacenes": [
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 3,
+          "stock": 3,
+          "predespacho": 0
+        },
+        {
           "almacen": "40",
           "tipo": "venta",
           "disponible": 120,
@@ -9969,6 +10115,13 @@
           "predespacho": 0
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
           "almacen": "S3",
           "tipo": "mktd",
           "disponible": 1,
@@ -10009,6 +10162,13 @@
         "VOLEY"
       ],
       "almacenes": [
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
         {
           "almacen": "S5",
           "tipo": "mktd",
@@ -10078,6 +10238,13 @@
         "VINIBALL"
       ],
       "almacenes": [
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
         {
           "almacen": "S3",
           "tipo": "mktd",
@@ -10543,6 +10710,34 @@
       ]
     },
     {
+      "sku": "016709",
+      "codigo": "016709",
+      "descripcion": "FUTBOL CUERO TERMOSELLADA METEOR #5",
+      "um": "UND",
+      "linea": "01 - PELOTAS",
+      "grupo": "19 - IMPORTADA VINIBALL",
+      "tipo": "01 - CUERO TERMOSELLADA",
+      "familia": "01 - FUTBOL",
+      "categoria": "VINIBALL",
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
+      "almacenes": [
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        }
+      ]
+    },
+    {
       "sku": "016715",
       "codigo": "016715",
       "descripcion": "PELOTA DE PVC SEMIDEPORTIVA FUTBOL CRACKCITO STELLAR",
@@ -10573,8 +10768,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5062,
-          "stock": 6838,
+          "disponible": 5061,
+          "stock": 6837,
           "predespacho": 1776
         },
         {
@@ -10771,9 +10966,16 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 90,
-          "stock": 1210,
+          "disponible": 86,
+          "stock": 1206,
           "predespacho": 1120
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
         },
         {
           "almacen": "S5",
@@ -10819,6 +11021,13 @@
           "disponible": 2072,
           "stock": 2192,
           "predespacho": 120
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
         },
         {
           "almacen": "40",
@@ -10901,6 +11110,13 @@
           "tipo": "mktd",
           "disponible": 7,
           "stock": 7,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
           "predespacho": 0
         },
         {
@@ -11669,14 +11885,21 @@
       "tipo": "06 - TPU",
       "familia": "01 - FUTBOL",
       "categoria": "VINIBALL",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
+      "estado_linea": "IMPORTADO",
+      "un_bx": 48,
+      "peso_kg": 0.41,
+      "precio": 28.57,
+      "nombre_corto": "Futbol Tpu Bra2 Cup24 #5",
       "ean13": "",
       "ean14": "",
-      "keywords": [],
+      "keywords": [
+        "BRA2",
+        "CUP24",
+        "FUTBOL",
+        "PELOTAS",
+        "TPU",
+        "VINIBALL"
+      ],
       "almacenes": [
         {
           "almacen": "VES",
@@ -11718,14 +11941,21 @@
       "tipo": "06 - TPU",
       "familia": "01 - FUTBOL",
       "categoria": "VINIBALL",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
+      "estado_linea": "IMPORTADO",
+      "un_bx": 48,
+      "peso_kg": 0.41,
+      "precio": 28.57,
+      "nombre_corto": "Futbol Tpu Arg2 Cup24 #5",
       "ean13": "",
       "ean14": "",
-      "keywords": [],
+      "keywords": [
+        "ARG2",
+        "CUP24",
+        "FUTBOL",
+        "PELOTAS",
+        "TPU",
+        "VINIBALL"
+      ],
       "almacenes": [
         {
           "almacen": "VES",
@@ -11850,6 +12080,13 @@
           "predespacho": 0
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 3,
+          "stock": 3,
+          "predespacho": 0
+        },
+        {
           "almacen": "S3",
           "tipo": "mktd",
           "disponible": 1,
@@ -11948,8 +12185,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 716,
-          "stock": 3712,
+          "disponible": 752,
+          "stock": 3748,
           "predespacho": 2996
         },
         {
@@ -12215,8 +12452,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 3099,
-          "stock": 4131,
-          "predespacho": 1032
+          "stock": 4123,
+          "predespacho": 1024
         },
         {
           "almacen": "118",
@@ -12277,6 +12514,13 @@
         {
           "almacen": "118",
           "tipo": "mktd",
+          "disponible": 2,
+          "stock": 2,
+          "predespacho": 0
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
           "disponible": 2,
           "stock": 2,
           "predespacho": 0
@@ -12356,14 +12600,21 @@
       "tipo": "01 - CUERO TERMOSELLADA",
       "familia": "01 - FUTBOL",
       "categoria": "VINIBALL",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
+      "estado_linea": "IMPORTADO",
+      "un_bx": 24,
+      "peso_kg": 0.41,
+      "precio": 39,
+      "nombre_corto": "Futbol Termosellada Peru #4",
+      "ean13": "7754807167604",
       "ean14": "",
-      "keywords": [],
+      "keywords": [
+        "CUERO",
+        "FUTBOL",
+        "PELOTAS",
+        "PERU",
+        "TERMOSELLADA",
+        "VINIBALL"
+      ],
       "almacenes": [
         {
           "almacen": "VES",
@@ -12413,6 +12664,13 @@
           "disponible": 532,
           "stock": 580,
           "predespacho": 48
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
         }
       ]
     },
@@ -12551,6 +12809,13 @@
           "predespacho": 0
         },
         {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
           "almacen": "S3",
           "tipo": "mktd",
           "disponible": 3,
@@ -12655,6 +12920,34 @@
         {
           "almacen": "S3",
           "tipo": "mktd",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        }
+      ]
+    },
+    {
+      "sku": "016767",
+      "codigo": "016767",
+      "descripcion": "FUTBOL VULCANIZADA PREMIER1 #5",
+      "um": "UND",
+      "linea": "01 - PELOTAS",
+      "grupo": "19 - IMPORTADA VINIBALL",
+      "tipo": "04 - CUERO VULCANIZADO",
+      "familia": "01 - FUTBOL",
+      "categoria": "VINIBALL",
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
+      "almacenes": [
+        {
+          "almacen": "121",
+          "tipo": "venta",
           "disponible": 1,
           "stock": 1,
           "predespacho": 0
@@ -12817,6 +13110,13 @@
           "disponible": 1525,
           "stock": 1921,
           "predespacho": 396
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 4,
+          "stock": 4,
+          "predespacho": 0
         }
       ]
     },
@@ -12885,9 +13185,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2391,
+          "disponible": 2271,
           "stock": 6481,
-          "predespacho": 4090
+          "predespacho": 4210
         },
         {
           "almacen": "S13",
@@ -13213,6 +13513,13 @@
           "disponible": 0,
           "stock": 407,
           "predespacho": 407
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 2,
+          "stock": 2,
+          "predespacho": 0
         }
       ]
     },
@@ -13247,6 +13554,13 @@
           "disponible": 0,
           "stock": 71,
           "predespacho": 71
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
         },
         {
           "almacen": "S5",
@@ -13288,6 +13602,13 @@
           "disponible": 0,
           "stock": 5378,
           "predespacho": 5378
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
         },
         {
           "almacen": "S3",
@@ -13384,6 +13705,13 @@
           "disponible": 0,
           "stock": 458,
           "predespacho": 458
+        },
+        {
+          "almacen": "121",
+          "tipo": "venta",
+          "disponible": 2,
+          "stock": 2,
+          "predespacho": 0
         },
         {
           "almacen": "S3",
@@ -13538,8 +13866,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2,
-          "stock": 47,
+          "disponible": 1,
+          "stock": 46,
           "predespacho": 45
         },
         {
@@ -13694,9 +14022,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3618,
+          "disponible": 3498,
           "stock": 6856,
-          "predespacho": 3238
+          "predespacho": 3358
         },
         {
           "almacen": "S13",
@@ -13738,8 +14066,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 20,
-          "stock": 1300,
+          "disponible": 19,
+          "stock": 1299,
           "predespacho": 1280
         },
         {
@@ -13963,9 +14291,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 18005,
-          "stock": 23525,
-          "predespacho": 5520
+          "disponible": 17884,
+          "stock": 23524,
+          "predespacho": 5640
         },
         {
           "almacen": "40",
@@ -13995,7 +14323,7 @@
       "categoria": "VINIBALL",
       "estado_linea": "IMPORTADO",
       "un_bx": 48,
-      "peso_kg": 0,
+      "peso_kg": 0.425,
       "precio": 14,
       "nombre_corto": "Futbol Academy #5",
       "ean13": "",
@@ -14012,8 +14340,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 4340,
-          "stock": 9500,
-          "predespacho": 5160
+          "stock": 9488,
+          "predespacho": 5148
         },
         {
           "almacen": "S13",
@@ -14190,8 +14518,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1154,
-          "stock": 1284,
+          "disponible": 1153,
+          "stock": 1283,
           "predespacho": 130
         },
         {
@@ -14542,9 +14870,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 72030,
+          "disponible": 71830,
           "stock": 83130,
-          "predespacho": 11100
+          "predespacho": 11300
         },
         {
           "almacen": "118",
@@ -14739,9 +15067,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 28837,
+          "disponible": 28693,
           "stock": 40045,
-          "predespacho": 11208
+          "predespacho": 11352
         },
         {
           "almacen": "118",
@@ -14993,9 +15321,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 134735,
-          "stock": 173835,
-          "predespacho": 39100
+          "disponible": 134520,
+          "stock": 173870,
+          "predespacho": 39350
         },
         {
           "almacen": "118",
@@ -15084,9 +15412,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 492017,
+          "disponible": 491517,
           "stock": 550667,
-          "predespacho": 58650
+          "predespacho": 59150
         },
         {
           "almacen": "129",
@@ -15539,9 +15867,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 109753,
+          "disponible": 109553,
           "stock": 147553,
-          "predespacho": 37800
+          "predespacho": 38000
         },
         {
           "almacen": "118",
@@ -15752,9 +16080,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 83414,
+          "disponible": 83164,
           "stock": 173414,
-          "predespacho": 90000
+          "predespacho": 90250
         },
         {
           "almacen": "118",
@@ -15855,9 +16183,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 6338,
+          "disponible": 388,
           "stock": 139938,
-          "predespacho": 133600
+          "predespacho": 139550
         },
         {
           "almacen": "122",
@@ -15952,9 +16280,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 58281,
-          "stock": 81056,
-          "predespacho": 22775
+          "disponible": 72131,
+          "stock": 95056,
+          "predespacho": 22925
         },
         {
           "almacen": "122",
@@ -15966,8 +16294,8 @@
         {
           "almacen": "40",
           "tipo": "venta",
-          "disponible": 14825,
-          "stock": 14825,
+          "disponible": 825,
+          "stock": 825,
           "predespacho": 0
         },
         {
@@ -16041,9 +16369,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 975990,
+          "disponible": 1017890,
           "stock": 1027940,
-          "predespacho": 51950
+          "predespacho": 10050
         },
         {
           "almacen": "S1",
@@ -16089,15 +16417,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 270919,
-          "stock": 270919,
-          "predespacho": 0
-        },
-        {
-          "almacen": "40",
-          "tipo": "venta",
-          "disponible": 23625,
-          "stock": 23625,
+          "disponible": 294544,
+          "stock": 294544,
           "predespacho": 0
         },
         {
@@ -16202,9 +16523,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 87643,
+          "disponible": 87543,
           "stock": 104243,
-          "predespacho": 16600
+          "predespacho": 16700
         },
         {
           "almacen": "S1",
@@ -16413,8 +16734,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 17146,
-          "stock": 17146,
+          "disponible": 35146,
+          "stock": 35146,
           "predespacho": 0
         },
         {
@@ -17086,8 +17407,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 91498,
-          "stock": 106048,
+          "disponible": 91545,
+          "stock": 106095,
           "predespacho": 14550
         },
         {
@@ -17194,9 +17515,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 16782,
+          "disponible": 16762,
           "stock": 31082,
-          "predespacho": 14300
+          "predespacho": 14320
         },
         {
           "almacen": "129",
@@ -17245,9 +17566,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9627,
+          "disponible": 9607,
           "stock": 9627,
-          "predespacho": 0
+          "predespacho": 20
         }
       ]
     },
@@ -17282,9 +17603,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 14129,
-          "stock": 21969,
-          "predespacho": 7840
+          "disponible": 14126,
+          "stock": 21986,
+          "predespacho": 7860
         },
         {
           "almacen": "122",
@@ -17333,9 +17654,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 10962,
+          "disponible": 10942,
           "stock": 14312,
-          "predespacho": 3350
+          "predespacho": 3370
         },
         {
           "almacen": "118",
@@ -17449,9 +17770,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 149189,
+          "disponible": 148889,
           "stock": 186889,
-          "predespacho": 37700
+          "predespacho": 38000
         },
         {
           "almacen": "118",
@@ -17563,9 +17884,16 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5787,
-          "stock": 11837,
-          "predespacho": 6050
+          "disponible": 10267,
+          "stock": 16337,
+          "predespacho": 6070
+        },
+        {
+          "almacen": "40",
+          "tipo": "venta",
+          "disponible": 316,
+          "stock": 316,
+          "predespacho": 0
         },
         {
           "almacen": "S6",
@@ -17615,9 +17943,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 22160,
+          "disponible": 22140,
           "stock": 34010,
-          "predespacho": 11850
+          "predespacho": 11870
         },
         {
           "almacen": "118",
@@ -17687,9 +18015,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 17181,
+          "disponible": 17161,
           "stock": 24681,
-          "predespacho": 7500
+          "predespacho": 7520
         },
         {
           "almacen": "S2",
@@ -17738,9 +18066,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 28789,
+          "disponible": 28769,
           "stock": 29039,
-          "predespacho": 250
+          "predespacho": 270
         },
         {
           "almacen": "129",
@@ -17803,9 +18131,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 24013,
-          "stock": 40463,
-          "predespacho": 16450
+          "disponible": 34243,
+          "stock": 50713,
+          "predespacho": 16470
         },
         {
           "almacen": "118",
@@ -17927,9 +18255,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 29835,
+          "disponible": 29815,
           "stock": 39029,
-          "predespacho": 9194
+          "predespacho": 9214
         },
         {
           "almacen": "118",
@@ -18194,9 +18522,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 46883,
+          "disponible": 46783,
           "stock": 91283,
-          "predespacho": 44400
+          "predespacho": 44500
         },
         {
           "almacen": "118",
@@ -18344,9 +18672,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9629,
+          "disponible": 9609,
           "stock": 15584,
-          "predespacho": 5955
+          "predespacho": 5975
         },
         {
           "almacen": "122",
@@ -18403,9 +18731,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3430,
+          "disponible": 3410,
           "stock": 3530,
-          "predespacho": 100
+          "predespacho": 120
         }
       ]
     },
@@ -18852,8 +19180,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 26200,
-          "stock": 28400,
+          "disponible": 26218,
+          "stock": 28418,
           "predespacho": 2200
         },
         {
@@ -19349,9 +19677,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7405,
+          "disponible": 7385,
           "stock": 12555,
-          "predespacho": 5150
+          "predespacho": 5170
         },
         {
           "almacen": "129",
@@ -19392,9 +19720,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 90142,
+          "disponible": 90042,
           "stock": 94942,
-          "predespacho": 4800
+          "predespacho": 4900
         },
         {
           "almacen": "118",
@@ -19571,9 +19899,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 795,
+          "disponible": 775,
           "stock": 6545,
-          "predespacho": 5750
+          "predespacho": 5770
         },
         {
           "almacen": "118",
@@ -19622,9 +19950,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 16918,
+          "disponible": 16898,
           "stock": 22868,
-          "predespacho": 5950
+          "predespacho": 5970
         },
         {
           "almacen": "129",
@@ -19666,9 +19994,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 18431,
+          "disponible": 18411,
           "stock": 22581,
-          "predespacho": 4150
+          "predespacho": 4170
         },
         {
           "almacen": "118",
@@ -19710,9 +20038,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 13172,
+          "disponible": 13152,
           "stock": 16622,
-          "predespacho": 3450
+          "predespacho": 3470
         }
       ]
     },
@@ -19956,8 +20284,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1642,
-          "stock": 1692,
+          "disponible": 1643,
+          "stock": 1693,
           "predespacho": 50
         },
         {
@@ -20226,8 +20554,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1573,
-          "stock": 2365,
+          "disponible": 1893,
+          "stock": 2685,
           "predespacho": 792
         },
         {
@@ -20235,13 +20563,6 @@
           "tipo": "mktd",
           "disponible": 10,
           "stock": 10,
-          "predespacho": 0
-        },
-        {
-          "almacen": "40",
-          "tipo": "venta",
-          "disponible": 320,
-          "stock": 320,
           "predespacho": 0
         },
         {
@@ -20297,9 +20618,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 10981,
+          "disponible": 10957,
           "stock": 13217,
-          "predespacho": 2236
+          "predespacho": 2260
         },
         {
           "almacen": "118",
@@ -20396,9 +20717,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2991,
+          "disponible": 2967,
           "stock": 5271,
-          "predespacho": 2280
+          "predespacho": 2304
         },
         {
           "almacen": "118",
@@ -20475,9 +20796,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2799,
+          "disponible": 2775,
           "stock": 4791,
-          "predespacho": 1992
+          "predespacho": 2016
         },
         {
           "almacen": "118",
@@ -20796,9 +21117,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2901,
+          "disponible": 2889,
           "stock": 2913,
-          "predespacho": 12
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -20889,9 +21210,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 101,
+          "disponible": 89,
           "stock": 3089,
-          "predespacho": 2988
+          "predespacho": 3000
         },
         {
           "almacen": "118",
@@ -22190,8 +22511,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 684,
-          "stock": 684,
+          "disponible": 674,
+          "stock": 674,
           "predespacho": 0
         },
         {
@@ -22261,9 +22582,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11274,
-          "stock": 12834,
-          "predespacho": 1560
+          "disponible": 11182,
+          "stock": 12838,
+          "predespacho": 1656
         },
         {
           "almacen": "118",
@@ -22545,9 +22866,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1504,
+          "disponible": 1492,
           "stock": 1714,
-          "predespacho": 210
+          "predespacho": 222
         },
         {
           "almacen": "118",
@@ -22999,8 +23320,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 192,
-          "stock": 192,
+          "disponible": 300,
+          "stock": 300,
           "predespacho": 0
         },
         {
@@ -23297,7 +23618,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 72,
       "peso_kg": 0.113,
-      "precio": 2.16,
+      "precio": 2.01,
       "nombre_corto": "Plastilina Delgadas Clasica X 10",
       "ean13": "7754807090087",
       "ean14": "17754807090084",
@@ -23381,9 +23702,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 153771,
+          "disponible": 153627,
           "stock": 170451,
-          "predespacho": 16680
+          "predespacho": 16824
         },
         {
           "almacen": "118",
@@ -23464,9 +23785,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 61453,
+          "disponible": 61309,
           "stock": 63037,
-          "predespacho": 1584
+          "predespacho": 1728
         },
         {
           "almacen": "118",
@@ -23561,9 +23882,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 15583,
+          "disponible": 15511,
           "stock": 21451,
-          "predespacho": 5868
+          "predespacho": 5940
         },
         {
           "almacen": "118",
@@ -23651,9 +23972,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11532,
-          "stock": 11604,
-          "predespacho": 72
+          "disponible": 11522,
+          "stock": 11618,
+          "predespacho": 96
         },
         {
           "almacen": "118",
@@ -23734,9 +24055,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9641,
+          "disponible": 9617,
           "stock": 9713,
-          "predespacho": 72
+          "predespacho": 96
         },
         {
           "almacen": "118",
@@ -23838,9 +24159,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 70746,
-          "stock": 76794,
-          "predespacho": 6048
+          "disponible": 70459,
+          "stock": 76795,
+          "predespacho": 6336
         },
         {
           "almacen": "118",
@@ -24020,9 +24341,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 12063,
+          "disponible": 12039,
           "stock": 12063,
-          "predespacho": 0
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -24103,9 +24424,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1438,
+          "disponible": 1414,
           "stock": 1438,
-          "predespacho": 0
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -24179,9 +24500,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9492,
+          "disponible": 9468,
           "stock": 9540,
-          "predespacho": 48
+          "predespacho": 72
         },
         {
           "almacen": "118",
@@ -24255,9 +24576,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 12034,
+          "disponible": 12010,
           "stock": 12034,
-          "predespacho": 0
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -24338,9 +24659,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11061,
-          "stock": 11061,
-          "predespacho": 0
+          "disponible": 11038,
+          "stock": 11062,
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -24421,9 +24742,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3251,
+          "disponible": 3227,
           "stock": 3251,
-          "predespacho": 0
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -24476,9 +24797,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7170,
+          "disponible": 7146,
           "stock": 7170,
-          "predespacho": 0
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -24573,9 +24894,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 18216,
+          "disponible": 18192,
           "stock": 18792,
-          "predespacho": 576
+          "predespacho": 600
         },
         {
           "almacen": "118",
@@ -24642,9 +24963,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9773,
-          "stock": 10349,
-          "predespacho": 576
+          "disponible": 9755,
+          "stock": 10355,
+          "predespacho": 600
         },
         {
           "almacen": "118",
@@ -24732,9 +25053,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11977,
+          "disponible": 11953,
           "stock": 12937,
-          "predespacho": 960
+          "predespacho": 984
         },
         {
           "almacen": "118",
@@ -24815,9 +25136,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9056,
+          "disponible": 9032,
           "stock": 9536,
-          "predespacho": 480
+          "predespacho": 504
         },
         {
           "almacen": "118",
@@ -24891,9 +25212,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 815,
+          "disponible": 791,
           "stock": 911,
-          "predespacho": 96
+          "predespacho": 120
         },
         {
           "almacen": "118",
@@ -25086,9 +25407,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5269,
+          "disponible": 5245,
           "stock": 5653,
-          "predespacho": 384
+          "predespacho": 408
         },
         {
           "almacen": "118",
@@ -25373,9 +25694,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 34668,
+          "disponible": 34168,
           "stock": 34668,
-          "predespacho": 0
+          "predespacho": 500
         },
         {
           "almacen": "118",
@@ -25485,9 +25806,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1845,
+          "disponible": 1345,
           "stock": 1855,
-          "predespacho": 10
+          "predespacho": 510
         },
         {
           "almacen": "118",
@@ -25860,9 +26181,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1955,
+          "disponible": 1895,
           "stock": 1955,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -26071,9 +26392,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 15964,
+          "disponible": 15864,
           "stock": 15964,
-          "predespacho": 0
+          "predespacho": 100
         },
         {
           "almacen": "118",
@@ -26204,9 +26525,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2390,
+          "disponible": 2340,
           "stock": 2390,
-          "predespacho": 0
+          "predespacho": 50
         },
         {
           "almacen": "118",
@@ -26408,9 +26729,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1141,
+          "disponible": 1041,
           "stock": 1141,
-          "predespacho": 0
+          "predespacho": 100
         },
         {
           "almacen": "118",
@@ -26690,9 +27011,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 96425,
+          "disponible": 95925,
           "stock": 96925,
-          "predespacho": 500
+          "predespacho": 1000
         },
         {
           "almacen": "122",
@@ -27102,23 +27423,14 @@
       "tipo": "01 - ALTO RELIEVE",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 12,
-      "peso_kg": 0.7,
-      "precio": 26.28,
-      "nombre_corto": "Rompecabezas Encaje Alto Relieve Transporte X 7Pzs",
-      "ean13": "7754807141864",
-      "ean14": "17754807141861",
-      "keywords": [
-        "7PZS",
-        "ALTO",
-        "DIDACTICOS",
-        "ENCAJE",
-        "RELIEVE",
-        "ROMPECABEZAS",
-        "TRANSPORTE",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27153,23 +27465,14 @@
       "tipo": "01 - ALTO RELIEVE",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 12,
-      "peso_kg": 0.45,
-      "precio": 21.95,
-      "nombre_corto": "Rompecabezas Encaje Alto Relieve Reloj X 12Pzs",
-      "ean13": "7754807141871",
-      "ean14": "17754807141878",
-      "keywords": [
-        "12PZS",
-        "ALTO",
-        "DIDACTICOS",
-        "ENCAJE",
-        "RELIEVE",
-        "RELOJ",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "118",
@@ -27211,23 +27514,14 @@
       "tipo": "02 - CON PIN",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.25,
-      "precio": 10.42,
-      "nombre_corto": "Rompecabezas Encaje Con Pin Safari X 6Pzs",
-      "ean13": "7754807141888",
-      "ean14": "17754807141885",
-      "keywords": [
-        "6PZS",
-        "CON",
-        "DIDACTICOS",
-        "ENCAJE",
-        "PIN",
-        "ROMPECABEZAS",
-        "SAFARI",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27262,23 +27556,14 @@
       "tipo": "02 - CON PIN",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.2,
-      "precio": 9.72,
-      "nombre_corto": "Rompecabezas Encaje Con Pin Minisafari X 4Pzs",
-      "ean13": "7754807141895",
-      "ean14": "17754807141892",
-      "keywords": [
-        "4PZS",
-        "CON",
-        "DIDACTICOS",
-        "ENCAJE",
-        "MINISAFARI",
-        "PIN",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27327,23 +27612,14 @@
       "tipo": "01 - ALTO RELIEVE",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 12,
-      "peso_kg": 0.65,
-      "precio": 26.28,
-      "nombre_corto": "Rompecabezas Encaje Alto Relieve Granja X 7Pzs",
-      "ean13": "7754807141901",
-      "ean14": "17754807141908",
-      "keywords": [
-        "7PZS",
-        "ALTO",
-        "DIDACTICOS",
-        "ENCAJE",
-        "GRANJA",
-        "RELIEVE",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27385,23 +27661,14 @@
       "tipo": "01 - ALTO RELIEVE",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 12,
-      "peso_kg": 0.65,
-      "precio": 26.28,
-      "nombre_corto": "Rompecabezas Encaje Alto Relieve Oceano X 7Pzs",
-      "ean13": "7754807141918",
-      "ean14": "17754807141915",
-      "keywords": [
-        "7PZS",
-        "ALTO",
-        "DIDACTICOS",
-        "ENCAJE",
-        "OCEANO",
-        "RELIEVE",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27499,29 +27766,21 @@
       "tipo": "03 - PASADO",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 12,
-      "peso_kg": 0.2,
-      "precio": 18.67,
-      "nombre_corto": "Didactico Pasado Mariposa X 12Pzs",
-      "ean13": "7754807141949",
-      "ean14": "17754807141946",
-      "keywords": [
-        "12PZS",
-        "DIDACTICO",
-        "DIDACTICOS",
-        "JUEGO",
-        "MARIPOSA",
-        "PASADO",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 480,
+          "disponible": 360,
           "stock": 600,
-          "predespacho": 120
+          "predespacho": 240
         },
         {
           "almacen": "118",
@@ -27549,29 +27808,21 @@
       "tipo": "03 - PASADO",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 12,
-      "peso_kg": 0.2,
-      "precio": 18.67,
-      "nombre_corto": "Didactico Pasado Tortuga X 22Pzs",
-      "ean13": "7754807141956",
-      "ean14": "17754807141953",
-      "keywords": [
-        "22PZS",
-        "DIDACTICO",
-        "DIDACTICOS",
-        "JUEGO",
-        "PASADO",
-        "TORTUGA",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 445,
+          "disponible": 325,
           "stock": 565,
-          "predespacho": 120
+          "predespacho": 240
         },
         {
           "almacen": "118",
@@ -27606,21 +27857,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.5,
-      "precio": 18.92,
-      "nombre_corto": "Rompecabezas Encaje Castillo X 48Pzs",
-      "ean13": "7754807141963",
-      "ean14": "17754807141960",
-      "keywords": [
-        "48PZS",
-        "CASTILLO",
-        "DIDACTICOS",
-        "ENCAJE",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27662,21 +27906,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.5,
-      "precio": 18.92,
-      "nombre_corto": "Rompecabezas Encaje Transporte X 48Pzs",
-      "ean13": "7754807141970",
-      "ean14": "17754807141977",
-      "keywords": [
-        "48PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "ROMPECABEZAS",
-        "TRANSPORTE",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27711,29 +27948,20 @@
       "tipo": "02 - CON PIN",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.3,
-      "precio": 10.42,
-      "nombre_corto": "Rompecabezas Encaje Con Pin Transporte X 7Pzs",
-      "ean13": "7754807141987",
-      "ean14": "17754807141984",
-      "keywords": [
-        "7PZS",
-        "CON",
-        "DIDACTICOS",
-        "ENCAJE",
-        "PIN",
-        "ROMPECABEZAS",
-        "TRANSPORTE",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 288,
-          "stock": 288,
+          "disponible": 295,
+          "stock": 295,
           "predespacho": 0
         },
         {
@@ -27762,21 +27990,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.55,
-      "precio": 18.92,
-      "nombre_corto": "Rompecabezas Encaje Tiendita X 48Pzs",
-      "ean13": "7754807141994",
-      "ean14": "17754807141991",
-      "keywords": [
-        "48PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "ROMPECABEZAS",
-        "TIENDITA",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27804,21 +28025,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.55,
-      "precio": 18.92,
-      "nombre_corto": "Rompecabezas Encaje Circo X 48Pzs",
-      "ean13": "7754807142007",
-      "ean14": "17754807142004",
-      "keywords": [
-        "48PZS",
-        "CIRCO",
-        "DIDACTICOS",
-        "ENCAJE",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -27853,23 +28067,14 @@
       "tipo": "04 - CON IMAN",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.3,
-      "precio": 13.92,
-      "nombre_corto": "Rompecabezas Encaje Con Iman Pesca X 8Pzs",
-      "ean13": "7754807142014",
-      "ean14": "17754807142011",
-      "keywords": [
-        "8PZS",
-        "CON",
-        "DIDACTICOS",
-        "ENCAJE",
-        "IMAN",
-        "PESCA",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28251,23 +28456,14 @@
       "tipo": "02 - CON PIN",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.2,
-      "precio": 9.72,
-      "nombre_corto": "Rompecabezas Encaje Con Pin Minigranja X 4Pzs",
-      "ean13": "7754807142137",
-      "ean14": "17754807142134",
-      "keywords": [
-        "4PZS",
-        "CON",
-        "DIDACTICOS",
-        "ENCAJE",
-        "MINIGRANJA",
-        "PIN",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28309,27 +28505,20 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 48,
-      "peso_kg": 0.1,
-      "precio": 3.43,
-      "nombre_corto": "Rompecabezas Encaje Policia X 9Pzs",
-      "ean13": "7754807142144",
-      "ean14": "17754807142141",
-      "keywords": [
-        "9PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "POLICIA",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2941,
-          "stock": 2941,
+          "disponible": 2950,
+          "stock": 2950,
           "predespacho": 0
         },
         {
@@ -28358,27 +28547,20 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 48,
-      "peso_kg": 0.1,
-      "precio": 3.43,
-      "nombre_corto": "Rompecabezas Encaje Elefante X 9Pzs",
-      "ean13": "7754807142151",
-      "ean14": "17754807142158",
-      "keywords": [
-        "9PZS",
-        "DIDACTICOS",
-        "ELEFANTE",
-        "ENCAJE",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1756,
-          "stock": 1756,
+          "disponible": 1780,
+          "stock": 1780,
           "predespacho": 0
         },
         {
@@ -28421,21 +28603,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 48,
-      "peso_kg": 0.1,
-      "precio": 3.43,
-      "nombre_corto": "Rompecabezas Encaje Dino X 9Pzs",
-      "ean13": "7754807142168",
-      "ean14": "17754807142165",
-      "keywords": [
-        "9PZS",
-        "DIDACTICOS",
-        "DINO",
-        "ENCAJE",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28470,21 +28645,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 48,
-      "peso_kg": 0.1,
-      "precio": 3.43,
-      "nombre_corto": "Rompecabezas Encaje Princesa X 9Pzs",
-      "ean13": "7754807142175",
-      "ean14": "17754807142172",
-      "keywords": [
-        "9PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "PRINCESA",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28526,21 +28694,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.3,
-      "precio": 9.72,
-      "nombre_corto": "Rompecabezas Encaje Princesa X 15Pzs",
-      "ean13": "7754807142182",
-      "ean14": "17754807142189",
-      "keywords": [
-        "15PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "PRINCESA",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28575,21 +28736,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.25,
-      "precio": 9.72,
-      "nombre_corto": "Rompecabezas Encaje Espacial X 15Pzs",
-      "ean13": "7754807142199",
-      "ean14": "17754807142196",
-      "keywords": [
-        "15PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "ESPACIAL",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28624,30 +28778,21 @@
       "tipo": "03 - PASADO",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 12,
-      "peso_kg": 0.45,
-      "precio": 26.15,
-      "nombre_corto": "Didactico Pasado Mariposa Grande X 20Pzs",
-      "ean13": "7754807142205",
-      "ean14": "17754807142202",
-      "keywords": [
-        "20PZS",
-        "DIDACTICO",
-        "DIDACTICOS",
-        "GRANDE",
-        "JUEGO",
-        "MARIPOSA",
-        "PASADO",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 360,
+          "disponible": 240,
           "stock": 480,
-          "predespacho": 120
+          "predespacho": 240
         },
         {
           "almacen": "118",
@@ -28668,30 +28813,21 @@
       "tipo": "03 - PASADO",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 12,
-      "peso_kg": 0.45,
-      "precio": 26.15,
-      "nombre_corto": "Didactico Pasado Pirata Grande X 19Pzs",
-      "ean13": "7754807142212",
-      "ean14": "17754807142219",
-      "keywords": [
-        "19PZS",
-        "DIDACTICO",
-        "DIDACTICOS",
-        "GRANDE",
-        "JUEGO",
-        "PASADO",
-        "PIRATA",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 257,
+          "disponible": 137,
           "stock": 377,
-          "predespacho": 120
+          "predespacho": 240
         },
         {
           "almacen": "118",
@@ -28712,21 +28848,14 @@
       "tipo": "04 - FIGURAS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 6,
-      "peso_kg": 0.3,
-      "precio": 41.26,
-      "nombre_corto": "Didactico Safari X 15Pzs",
-      "ean13": "7754807142229",
-      "ean14": "17754807142226",
-      "keywords": [
-        "15PZS",
-        "DIDACTICO",
-        "DIDACTICOS",
-        "JUEGO",
-        "SAFARI",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28761,21 +28890,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.3,
-      "precio": 16.79,
-      "nombre_corto": "Rompecabezas Encaje Granjero X 24Pzs",
-      "ean13": "7754807142236",
-      "ean14": "17754807142233",
-      "keywords": [
-        "24PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "GRANJERO",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28810,21 +28932,14 @@
       "tipo": "03 - CLASICOS",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.5,
-      "precio": 16.79,
-      "nombre_corto": "Rompecabezas Encaje Profesiones X 24Pzs",
-      "ean13": "7754807142243",
-      "ean14": "17754807142240",
-      "keywords": [
-        "24PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "PROFESIONES",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28859,23 +28974,14 @@
       "tipo": "05 - PIZARRAS",
       "familia": "01 - MAGNETICAS",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.3,
-      "precio": 20.91,
-      "nombre_corto": "Didactico Pizarra Magnetica Abecedario X 26Pzs",
-      "ean13": "7754807142250",
-      "ean14": "17754807142257",
-      "keywords": [
-        "26PZS",
-        "ABECEDARIO",
-        "DIDACTICO",
-        "DIDACTICOS",
-        "JUEGO",
-        "MAGNETICA",
-        "PIZARRA",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28910,23 +29016,14 @@
       "tipo": "05 - PIZARRAS",
       "familia": "01 - MAGNETICAS",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.3,
-      "precio": 20.91,
-      "nombre_corto": "Didactico Pizarra Magnetica Numerico X 25Pzs",
-      "ean13": "7754807142267",
-      "ean14": "17754807142264",
-      "keywords": [
-        "25PZS",
-        "DIDACTICO",
-        "DIDACTICOS",
-        "JUEGO",
-        "MAGNETICA",
-        "NUMERICO",
-        "PIZARRA",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -28961,22 +29058,14 @@
       "tipo": "01 - ALTO RELIEVE",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.25,
-      "precio": 16.88,
-      "nombre_corto": "Rompecabezas Encaje Relieve Numerico X 10Pzs",
-      "ean13": "7754807142274",
-      "ean14": "17754807142271",
-      "keywords": [
-        "10PZS",
-        "DIDACTICOS",
-        "ENCAJE",
-        "NUMERICO",
-        "RELIEVE",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -29011,22 +29100,14 @@
       "tipo": "01 - ALTO RELIEVE",
       "familia": "01 - MADERA",
       "categoria": "VINIFAN",
-      "estado_linea": "NUEVO",
-      "un_bx": 24,
-      "peso_kg": 0.25,
-      "precio": 3.43,
-      "nombre_corto": "Rompecabezas Encaje Relieve Abecedario X 26Pzs",
-      "ean13": "7754807142281",
-      "ean14": "17754807142288",
-      "keywords": [
-        "26PZS",
-        "ABECEDARIO",
-        "DIDACTICOS",
-        "ENCAJE",
-        "RELIEVE",
-        "ROMPECABEZAS",
-        "VINIFAN"
-      ],
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -29619,9 +29700,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 193,
+          "disponible": 185,
           "stock": 193,
-          "predespacho": 0
+          "predespacho": 8
         }
       ]
     },
@@ -29731,9 +29812,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4,
+          "disponible": 0,
           "stock": 44,
-          "predespacho": 40
+          "predespacho": 44
         },
         {
           "almacen": "92",
@@ -29923,34 +30004,6 @@
           "disponible": 93,
           "stock": 93,
           "predespacho": 0
-        }
-      ]
-    },
-    {
-      "sku": "20176",
-      "codigo": "20176",
-      "descripcion": "20176 R12CT01 CINTA 250 UM X 13.0 CM - BRILLANTE",
-      "um": "KGR",
-      "linea": "20 - PRODUCTOS INDUSTRIALES",
-      "grupo": "01 - PVC",
-      "tipo": "01 - RIGIDOS",
-      "familia": "01 - LABORATORIOS",
-      "categoria": "INDUSTRIAL",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 292,
-          "predespacho": 292
         }
       ]
     },
@@ -30739,8 +30792,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 349,
-          "stock": 1354,
-          "predespacho": 1005
+          "stock": 349,
+          "predespacho": 0
         }
       ]
     },
@@ -30767,8 +30820,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 181,
-          "stock": 805,
-          "predespacho": 624
+          "stock": 181,
+          "predespacho": 0
         }
       ]
     },
@@ -30872,8 +30925,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 704,
-          "stock": 956,
-          "predespacho": 252
+          "stock": 704,
+          "predespacho": 0
         }
       ]
     },
@@ -31098,23 +31151,14 @@
       "tipo": "03 - PLASTIFICADO",
       "familia": "13 - FILM",
       "categoria": "INDUSTRIAL",
-      "estado_linea": "PVC",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 1.15,
-      "precio": 26.84,
-      "nombre_corto": "P49Ct02 Film Alimentos 8Um X 30.0Cm X 300M",
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
       "ean13": "",
       "ean14": "",
-      "keywords": [
-        "0CM",
-        "300M",
-        "8UM",
-        "ALIMENTOS",
-        "FILM",
-        "P49CT02",
-        "PRODUCTOS INDUSTRIALES",
-        "REPRESENTADAS"
-      ],
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -31646,8 +31690,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 207,
-          "stock": 207,
+          "disponible": 669,
+          "stock": 669,
           "predespacho": 0
         }
       ]
@@ -31775,8 +31819,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 275,
-          "stock": 485,
-          "predespacho": 210
+          "stock": 275,
+          "predespacho": 0
         }
       ]
     },
@@ -31812,8 +31856,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 394,
-          "stock": 730,
-          "predespacho": 336
+          "stock": 394,
+          "predespacho": 0
         }
       ]
     },
@@ -31827,23 +31871,14 @@
       "tipo": "03 - PLASTIFICADO",
       "familia": "13 - FILM",
       "categoria": "INDUSTRIAL",
-      "estado_linea": "PVC",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 2.2,
-      "precio": 50.61,
-      "nombre_corto": "P49Ct02 Film Alimentos 8Um X 30Cm X 600M",
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
       "ean13": "",
       "ean14": "",
-      "keywords": [
-        "30CM",
-        "600M",
-        "8UM",
-        "ALIMENTOS",
-        "FILM",
-        "P49CT02",
-        "PRODUCTOS INDUSTRIALES",
-        "REPRESENTADAS"
-      ],
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -31934,6 +31969,41 @@
           "tipo": "venta",
           "disponible": 197,
           "stock": 197,
+          "predespacho": 0
+        }
+      ]
+    },
+    {
+      "sku": "203657",
+      "codigo": "203657",
+      "descripcion": "R12AZ04 CINTA 300 UM X 21.5 CM - BRILLANTE",
+      "um": "KGR",
+      "linea": "20 - PRODUCTOS INDUSTRIALES",
+      "grupo": "01 - PVC",
+      "tipo": "01 - RIGIDOS",
+      "familia": "02 - BOBINA",
+      "categoria": "INDUSTRIAL",
+      "estado_linea": "PVC",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 13,
+      "nombre_corto": "R12Az04 Cinta 300 Um X 21.5 Cm - Brillante",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [
+        "300",
+        "BRILLANTE",
+        "CINTA",
+        "PRODUCTOS INDUSTRIALES",
+        "R12AZ04",
+        "REPRESENTADAS"
+      ],
+      "almacenes": [
+        {
+          "almacen": "40",
+          "tipo": "venta",
+          "disponible": 498,
+          "stock": 498,
           "predespacho": 0
         }
       ]
@@ -32797,9 +32867,9 @@
         {
           "almacen": "40",
           "tipo": "venta",
-          "disponible": 27,
+          "disponible": 0,
           "stock": 27,
-          "predespacho": 0
+          "predespacho": 27
         },
         {
           "almacen": "92",
@@ -33154,34 +33224,6 @@
       ]
     },
     {
-      "sku": "204168",
-      "codigo": "204168",
-      "descripcion": "FUNDA DE POLIOLEFINA 19 UM X 65.0 CM X 65.0 CM - KGR",
-      "um": "KGR",
-      "linea": "20 - PRODUCTOS INDUSTRIALES",
-      "grupo": "06 - VARIOS",
-      "tipo": "01 - VARIOS",
-      "familia": "01 - VARIOS KGR",
-      "categoria": "INDUSTRIAL",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 121,
-          "predespacho": 121
-        }
-      ]
-    },
-    {
       "sku": "204188",
       "codigo": "204188",
       "descripcion": "MUESTRA DE ENVASES PEAD",
@@ -33428,15 +33470,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 20,
-          "stock": 20,
-          "predespacho": 0
-        },
-        {
-          "almacen": "40",
-          "tipo": "venta",
-          "disponible": 20,
-          "stock": 20,
-          "predespacho": 0
+          "stock": 40,
+          "predespacho": 20
         }
       ]
     },
@@ -33835,34 +33870,6 @@
       ]
     },
     {
-      "sku": "204392",
-      "codigo": "204392",
-      "descripcion": "FUNDA DE POLIOLEFINA 19 UM X 47.0 CM X 65.0 CM - KGR",
-      "um": "KGR",
-      "linea": "20 - PRODUCTOS INDUSTRIALES",
-      "grupo": "06 - VARIOS",
-      "tipo": "01 - VARIOS",
-      "familia": "01 - VARIOS KGR",
-      "categoria": "INDUSTRIAL",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 243,
-          "predespacho": 243
-        }
-      ]
-    },
-    {
       "sku": "204393",
       "codigo": "204393",
       "descripcion": "FUNDA DE POLIOLEFINA 15 UM X 28.0 CM X 35.6 CM - MLL",
@@ -33887,6 +33894,34 @@
           "disponible": 87,
           "stock": 87,
           "predespacho": 0
+        }
+      ]
+    },
+    {
+      "sku": "204394",
+      "codigo": "204394",
+      "descripcion": "21430061 PP02BL14 TAPA TOTALIST BLANCA",
+      "um": "MLL",
+      "linea": "20 - PRODUCTOS INDUSTRIALES",
+      "grupo": "04 - TAPAS",
+      "tipo": "03 - POLIPROPILENO",
+      "familia": "02 - UNIQUE",
+      "categoria": "INDUSTRIAL",
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
+      "almacenes": [
+        {
+          "almacen": "40",
+          "tipo": "venta",
+          "disponible": 0,
+          "stock": 140,
+          "predespacho": 140
         }
       ]
     },
@@ -34685,9 +34720,9 @@
         {
           "almacen": "40",
           "tipo": "venta",
-          "disponible": 107,
+          "disponible": 0,
           "stock": 107,
-          "predespacho": 0
+          "predespacho": 107
         }
       ]
     },
@@ -34720,6 +34755,34 @@
       ]
     },
     {
+      "sku": "204534",
+      "codigo": "204534",
+      "descripcion": "21430474 PP02BL01 TAPA ROLL ON BLANCO P/BIG3 (2026-04)",
+      "um": "MLL",
+      "linea": "20 - PRODUCTOS INDUSTRIALES",
+      "grupo": "04 - TAPAS",
+      "tipo": "03 - POLIPROPILENO",
+      "familia": "02 - UNIQUE",
+      "categoria": "INDUSTRIAL",
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
+      "almacenes": [
+        {
+          "almacen": "40",
+          "tipo": "venta",
+          "disponible": 301,
+          "stock": 301,
+          "predespacho": 0
+        }
+      ]
+    },
+    {
       "sku": "204538",
       "codigo": "204538",
       "descripcion": "PT02BL01 FCO LISO 1000ML 3 LOG TALEX 90G (BOLSA) (PCR) 2026",
@@ -34741,15 +34804,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 8,
-          "stock": 8,
-          "predespacho": 0
-        },
-        {
-          "almacen": "40",
-          "tipo": "venta",
-          "disponible": 25,
-          "stock": 25,
+          "disponible": 33,
+          "stock": 33,
           "predespacho": 0
         }
       ]
@@ -35843,6 +35899,13 @@
           "disponible": 753,
           "stock": 753,
           "predespacho": 0
+        },
+        {
+          "almacen": "40",
+          "tipo": "venta",
+          "disponible": 767,
+          "stock": 767,
+          "predespacho": 0
         }
       ]
     },
@@ -36574,6 +36637,13 @@
       "almacenes": [
         {
           "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
+          "almacen": "40",
           "tipo": "venta",
           "disponible": 1,
           "stock": 1,
@@ -38446,6 +38516,34 @@
           "tipo": "venta",
           "disponible": 2,
           "stock": 2,
+          "predespacho": 0
+        }
+      ]
+    },
+    {
+      "sku": "212296",
+      "codigo": "212296",
+      "descripcion": "9809010401 ALUMINIO IMP 27.8UM X 202MM -DOLIBREX -CIFARMA",
+      "um": "KGR",
+      "linea": "21 - REPRESENTACIONES INDUSTRIALES",
+      "grupo": "08 - ALUMINIO",
+      "tipo": "02 - ALUMINIO FARMA",
+      "familia": "04 - ALUMINIO DURO IMPRESO",
+      "categoria": "INDUSTRIAL",
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
+      "almacenes": [
+        {
+          "almacen": "40",
+          "tipo": "venta",
+          "disponible": 10,
+          "stock": 10,
           "predespacho": 0
         }
       ]
@@ -40783,8 +40881,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 570,
-          "stock": 1470,
-          "predespacho": 900
+          "stock": 570,
+          "predespacho": 0
         }
       ]
     },
@@ -40841,34 +40939,6 @@
           "disponible": 48,
           "stock": 48,
           "predespacho": 0
-        }
-      ]
-    },
-    {
-      "sku": "3011133",
-      "codigo": "3011133",
-      "descripcion": "PTT 4\" X 6\" (1) TL VERDE 7486U N3\" (1MLL)",
-      "um": "MLL",
-      "linea": "30 - CIPTECH ETIQUETAS",
-      "grupo": "06 - PAPEL TERMO TRANSFERENCIA",
-      "tipo": "02 - FONDEADO",
-      "familia": "02 - NUCLEO 3",
-      "categoria": "CIPTECH",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 12,
-          "predespacho": 12
         }
       ]
     },
@@ -40951,8 +41021,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 10,
-          "stock": 160,
-          "predespacho": 150
+          "stock": 10,
+          "predespacho": 0
         }
       ]
     },
@@ -41007,8 +41077,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 15,
-          "stock": 625,
-          "predespacho": 610
+          "stock": 15,
+          "predespacho": 0
         }
       ]
     },
@@ -41035,8 +41105,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 300,
-          "stock": 644,
-          "predespacho": 344
+          "stock": 300,
+          "predespacho": 0
         }
       ]
     },
@@ -41069,34 +41139,6 @@
       ]
     },
     {
-      "sku": "3011804",
-      "codigo": "3011804",
-      "descripcion": "DTB 2\" X 1\" (1) TL S/IMP N1\" (2MLL)",
-      "um": "MLL",
-      "linea": "30 - CIPTECH ETIQUETAS",
-      "grupo": "03 - DIR TER GBCO",
-      "tipo": "01 - S/IMPRESIÓN",
-      "familia": "01 - NUCLEO 1",
-      "categoria": "CIPTECH",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 1200,
-          "predespacho": 1200
-        }
-      ]
-    },
-    {
       "sku": "3011812",
       "codigo": "3011812",
       "descripcion": "PTT 1.5\" X 0.63\" (2) S/TL S/IMP N3\" (17MLL)",
@@ -41119,8 +41161,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 374,
-          "stock": 510,
-          "predespacho": 136
+          "stock": 374,
+          "predespacho": 0
         }
       ]
     },
@@ -41156,62 +41198,6 @@
           "disponible": 1,
           "stock": 1,
           "predespacho": 0
-        }
-      ]
-    },
-    {
-      "sku": "3012100",
-      "codigo": "3012100",
-      "descripcion": "PTT 3\" X 1.5\" (1) TL VERDE 2298U N3\" (3MLL)",
-      "um": "MLL",
-      "linea": "30 - CIPTECH ETIQUETAS",
-      "grupo": "06 - PAPEL TERMO TRANSFERENCIA",
-      "tipo": "02 - FONDEADO",
-      "familia": "02 - NUCLEO 3",
-      "categoria": "CIPTECH",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 210,
-          "predespacho": 210
-        }
-      ]
-    },
-    {
-      "sku": "3012101",
-      "codigo": "3012101",
-      "descripcion": "PTT 3\" X 1.5\" (1) TL VERDE 369U N3\" (3MLL)",
-      "um": "MLL",
-      "linea": "30 - CIPTECH ETIQUETAS",
-      "grupo": "06 - PAPEL TERMO TRANSFERENCIA",
-      "tipo": "02 - FONDEADO",
-      "familia": "02 - NUCLEO 3",
-      "categoria": "CIPTECH",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 210,
-          "predespacho": 210
         }
       ]
     },
@@ -41266,8 +41252,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 130,
-          "stock": 250,
-          "predespacho": 120
+          "stock": 130,
+          "predespacho": 0
         }
       ]
     },
@@ -41384,34 +41370,6 @@
       ]
     },
     {
-      "sku": "305513",
-      "codigo": "305513",
-      "descripcion": "DTB 2\" X 1\" (2) TL S/IMP N1\" (4MLL)",
-      "um": "MLL",
-      "linea": "30 - CIPTECH ETIQUETAS",
-      "grupo": "03 - DIR TER GBCO",
-      "tipo": "01 - S/IMPRESIÓN",
-      "familia": "01 - NUCLEO 1",
-      "categoria": "CIPTECH",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 288,
-          "predespacho": 288
-        }
-      ]
-    },
-    {
       "sku": "306391",
       "codigo": "306391",
       "descripcion": "PP OBR 4\" X 6\" (1) TL S/IMP N3\" (1MLL)",
@@ -41436,34 +41394,6 @@
           "disponible": 100,
           "stock": 100,
           "predespacho": 0
-        }
-      ]
-    },
-    {
-      "sku": "307065",
-      "codigo": "307065",
-      "descripcion": "PTT 4\" X 3\" (1) TL S/IMP N1\" (0.5MLL)",
-      "um": "MLL",
-      "linea": "30 - CIPTECH ETIQUETAS",
-      "grupo": "06 - PAPEL TERMO TRANSFERENCIA",
-      "tipo": "01 - S/IMPRESIÓN",
-      "familia": "01 - NUCLEO 1",
-      "categoria": "CIPTECH",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 78,
-          "predespacho": 78
         }
       ]
     },
@@ -41574,36 +41504,8 @@
           "almacen": "122",
           "tipo": "venta",
           "disponible": 200,
-          "stock": 600,
-          "predespacho": 400
-        }
-      ]
-    },
-    {
-      "sku": "31097",
-      "codigo": "31097",
-      "descripcion": "CINTA CERA TDW108 40MM X 450MTS (OUT) N1\" - (M)",
-      "um": "RLL",
-      "linea": "31 - CIPTECH CINTAS",
-      "grupo": "01 - CINTA TT CERA",
-      "tipo": "02 - TDW108",
-      "familia": "01 - NUCLEO 1\"",
-      "categoria": "CIPTECH",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 15,
-          "predespacho": 15
+          "stock": 200,
+          "predespacho": 0
         }
       ]
     },
@@ -41720,34 +41622,6 @@
       ]
     },
     {
-      "sku": "31293",
-      "codigo": "31293",
-      "descripcion": "CINTA CERA S2W 110MM X 300MTS (OUT) N1\" - (M)",
-      "um": "RLL",
-      "linea": "31 - CIPTECH CINTAS",
-      "grupo": "01 - CINTA TT CERA",
-      "tipo": "06 - S2W",
-      "familia": "01 - NUCLEO 1\"",
-      "categoria": "CIPTECH",
-      "estado_linea": "",
-      "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
-      "almacenes": [
-        {
-          "almacen": "122",
-          "tipo": "venta",
-          "disponible": 0,
-          "stock": 160,
-          "predespacho": 160
-        }
-      ]
-    },
-    {
       "sku": "31295",
       "codigo": "31295",
       "descripcion": "CINTA CERA S2W 110MM X 74MTS (OUT) N1/2\" - (M)",
@@ -41832,15 +41706,15 @@
       ]
     },
     {
-      "sku": "32145",
-      "codigo": "32145",
-      "descripcion": "GX 031-G50003-001 EXTERNAL LABEL ROLL HOLDER BL, ALL DESKTOP",
-      "um": "UND",
-      "linea": "32 - CIPTECH CPEI",
-      "grupo": "02 - GODEX",
-      "tipo": "03 - REPUESTOS",
-      "familia": "01 - IMPRESORAS DE ESCRITORIO",
-      "categoria": "OTROS",
+      "sku": "31314",
+      "codigo": "31314",
+      "descripcion": "CINTA HTS CN511 BLANCO 30MM X 150MTS (IN) N1\" - (M)",
+      "um": "RLL",
+      "linea": "31 - CIPTECH CINTAS",
+      "grupo": "05 - HOT STAMP",
+      "tipo": "02 - OTROS",
+      "familia": "01 - NUCLEO 1\"",
+      "categoria": "CIPTECH",
       "estado_linea": "",
       "un_bx": 1,
       "peso_kg": 0,
@@ -41853,9 +41727,9 @@
         {
           "almacen": "122",
           "tipo": "venta",
-          "disponible": 0,
-          "stock": 10,
-          "predespacho": 10
+          "disponible": 160,
+          "stock": 160,
+          "predespacho": 0
         }
       ]
     },
@@ -42861,6 +42735,34 @@
       ]
     },
     {
+      "sku": "501292",
+      "codigo": "501292",
+      "descripcion": "CJA 25.3X39.3X13.7-200-ECT557-BABY-STRESSBALL S/I CARVIMSA",
+      "um": "UND",
+      "linea": "50 - MATERIALES AUXILIARES",
+      "grupo": "03 - CAJA CARTON",
+      "tipo": "02 - ARTICULOS RECREATIVOS",
+      "familia": "01 - VINIBAL",
+      "categoria": "MATERIALES",
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
+      "almacenes": [
+        {
+          "almacen": "92",
+          "tipo": "venta",
+          "disponible": 1085,
+          "stock": 1085,
+          "predespacho": 0
+        }
+      ]
+    },
+    {
       "sku": "501336",
       "codigo": "501336",
       "descripcion": "PINCEL NARANJA #2",
@@ -43057,8 +42959,8 @@
         {
           "almacen": "92",
           "tipo": "venta",
-          "disponible": 3150,
-          "stock": 3150,
+          "disponible": 6255,
+          "stock": 6255,
           "predespacho": 0
         }
       ]
@@ -43143,6 +43045,34 @@
           "tipo": "venta",
           "disponible": 2000,
           "stock": 2000,
+          "predespacho": 0
+        }
+      ]
+    },
+    {
+      "sku": "501773",
+      "codigo": "501773",
+      "descripcion": "CAJA 37.1X37.1X21.0-320D-ECT858-CIPTECH-C/I V02 CARVIMSA",
+      "um": "UND",
+      "linea": "50 - MATERIALES AUXILIARES",
+      "grupo": "03 - CAJA CARTON",
+      "tipo": "03 - VARIOS",
+      "familia": "02 - CODIFICACION",
+      "categoria": "MATERIALES",
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
+      "almacenes": [
+        {
+          "almacen": "92",
+          "tipo": "venta",
+          "disponible": 3300,
+          "stock": 3300,
           "predespacho": 0
         }
       ]
@@ -43308,6 +43238,34 @@
       "almacenes": [
         {
           "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 1000,
+          "stock": 1000,
+          "predespacho": 0
+        }
+      ]
+    },
+    {
+      "sku": "502045",
+      "codigo": "502045",
+      "descripcion": "CJ 23.7X32.3X30.5-ECT437-175-C/I-LIMPIATIPO VF-CARV-2024-06",
+      "um": "UND",
+      "linea": "50 - MATERIALES AUXILIARES",
+      "grupo": "03 - CAJA CARTON",
+      "tipo": "01 - ARTICULOS DE ESCRITORIOS",
+      "familia": "01 - VINIFAN",
+      "categoria": "MATERIALES",
+      "estado_linea": "",
+      "un_bx": 1,
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
+      "almacenes": [
+        {
+          "almacen": "92",
           "tipo": "venta",
           "disponible": 1000,
           "stock": 1000,
@@ -49694,7 +49652,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 144,
       "peso_kg": 0.031,
-      "precio": 1.76,
+      "precio": 1.79,
       "nombre_corto": "En Barra Triangular Easy 12G",
       "ean13": "7754807000079",
       "ean14": "17754807000076",
@@ -49711,9 +49669,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 22256,
+          "disponible": 22196,
           "stock": 22256,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -50067,9 +50025,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5397,
+          "disponible": 69,
           "stock": 17012,
-          "predespacho": 11615
+          "predespacho": 16943
         },
         {
           "almacen": "118",
@@ -50262,9 +50220,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 12657,
+          "disponible": 12177,
           "stock": 18225,
-          "predespacho": 5568
+          "predespacho": 6048
         },
         {
           "almacen": "118",
@@ -50380,9 +50338,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11741,
-          "stock": 24077,
-          "predespacho": 12336
+          "disponible": 11267,
+          "stock": 24083,
+          "predespacho": 12816
         },
         {
           "almacen": "118",
@@ -50505,9 +50463,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 38721,
-          "stock": 82944,
-          "predespacho": 44223
+          "disponible": 52161,
+          "stock": 96744,
+          "predespacho": 44583
         },
         {
           "almacen": "118",
@@ -50535,13 +50493,6 @@
           "tipo": "venta",
           "disponible": 6,
           "stock": 6,
-          "predespacho": 0
-        },
-        {
-          "almacen": "40",
-          "tipo": "venta",
-          "disponible": 13800,
-          "stock": 13800,
           "predespacho": 0
         },
         {
@@ -50669,9 +50620,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11287,
+          "disponible": 11251,
           "stock": 11551,
-          "predespacho": 264
+          "predespacho": 300
         }
       ]
     },
@@ -50706,9 +50657,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11173,
+          "disponible": 11137,
           "stock": 11329,
-          "predespacho": 156
+          "predespacho": 192
         },
         {
           "almacen": "118",
@@ -50892,9 +50843,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 51383,
+          "disponible": 51323,
           "stock": 66743,
-          "predespacho": 15360
+          "predespacho": 15420
         },
         {
           "almacen": "118",
@@ -50971,9 +50922,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 42184,
+          "disponible": 42064,
           "stock": 47176,
-          "predespacho": 4992
+          "predespacho": 5112
         },
         {
           "almacen": "118",
@@ -51865,8 +51816,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
-          "stock": 274,
+          "disponible": 52,
+          "stock": 326,
           "predespacho": 274
         },
         {
@@ -52371,8 +52322,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 27,
-          "stock": 27,
+          "disponible": 51,
+          "stock": 51,
           "predespacho": 0
         },
         {
@@ -52558,9 +52509,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1647,
+          "disponible": 1623,
           "stock": 1647,
-          "predespacho": 0
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -52927,9 +52878,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 16062,
+          "disponible": 15630,
           "stock": 21582,
-          "predespacho": 5520
+          "predespacho": 5952
         },
         {
           "almacen": "118",
@@ -53100,9 +53051,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11464,
-          "stock": 12220,
-          "predespacho": 756
+          "disponible": 11393,
+          "stock": 12221,
+          "predespacho": 828
         },
         {
           "almacen": "118",
@@ -53197,9 +53148,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 38303,
-          "stock": 44963,
-          "predespacho": 6660
+          "disponible": 37622,
+          "stock": 45002,
+          "predespacho": 7380
         },
         {
           "almacen": "118",
@@ -53294,9 +53245,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 19057,
+          "disponible": 18913,
           "stock": 21325,
-          "predespacho": 2268
+          "predespacho": 2412
         },
         {
           "almacen": "118",
@@ -53564,8 +53515,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
-          "stock": 36,
+          "disponible": 18,
+          "stock": 54,
           "predespacho": 36
         },
         {
@@ -53650,9 +53601,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11895,
-          "stock": 13455,
-          "predespacho": 1560
+          "disponible": 11870,
+          "stock": 13466,
+          "predespacho": 1596
         },
         {
           "almacen": "122",
@@ -53779,9 +53730,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5797,
+          "disponible": 5761,
           "stock": 8137,
-          "predespacho": 2340
+          "predespacho": 2376
         },
         {
           "almacen": "118",
@@ -53960,9 +53911,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 8958,
+          "disponible": 8922,
           "stock": 14716,
-          "predespacho": 5758
+          "predespacho": 5794
         },
         {
           "almacen": "118",
@@ -54019,9 +53970,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11233,
-          "stock": 13913,
-          "predespacho": 2680
+          "disponible": 11175,
+          "stock": 13915,
+          "predespacho": 2740
         },
         {
           "almacen": "118",
@@ -54085,9 +54036,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9303,
-          "stock": 10787,
-          "predespacho": 1484
+          "disponible": 9285,
+          "stock": 10829,
+          "predespacho": 1544
         },
         {
           "almacen": "118",
@@ -54134,9 +54085,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3029,
+          "disponible": 2909,
           "stock": 3029,
-          "predespacho": 0
+          "predespacho": 120
         },
         {
           "almacen": "118",
@@ -54176,9 +54127,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 167,
+          "disponible": 47,
           "stock": 167,
-          "predespacho": 0
+          "predespacho": 120
         }
       ]
     },
@@ -54204,9 +54155,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 65,
+          "disponible": 5,
           "stock": 65,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "129",
@@ -54783,9 +54734,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 8272,
+          "disponible": 8128,
           "stock": 10000,
-          "predespacho": 1728
+          "predespacho": 1872
         },
         {
           "almacen": "118",
@@ -55020,9 +54971,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 514,
+          "disponible": 442,
           "stock": 1090,
-          "predespacho": 576
+          "predespacho": 648
         },
         {
           "almacen": "118",
@@ -55113,9 +55064,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2174,
+          "disponible": 2102,
           "stock": 2174,
-          "predespacho": 0
+          "predespacho": 72
         },
         {
           "almacen": "122",
@@ -55325,7 +55276,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 144,
       "peso_kg": 0.102,
-      "precio": 7.72,
+      "precio": 4.72,
       "nombre_corto": "Lápiz Con Diseño Trendy Girls 2Hb Cajita X12",
       "ean13": "7754807761277",
       "ean14": "17754807761274",
@@ -55477,9 +55428,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3438,
+          "disponible": 3402,
           "stock": 3726,
-          "predespacho": 288
+          "predespacho": 324
         },
         {
           "almacen": "129",
@@ -55546,9 +55497,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 14028,
+          "disponible": 13884,
           "stock": 15036,
-          "predespacho": 1008
+          "predespacho": 1152
         },
         {
           "almacen": "118",
@@ -55587,9 +55538,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 10446,
+          "disponible": 10374,
           "stock": 13050,
-          "predespacho": 2604
+          "predespacho": 2676
         },
         {
           "almacen": "129",
@@ -55628,9 +55579,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 10738,
-          "stock": 12790,
-          "predespacho": 2052
+          "disponible": 10726,
+          "stock": 12814,
+          "predespacho": 2088
         },
         {
           "almacen": "129",
@@ -55717,9 +55668,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 12639,
+          "disponible": 12495,
           "stock": 15375,
-          "predespacho": 2736
+          "predespacho": 2880
         },
         {
           "almacen": "129",
@@ -55758,9 +55709,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 954,
+          "disponible": 894,
           "stock": 2826,
-          "predespacho": 1872
+          "predespacho": 1932
         },
         {
           "almacen": "129",
@@ -55803,9 +55754,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 6665,
-          "stock": 19546,
-          "predespacho": 12881
+          "disponible": 6634,
+          "stock": 19551,
+          "predespacho": 12917
         }
       ]
     },
@@ -55841,9 +55792,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11625,
+          "disponible": 11589,
           "stock": 18293,
-          "predespacho": 6668
+          "predespacho": 6704
         },
         {
           "almacen": "129",
@@ -55898,9 +55849,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11471,
+          "disponible": 10895,
           "stock": 11471,
-          "predespacho": 0
+          "predespacho": 576
         },
         {
           "almacen": "118",
@@ -56155,9 +56106,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 481,
+          "disponible": 337,
           "stock": 481,
-          "predespacho": 0
+          "predespacho": 144
         },
         {
           "almacen": "129",
@@ -56181,7 +56132,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 200,
       "peso_kg": 0.02,
-      "precio": 1.57,
+      "precio": 1.43,
       "nombre_corto": "Resaltador High Brilliant48 Amarillo",
       "ean13": "7754807004077",
       "ean14": "17754807004074",
@@ -56251,7 +56202,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 200,
       "peso_kg": 0.02,
-      "precio": 1.57,
+      "precio": 1.43,
       "nombre_corto": "Resaltador High Brilliant48 Verde",
       "ean13": "7754807004084",
       "ean14": "17754807004081",
@@ -56328,7 +56279,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 200,
       "peso_kg": 0.02,
-      "precio": 1.57,
+      "precio": 1.43,
       "nombre_corto": "Resaltador High Brilliant 48 Naranja",
       "ean13": "7754807004091",
       "ean14": "17754807004098",
@@ -56391,7 +56342,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 200,
       "peso_kg": 0.024,
-      "precio": 1.57,
+      "precio": 1.43,
       "nombre_corto": "Resaltador High Brilliant 48 Rosado",
       "ean13": "7754807761543",
       "ean14": "17754807004104",
@@ -56447,7 +56398,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 200,
       "peso_kg": 0.15,
-      "precio": 1.57,
+      "precio": 1.43,
       "nombre_corto": "Resaltador High Brilliant 48 Morado",
       "ean13": "7754807761550",
       "ean14": "17754807004111",
@@ -56489,7 +56440,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 200,
       "peso_kg": 0.018,
-      "precio": 1.57,
+      "precio": 1.43,
       "nombre_corto": "Resaltador High Brilliant 48 Celeste",
       "ean13": "7754807004121",
       "ean14": "17754807004128",
@@ -56758,9 +56709,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11891,
+          "disponible": 11831,
           "stock": 13791,
-          "predespacho": 1900
+          "predespacho": 1960
         },
         {
           "almacen": "118",
@@ -56903,9 +56854,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 96,
+          "disponible": 0,
           "stock": 473,
-          "predespacho": 377
+          "predespacho": 473
         },
         {
           "almacen": "118",
@@ -57002,9 +56953,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3802,
+          "disponible": 3730,
           "stock": 7954,
-          "predespacho": 4152
+          "predespacho": 4224
         },
         {
           "almacen": "129",
@@ -57045,9 +56996,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 10163,
+          "disponible": 10091,
           "stock": 14387,
-          "predespacho": 4224
+          "predespacho": 4296
         },
         {
           "almacen": "129",
@@ -57088,9 +57039,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 21280,
+          "disponible": 21208,
           "stock": 24016,
-          "predespacho": 2736
+          "predespacho": 2808
         },
         {
           "almacen": "129",
@@ -57729,9 +57680,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 12068,
+          "disponible": 12032,
           "stock": 13868,
-          "predespacho": 1800
+          "predespacho": 1836
         },
         {
           "almacen": "122",
@@ -57844,9 +57795,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7218,
-          "stock": 10910,
-          "predespacho": 3692
+          "disponible": 7202,
+          "stock": 10930,
+          "predespacho": 3728
         },
         {
           "almacen": "118",
@@ -57953,9 +57904,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2048,
+          "disponible": 2012,
           "stock": 4448,
-          "predespacho": 2400
+          "predespacho": 2436
         },
         {
           "almacen": "118",
@@ -58270,8 +58221,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
-          "stock": 3330,
+          "disponible": 12,
+          "stock": 3342,
           "predespacho": 3330
         },
         {
@@ -58537,6 +58488,13 @@
       ],
       "almacenes": [
         {
+          "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 50,
+          "stock": 50,
+          "predespacho": 0
+        },
+        {
           "almacen": "118",
           "tipo": "mktd",
           "disponible": 34,
@@ -58700,9 +58658,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5388,
+          "disponible": 5364,
           "stock": 9616,
-          "predespacho": 4228
+          "predespacho": 4252
         },
         {
           "almacen": "118",
@@ -58857,8 +58815,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
-          "stock": 30,
+          "disponible": 12,
+          "stock": 42,
           "predespacho": 30
         }
       ]
@@ -59299,9 +59257,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 208,
+          "disponible": 64,
           "stock": 1552,
-          "predespacho": 1344
+          "predespacho": 1488
         },
         {
           "almacen": "129",
@@ -59678,9 +59636,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2571,
-          "stock": 5103,
-          "predespacho": 2532
+          "disponible": 2531,
+          "stock": 5111,
+          "predespacho": 2580
         },
         {
           "almacen": "118",
@@ -59803,9 +59761,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 432,
+          "disponible": 384,
           "stock": 1836,
-          "predespacho": 1404
+          "predespacho": 1452
         },
         {
           "almacen": "118",
@@ -59915,9 +59873,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3327,
-          "stock": 4647,
-          "predespacho": 1320
+          "disponible": 3285,
+          "stock": 4653,
+          "predespacho": 1368
         },
         {
           "almacen": "118",
@@ -60027,9 +59985,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2623,
+          "disponible": 2575,
           "stock": 3991,
-          "predespacho": 1368
+          "predespacho": 1416
         },
         {
           "almacen": "118",
@@ -61930,9 +61888,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 29138,
+          "disponible": 28338,
           "stock": 31038,
-          "predespacho": 1900
+          "predespacho": 2700
         },
         {
           "almacen": "118",
@@ -62013,9 +61971,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 163,
+          "disponible": 63,
           "stock": 163,
-          "predespacho": 0
+          "predespacho": 100
         },
         {
           "almacen": "118",
@@ -62131,9 +62089,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 124,
+          "disponible": 0,
           "stock": 124,
-          "predespacho": 0
+          "predespacho": 124
         }
       ]
     },
@@ -62341,9 +62299,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 156400,
+          "disponible": 156256,
           "stock": 160720,
-          "predespacho": 4320
+          "predespacho": 4464
         },
         {
           "almacen": "118",
@@ -62785,9 +62743,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 24526,
-          "stock": 24526,
-          "predespacho": 0
+          "disponible": 24676,
+          "stock": 24726,
+          "predespacho": 50
         },
         {
           "almacen": "118",
@@ -62937,9 +62895,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 16262,
+          "disponible": 16212,
           "stock": 16262,
-          "predespacho": 0
+          "predespacho": 50
         },
         {
           "almacen": "118",
@@ -63794,9 +63752,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 17655,
+          "disponible": 17367,
           "stock": 17655,
-          "predespacho": 0
+          "predespacho": 288
         },
         {
           "almacen": "S1",
@@ -63880,9 +63838,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 127,
+          "disponible": 55,
           "stock": 127,
-          "predespacho": 0
+          "predespacho": 72
         },
         {
           "almacen": "S1",
@@ -63951,8 +63909,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 49,
-          "stock": 49,
+          "disponible": 121,
+          "stock": 121,
           "predespacho": 0
         },
         {
@@ -64043,8 +64001,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1501,
-          "stock": 1501,
+          "disponible": 1502,
+          "stock": 1502,
           "predespacho": 0
         },
         {
@@ -64140,9 +64098,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 15252,
+          "disponible": 14820,
           "stock": 53028,
-          "predespacho": 37776
+          "predespacho": 38208
         },
         {
           "almacen": "122",
@@ -64334,9 +64292,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 308,
+          "disponible": 236,
           "stock": 1562,
-          "predespacho": 1254
+          "predespacho": 1326
         },
         {
           "almacen": "118",
@@ -64438,9 +64396,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 23307,
-          "stock": 29505,
-          "predespacho": 6198
+          "disponible": 23198,
+          "stock": 29516,
+          "predespacho": 6318
         },
         {
           "almacen": "129",
@@ -64535,9 +64493,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 12237,
+          "disponible": 12117,
           "stock": 14313,
-          "predespacho": 2076
+          "predespacho": 2196
         },
         {
           "almacen": "129",
@@ -64750,9 +64708,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 42249,
+          "disponible": 42129,
           "stock": 48555,
-          "predespacho": 6306
+          "predespacho": 6426
         },
         {
           "almacen": "118",
@@ -64874,9 +64832,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5752,
+          "disponible": 5608,
           "stock": 5752,
-          "predespacho": 0
+          "predespacho": 144
         },
         {
           "almacen": "121",
@@ -64956,9 +64914,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 19885,
+          "disponible": 19741,
           "stock": 28513,
-          "predespacho": 8628
+          "predespacho": 8772
         },
         {
           "almacen": "118",
@@ -65223,9 +65181,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 6597,
-          "stock": 14877,
-          "predespacho": 8280
+          "disponible": 6487,
+          "stock": 14911,
+          "predespacho": 8424
         },
         {
           "almacen": "129",
@@ -65502,9 +65460,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3007,
+          "disponible": 2947,
           "stock": 3211,
-          "predespacho": 204
+          "predespacho": 264
         },
         {
           "almacen": "118",
@@ -65620,9 +65578,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3235,
+          "disponible": 3175,
           "stock": 3415,
-          "predespacho": 180
+          "predespacho": 240
         },
         {
           "almacen": "S14",
@@ -65689,9 +65647,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2552,
+          "disponible": 2492,
           "stock": 2672,
-          "predespacho": 120
+          "predespacho": 180
         },
         {
           "almacen": "118",
@@ -65765,9 +65723,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2746,
+          "disponible": 2686,
           "stock": 2926,
-          "predespacho": 180
+          "predespacho": 240
         },
         {
           "almacen": "118",
@@ -65841,9 +65799,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2146,
+          "disponible": 2140,
           "stock": 2326,
-          "predespacho": 180
+          "predespacho": 186
         },
         {
           "almacen": "122",
@@ -65882,9 +65840,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2110,
+          "disponible": 2086,
           "stock": 2182,
-          "predespacho": 72
+          "predespacho": 96
         },
         {
           "almacen": "S15",
@@ -65923,9 +65881,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2387,
+          "disponible": 2363,
           "stock": 2507,
-          "predespacho": 120
+          "predespacho": 144
         }
       ]
     },
@@ -66047,9 +66005,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 65997,
-          "stock": 77913,
-          "predespacho": 11916
+          "disponible": 65662,
+          "stock": 77938,
+          "predespacho": 12276
         },
         {
           "almacen": "118",
@@ -66736,9 +66694,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 17089,
-          "stock": 19237,
-          "predespacho": 2148
+          "disponible": 16954,
+          "stock": 19234,
+          "predespacho": 2280
         },
         {
           "almacen": "118",
@@ -66841,9 +66799,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7918,
+          "disponible": 7870,
           "stock": 10718,
-          "predespacho": 2800
+          "predespacho": 2848
         },
         {
           "almacen": "118",
@@ -66940,9 +66898,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 6739,
+          "disponible": 6691,
           "stock": 8515,
-          "predespacho": 1776
+          "predespacho": 1824
         },
         {
           "almacen": "118",
@@ -67045,9 +67003,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 952,
-          "stock": 1996,
-          "predespacho": 1044
+          "disponible": 926,
+          "stock": 2018,
+          "predespacho": 1092
         },
         {
           "almacen": "118",
@@ -67148,6 +67106,13 @@
       ],
       "almacenes": [
         {
+          "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 6,
+          "stock": 6,
+          "predespacho": 0
+        },
+        {
           "almacen": "118",
           "tipo": "mktd",
           "disponible": 7,
@@ -67241,9 +67206,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 21531,
+          "disponible": 20955,
           "stock": 23835,
-          "predespacho": 2304
+          "predespacho": 2880
         },
         {
           "almacen": "118",
@@ -67339,9 +67304,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 42457,
+          "disponible": 41881,
           "stock": 44761,
-          "predespacho": 2304
+          "predespacho": 2880
         },
         {
           "almacen": "118",
@@ -67416,9 +67381,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 23894,
+          "disponible": 23318,
           "stock": 26198,
-          "predespacho": 2304
+          "predespacho": 2880
         },
         {
           "almacen": "118",
@@ -67515,9 +67480,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 6123,
+          "disponible": 5979,
           "stock": 7275,
-          "predespacho": 1152
+          "predespacho": 1296
         },
         {
           "almacen": "118",
@@ -67691,9 +67656,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
+          "disponible": 147,
           "stock": 1443,
-          "predespacho": 1443
+          "predespacho": 1296
         },
         {
           "almacen": "129",
@@ -67777,9 +67742,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 376,
+          "disponible": 232,
           "stock": 3544,
-          "predespacho": 3168
+          "predespacho": 3312
         }
       ]
     },
@@ -67814,9 +67779,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 708,
+          "disponible": 636,
           "stock": 1140,
-          "predespacho": 432
+          "predespacho": 504
         }
       ]
     },
@@ -68096,9 +68061,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5066,
-          "stock": 5102,
-          "predespacho": 36
+          "disponible": 5058,
+          "stock": 5106,
+          "predespacho": 48
         },
         {
           "almacen": "118",
@@ -68204,9 +68169,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 41702,
+          "disponible": 40838,
           "stock": 48758,
-          "predespacho": 7056
+          "predespacho": 7920
         },
         {
           "almacen": "118",
@@ -68531,8 +68496,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 19817,
-          "stock": 19817,
+          "disponible": 23417,
+          "stock": 23417,
           "predespacho": 0
         },
         {
@@ -68540,13 +68505,6 @@
           "tipo": "mktd",
           "disponible": 2,
           "stock": 2,
-          "predespacho": 0
-        },
-        {
-          "almacen": "40",
-          "tipo": "venta",
-          "disponible": 3600,
-          "stock": 3600,
           "predespacho": 0
         }
       ]
@@ -68778,9 +68736,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2450,
+          "disponible": 2440,
           "stock": 2990,
-          "predespacho": 540
+          "predespacho": 550
         },
         {
           "almacen": "118",
@@ -69059,9 +69017,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 36392,
+          "disponible": 36292,
           "stock": 36892,
-          "predespacho": 500
+          "predespacho": 600
         },
         {
           "almacen": "118",
@@ -69124,9 +69082,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4772,
+          "disponible": 4752,
           "stock": 4772,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -69298,9 +69256,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 34079,
+          "disponible": 33979,
           "stock": 34279,
-          "predespacho": 200
+          "predespacho": 300
         },
         {
           "almacen": "118",
@@ -69378,9 +69336,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2895,
+          "disponible": 2875,
           "stock": 2895,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -69520,9 +69478,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 20507,
+          "disponible": 20487,
           "stock": 21827,
-          "predespacho": 1320
+          "predespacho": 1340
         },
         {
           "almacen": "118",
@@ -69620,9 +69578,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 19040,
+          "disponible": 19020,
           "stock": 20000,
-          "predespacho": 960
+          "predespacho": 980
         },
         {
           "almacen": "118",
@@ -69706,9 +69664,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 19694,
+          "disponible": 19674,
           "stock": 20534,
-          "predespacho": 840
+          "predespacho": 860
         },
         {
           "almacen": "118",
@@ -69799,9 +69757,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 23767,
+          "disponible": 23747,
           "stock": 24847,
-          "predespacho": 1080
+          "predespacho": 1100
         },
         {
           "almacen": "118",
@@ -69883,9 +69841,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 8034,
+          "disponible": 8014,
           "stock": 8114,
-          "predespacho": 80
+          "predespacho": 100
         },
         {
           "almacen": "118",
@@ -69976,9 +69934,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 19720,
+          "disponible": 19684,
           "stock": 21256,
-          "predespacho": 1536
+          "predespacho": 1572
         },
         {
           "almacen": "118",
@@ -70076,9 +70034,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 24692,
+          "disponible": 24656,
           "stock": 26060,
-          "predespacho": 1368
+          "predespacho": 1404
         },
         {
           "almacen": "118",
@@ -70162,9 +70120,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 32133,
+          "disponible": 32115,
           "stock": 33789,
-          "predespacho": 1656
+          "predespacho": 1674
         },
         {
           "almacen": "118",
@@ -70262,9 +70220,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3158,
+          "disponible": 3140,
           "stock": 4172,
-          "predespacho": 1014
+          "predespacho": 1032
         },
         {
           "almacen": "118",
@@ -70978,9 +70936,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 14349,
+          "disponible": 14325,
           "stock": 14829,
-          "predespacho": 480
+          "predespacho": 504
         },
         {
           "almacen": "122",
@@ -71159,9 +71117,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2251,
+          "disponible": 2221,
           "stock": 2251,
-          "predespacho": 0
+          "predespacho": 30
         },
         {
           "almacen": "S2",
@@ -71312,9 +71270,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3126,
+          "disponible": 3414,
           "stock": 3678,
-          "predespacho": 552
+          "predespacho": 264
         },
         {
           "almacen": "118",
@@ -71754,9 +71712,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5434,
+          "disponible": 5414,
           "stock": 5434,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -71867,9 +71825,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 155,
+          "disponible": 131,
           "stock": 515,
-          "predespacho": 360
+          "predespacho": 384
         },
         {
           "almacen": "118",
@@ -71958,9 +71916,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7280,
+          "disponible": 7256,
           "stock": 7760,
-          "predespacho": 480
+          "predespacho": 504
         },
         {
           "almacen": "118",
@@ -72042,9 +72000,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 93,
+          "disponible": 69,
           "stock": 213,
-          "predespacho": 120
+          "predespacho": 144
         },
         {
           "almacen": "118",
@@ -72119,9 +72077,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3272,
+          "disponible": 3248,
           "stock": 3632,
-          "predespacho": 360
+          "predespacho": 384
         },
         {
           "almacen": "118",
@@ -72203,9 +72161,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 100,
+          "disponible": 76,
           "stock": 200,
-          "predespacho": 100
+          "predespacho": 124
         },
         {
           "almacen": "118",
@@ -72420,8 +72378,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4953,
-          "stock": 4953,
+          "disponible": 4871,
+          "stock": 4871,
           "predespacho": 0
         },
         {
@@ -72778,9 +72736,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1523,
+          "disponible": 1503,
           "stock": 1523,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -72839,6 +72797,13 @@
       ],
       "almacenes": [
         {
+          "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 10,
+          "stock": 10,
+          "predespacho": 0
+        },
+        {
           "almacen": "S2",
           "tipo": "mktd",
           "disponible": 10,
@@ -72890,9 +72855,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 39535,
-          "stock": 39535,
-          "predespacho": 0
+          "disponible": 39482,
+          "stock": 39532,
+          "predespacho": 50
         },
         {
           "almacen": "118",
@@ -72966,8 +72931,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5926,
-          "stock": 5926,
+          "disponible": 5951,
+          "stock": 5951,
           "predespacho": 0
         },
         {
@@ -73008,9 +72973,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 36862,
-          "stock": 37162,
-          "predespacho": 300
+          "disponible": 36765,
+          "stock": 37165,
+          "predespacho": 400
         },
         {
           "almacen": "118",
@@ -73405,9 +73370,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 23417,
+          "disponible": 23393,
           "stock": 23441,
-          "predespacho": 24
+          "predespacho": 48
         },
         {
           "almacen": "118",
@@ -73476,9 +73441,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 161614,
-          "stock": 165406,
-          "predespacho": 3792
+          "disponible": 161519,
+          "stock": 165407,
+          "predespacho": 3888
         },
         {
           "almacen": "118",
@@ -73633,22 +73598,14 @@
       "tipo": "02 - VINIFAN TAPA FANTASIA",
       "familia": "01 - OFICIO CON LICENCIA",
       "categoria": "VINIFAN",
-      "estado_linea": "FOLDER",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 0.186,
-      "precio": 4.86,
-      "nombre_corto": "Folder Fantasia Oficio Granja Zenon",
-      "ean13": "7754807783439",
-      "ean14": "17754807783436",
-      "keywords": [
-        "ARCHIVO",
-        "FANTASIA",
-        "FOLDER",
-        "GRANJA",
-        "OFICIO",
-        "VINIFAN",
-        "ZENON"
-      ],
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -73697,21 +73654,14 @@
       "tipo": "02 - VINIFAN TAPA FANTASIA",
       "familia": "02 - A4 CON LICENCIA",
       "categoria": "VINIFAN",
-      "estado_linea": "FOLDER",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 0.163,
-      "precio": 4.77,
-      "nombre_corto": "Folder Fantasia A4 Granja Zenon",
-      "ean13": "7754807783446",
-      "ean14": "17754807783443",
-      "keywords": [
-        "ARCHIVO",
-        "FANTASIA",
-        "FOLDER",
-        "GRANJA",
-        "VINIFAN",
-        "ZENON"
-      ],
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -73758,9 +73708,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5690,
+          "disponible": 5670,
           "stock": 5690,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -73877,9 +73827,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1665,
+          "disponible": 1625,
           "stock": 1805,
-          "predespacho": 140
+          "predespacho": 180
         },
         {
           "almacen": "118",
@@ -74026,8 +73976,8 @@
         {
           "almacen": "121",
           "tipo": "venta",
-          "disponible": 5181,
-          "stock": 5181,
+          "disponible": 5391,
+          "stock": 5391,
           "predespacho": 0
         },
         {
@@ -74112,8 +74062,8 @@
         {
           "almacen": "121",
           "tipo": "venta",
-          "disponible": 6684,
-          "stock": 6684,
+          "disponible": 6702,
+          "stock": 6702,
           "predespacho": 0
         },
         {
@@ -74191,8 +74141,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4631,
-          "stock": 4631,
+          "disponible": 4627,
+          "stock": 4627,
           "predespacho": 0
         },
         {
@@ -74205,8 +74155,8 @@
         {
           "almacen": "121",
           "tipo": "venta",
-          "disponible": 3850,
-          "stock": 3850,
+          "disponible": 4007,
+          "stock": 4007,
           "predespacho": 0
         },
         {
@@ -74291,8 +74241,8 @@
         {
           "almacen": "121",
           "tipo": "venta",
-          "disponible": 3990,
-          "stock": 3990,
+          "disponible": 4163,
+          "stock": 4163,
           "predespacho": 0
         },
         {
@@ -74465,6 +74415,13 @@
       ],
       "almacenes": [
         {
+          "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
+        {
           "almacen": "118",
           "tipo": "mktd",
           "disponible": 32,
@@ -74599,6 +74556,13 @@
         "VINIFAN"
       ],
       "almacenes": [
+        {
+          "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 1,
+          "stock": 1,
+          "predespacho": 0
+        },
         {
           "almacen": "118",
           "tipo": "mktd",
@@ -74895,9 +74859,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5630,
+          "disponible": 5610,
           "stock": 5630,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "S1",
@@ -75035,9 +74999,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 10173,
+          "disponible": 10123,
           "stock": 10173,
-          "predespacho": 0
+          "predespacho": 50
         },
         {
           "almacen": "118",
@@ -75223,9 +75187,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4618,
+          "disponible": 4598,
           "stock": 4618,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -75299,16 +75263,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 15155,
-          "stock": 25855,
-          "predespacho": 10700
-        },
-        {
-          "almacen": "40",
-          "tipo": "venta",
-          "disponible": 8800,
-          "stock": 8800,
-          "predespacho": 0
+          "disponible": 28755,
+          "stock": 34655,
+          "predespacho": 5900
         },
         {
           "almacen": "S1",
@@ -75360,16 +75317,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 808140,
-          "stock": 922390,
-          "predespacho": 114250
-        },
-        {
-          "almacen": "40",
-          "tipo": "venta",
-          "disponible": 2300,
-          "stock": 2300,
-          "predespacho": 0
+          "disponible": 810340,
+          "stock": 924690,
+          "predespacho": 114350
         },
         {
           "almacen": "S1",
@@ -75444,9 +75394,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 30703,
+          "disponible": 30623,
           "stock": 33943,
-          "predespacho": 3240
+          "predespacho": 3320
         }
       ]
     },
@@ -75478,16 +75428,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 185617,
+          "disponible": 185537,
           "stock": 185617,
-          "predespacho": 0
-        },
-        {
-          "almacen": "121",
-          "tipo": "venta",
-          "disponible": 120,
-          "stock": 120,
-          "predespacho": 0
+          "predespacho": 80
         },
         {
           "almacen": "S1",
@@ -75608,9 +75551,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5758,
-          "stock": 5758,
-          "predespacho": 0
+          "disponible": 5744,
+          "stock": 5768,
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -75701,9 +75644,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7774,
-          "stock": 7774,
-          "predespacho": 0
+          "disponible": 7756,
+          "stock": 7780,
+          "predespacho": 24
         },
         {
           "almacen": "122",
@@ -75879,9 +75822,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 853,
+          "disponible": 841,
           "stock": 853,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "121",
@@ -75950,9 +75893,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1219,
+          "disponible": 1207,
           "stock": 1219,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "S3",
@@ -76007,9 +75950,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2626,
+          "disponible": 2614,
           "stock": 2626,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "S1",
@@ -76071,9 +76014,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2541,
+          "disponible": 2529,
           "stock": 2541,
-          "predespacho": 0
+          "predespacho": 12
         }
       ]
     },
@@ -76107,9 +76050,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1911,
+          "disponible": 1899,
           "stock": 1911,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "S1",
@@ -76185,9 +76128,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1594,
+          "disponible": 1582,
           "stock": 1594,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "118",
@@ -76263,9 +76206,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1405,
+          "disponible": 1393,
           "stock": 1405,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "S1",
@@ -76334,9 +76277,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1906,
+          "disponible": 1894,
           "stock": 1906,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "S1",
@@ -76391,9 +76334,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1800,
-          "stock": 1800,
-          "predespacho": 0
+          "disponible": 1796,
+          "stock": 1808,
+          "predespacho": 12
         }
       ]
     },
@@ -76427,9 +76370,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 736,
+          "disponible": 724,
           "stock": 736,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "118",
@@ -76491,9 +76434,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11853,
+          "disponible": 11805,
           "stock": 11853,
-          "predespacho": 0
+          "predespacho": 48
         },
         {
           "almacen": "118",
@@ -76597,9 +76540,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 167,
+          "disponible": 147,
           "stock": 167,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -76725,8 +76668,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 6,
-          "stock": 66,
+          "disponible": 9,
+          "stock": 69,
           "predespacho": 60
         },
         {
@@ -76774,9 +76717,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4842,
+          "disponible": 4822,
           "stock": 4842,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -77044,14 +76987,23 @@
       "tipo": "02 - DE PALANCA",
       "familia": "04 - 1/2 OFICIO",
       "categoria": "VINIFAN",
-      "estado_linea": "",
+      "estado_linea": "ARCHIVADOR",
       "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
+      "peso_kg": 0.25,
+      "precio": 5.24,
+      "nombre_corto": "Archivador Con Palanca 1/2 Oficio Plastificado",
+      "ean13": "7754807784894",
+      "ean14": "17754807784891",
+      "keywords": [
+        "1/2",
+        "ARCHIVADOR",
+        "ARCHIVO",
+        "CON",
+        "OFICIO",
+        "PALANCA",
+        "PLASTIFICADO",
+        "VINIFAN"
+      ],
       "almacenes": [
         {
           "almacen": "VES",
@@ -77072,14 +77024,21 @@
       "tipo": "02 - DE PALANCA",
       "familia": "05 - A4",
       "categoria": "VINIFAN",
-      "estado_linea": "",
+      "estado_linea": "ARCHIVADOR",
       "un_bx": 1,
-      "peso_kg": 0,
-      "precio": 0,
-      "nombre_corto": "",
-      "ean13": "",
-      "ean14": "",
-      "keywords": [],
+      "peso_kg": 0.385,
+      "precio": 5.24,
+      "nombre_corto": "Archivador Con Palanca A4 Plastificado",
+      "ean13": "7754807784924",
+      "ean14": "17754807784921",
+      "keywords": [
+        "ARCHIVADOR",
+        "ARCHIVO",
+        "CON",
+        "PALANCA",
+        "PLASTIFICADO",
+        "VINIFAN"
+      ],
       "almacenes": [
         {
           "almacen": "VES",
@@ -77217,8 +77176,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 746,
-          "stock": 946,
+          "disponible": 749,
+          "stock": 949,
           "predespacho": 200
         }
       ]
@@ -77464,9 +77423,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 524,
+          "disponible": 474,
           "stock": 524,
-          "predespacho": 0
+          "predespacho": 50
         },
         {
           "almacen": "118",
@@ -77550,21 +77509,14 @@
       "tipo": "02 - VINIFAN TAPA FANTASIA",
       "familia": "01 - OFICIO CON LICENCIA",
       "categoria": "VINIFAN",
-      "estado_linea": "FOLDER",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 0.189,
-      "precio": 4.86,
-      "nombre_corto": "Folder Fantasia Oficio Zootopia",
-      "ean13": "7754807785082",
-      "ean14": "17754807785089",
-      "keywords": [
-        "ARCHIVO",
-        "FANTASIA",
-        "FOLDER",
-        "OFICIO",
-        "VINIFAN",
-        "ZOOTOPIA"
-      ],
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -77606,20 +77558,14 @@
       "tipo": "02 - VINIFAN TAPA FANTASIA",
       "familia": "02 - A4 CON LICENCIA",
       "categoria": "VINIFAN",
-      "estado_linea": "FOLDER",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 0.2,
-      "precio": 4.77,
-      "nombre_corto": "Folder Fantasia A4 Zootopia",
-      "ean13": "7754807785099",
-      "ean14": "17754807785096",
-      "keywords": [
-        "ARCHIVO",
-        "FANTASIA",
-        "FOLDER",
-        "VINIFAN",
-        "ZOOTOPIA"
-      ],
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -77640,22 +77586,14 @@
       "tipo": "02 - VINIFAN TAPA FANTASIA",
       "familia": "01 - OFICIO CON LICENCIA",
       "categoria": "VINIFAN",
-      "estado_linea": "FOLDER",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 0.185,
-      "precio": 4.86,
-      "nombre_corto": "Folder Fantasia Oficio Los 4 Fantastic Nw",
-      "ean13": "7754807785105",
-      "ean14": "17754807785102",
-      "keywords": [
-        "ARCHIVO",
-        "FANTASIA",
-        "FANTASTIC",
-        "FOLDER",
-        "LOS",
-        "OFICIO",
-        "VINIFAN"
-      ],
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -77690,21 +77628,14 @@
       "tipo": "02 - VINIFAN TAPA FANTASIA",
       "familia": "02 - A4 CON LICENCIA",
       "categoria": "VINIFAN",
-      "estado_linea": "FOLDER",
+      "estado_linea": "",
       "un_bx": 1,
-      "peso_kg": 0.18,
-      "precio": 4.77,
-      "nombre_corto": "Folder Fantasia A4 Los 4 Fantastic Nw",
-      "ean13": "7754807785112",
-      "ean14": "17754807785119",
-      "keywords": [
-        "ARCHIVO",
-        "FANTASIA",
-        "FANTASTIC",
-        "FOLDER",
-        "LOS",
-        "VINIFAN"
-      ],
+      "peso_kg": 0,
+      "precio": 0,
+      "nombre_corto": "",
+      "ean13": "",
+      "ean14": "",
+      "keywords": [],
       "almacenes": [
         {
           "almacen": "VES",
@@ -77928,8 +77859,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
-          "stock": 83,
+          "disponible": 16,
+          "stock": 99,
           "predespacho": 83
         },
         {
@@ -78025,9 +77956,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 70148,
+          "disponible": 70088,
           "stock": 73268,
-          "predespacho": 3120
+          "predespacho": 3180
         },
         {
           "almacen": "118",
@@ -78631,8 +78562,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 68,
-          "stock": 68,
+          "disponible": 70,
+          "stock": 70,
           "predespacho": 0
         },
         {
@@ -78718,6 +78649,13 @@
         "VINIFAN"
       ],
       "almacenes": [
+        {
+          "almacen": "VES",
+          "tipo": "venta",
+          "disponible": 13,
+          "stock": 13,
+          "predespacho": 0
+        },
         {
           "almacen": "118",
           "tipo": "mktd",
@@ -79459,9 +79397,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 41789,
-          "stock": 41801,
-          "predespacho": 12
+          "disponible": 41735,
+          "stock": 41807,
+          "predespacho": 72
         },
         {
           "almacen": "129",
@@ -79564,9 +79502,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 10428,
+          "disponible": 10284,
           "stock": 10428,
-          "predespacho": 0
+          "predespacho": 144
         },
         {
           "almacen": "118",
@@ -79668,9 +79606,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 12471,
+          "disponible": 12441,
           "stock": 12501,
-          "predespacho": 30
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -79779,8 +79717,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4685,
-          "stock": 4685,
+          "disponible": 4686,
+          "stock": 4686,
           "predespacho": 0
         },
         {
@@ -79884,9 +79822,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 12270,
+          "disponible": 12258,
           "stock": 12270,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "118",
@@ -79982,9 +79920,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3341,
+          "disponible": 3329,
           "stock": 3737,
-          "predespacho": 396
+          "predespacho": 408
         },
         {
           "almacen": "118",
@@ -80156,9 +80094,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 26,
+          "disponible": 2,
           "stock": 1850,
-          "predespacho": 1824
+          "predespacho": 1848
         },
         {
           "almacen": "118",
@@ -80347,9 +80285,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4211,
+          "disponible": 4199,
           "stock": 4211,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "118",
@@ -80438,8 +80376,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
-          "stock": 473,
+          "disponible": 5,
+          "stock": 478,
           "predespacho": 473
         },
         {
@@ -80480,9 +80418,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4912,
+          "disponible": 4852,
           "stock": 4984,
-          "predespacho": 72
+          "predespacho": 132
         },
         {
           "almacen": "129",
@@ -80620,9 +80558,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 21154,
-          "stock": 23974,
-          "predespacho": 2820
+          "disponible": 23561,
+          "stock": 23993,
+          "predespacho": 432
         },
         {
           "almacen": "118",
@@ -80866,9 +80804,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7058,
+          "disponible": 6998,
           "stock": 7202,
-          "predespacho": 144
+          "predespacho": 204
         },
         {
           "almacen": "118",
@@ -81034,9 +80972,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3524,
-          "stock": 3752,
-          "predespacho": 228
+          "disponible": 3440,
+          "stock": 3788,
+          "predespacho": 348
         },
         {
           "almacen": "129",
@@ -81165,9 +81103,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 24985,
-          "stock": 27841,
-          "predespacho": 2856
+          "disponible": 24927,
+          "stock": 27843,
+          "predespacho": 2916
         },
         {
           "almacen": "129",
@@ -81456,9 +81394,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 15762,
+          "disponible": 15702,
           "stock": 15762,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -81597,9 +81535,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 0,
+          "disponible": 29,
           "stock": 2477,
-          "predespacho": 2477
+          "predespacho": 2448
         },
         {
           "almacen": "118",
@@ -81767,9 +81705,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9643,
+          "disponible": 9631,
           "stock": 9643,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "118",
@@ -81908,9 +81846,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 4645,
+          "disponible": 4585,
           "stock": 4717,
-          "predespacho": 72
+          "predespacho": 132
         },
         {
           "almacen": "129",
@@ -81950,9 +81888,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 18800,
+          "disponible": 18740,
           "stock": 18800,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "129",
@@ -82205,9 +82143,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 490324,
+          "disponible": 488884,
           "stock": 539468,
-          "predespacho": 49144
+          "predespacho": 50584
         },
         {
           "almacen": "118",
@@ -82360,9 +82298,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 14103,
+          "disponible": 14043,
           "stock": 14343,
-          "predespacho": 240
+          "predespacho": 300
         },
         {
           "almacen": "118",
@@ -82466,9 +82404,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2613,
+          "disponible": 2583,
           "stock": 2613,
-          "predespacho": 0
+          "predespacho": 30
         },
         {
           "almacen": "118",
@@ -82751,9 +82689,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5156,
+          "disponible": 5096,
           "stock": 7280,
-          "predespacho": 2124
+          "predespacho": 2184
         },
         {
           "almacen": "129",
@@ -82970,8 +82908,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 14837,
-          "stock": 14837,
+          "disponible": 14839,
+          "stock": 14839,
           "predespacho": 0
         },
         {
@@ -83545,9 +83483,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 280,
+          "disponible": 268,
           "stock": 636,
-          "predespacho": 356
+          "predespacho": 368
         },
         {
           "almacen": "118",
@@ -83636,9 +83574,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 231,
+          "disponible": 219,
           "stock": 267,
-          "predespacho": 36
+          "predespacho": 48
         },
         {
           "almacen": "118",
@@ -83795,9 +83733,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 339,
+          "disponible": 327,
           "stock": 3000,
-          "predespacho": 2661
+          "predespacho": 2673
         },
         {
           "almacen": "118",
@@ -83954,9 +83892,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3536,
+          "disponible": 3476,
           "stock": 3536,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -84058,9 +83996,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2656,
+          "disponible": 2596,
           "stock": 2656,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -84161,9 +84099,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 8266,
+          "disponible": 8206,
           "stock": 8266,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -84278,9 +84216,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5599,
+          "disponible": 5539,
           "stock": 5599,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -84381,9 +84319,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 6921,
+          "disponible": 6861,
           "stock": 6921,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -84498,9 +84436,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 8208,
+          "disponible": 8148,
           "stock": 8208,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -84602,9 +84540,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 9573,
+          "disponible": 9513,
           "stock": 9573,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "118",
@@ -84723,9 +84661,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 261,
+          "disponible": 201,
           "stock": 261,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "121",
@@ -84768,9 +84706,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 321,
+          "disponible": 261,
           "stock": 321,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "121",
@@ -84812,9 +84750,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 262,
+          "disponible": 202,
           "stock": 262,
-          "predespacho": 0
+          "predespacho": 60
         },
         {
           "almacen": "121",
@@ -84894,9 +84832,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 35,
+          "disponible": 11,
           "stock": 35,
-          "predespacho": 0
+          "predespacho": 24
         },
         {
           "almacen": "118",
@@ -85000,7 +84938,7 @@
       "estado_linea": "NUEVO",
       "un_bx": 24,
       "peso_kg": 0.88,
-      "precio": 54.1,
+      "precio": 60.76,
       "nombre_corto": "Tajador Doble School Bag Con Borrador Display X20",
       "ean13": "7754807791618",
       "ean14": "17754807791615",
@@ -85020,9 +84958,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 21,
+          "disponible": 1,
           "stock": 45,
-          "predespacho": 24
+          "predespacho": 44
         },
         {
           "almacen": "118",
@@ -86029,13 +85967,14 @@
       "un_bx": 1,
       "peso_kg": 0.2,
       "precio": 4.2,
-      "nombre_corto": "Exhibidor De Carton Para Gondola",
+      "nombre_corto": "Exhibidor Grande De Cartón Para Fólderes",
       "ean13": "",
       "ean14": "",
       "keywords": [
-        "CARTON",
+        "CARTÓN",
         "EXHIBIDOR",
-        "GONDOLA",
+        "FÓLDERES",
+        "GRANDE",
         "PARA",
         "PUBLICIDAD",
         "REPRESENTADAS",
@@ -87270,8 +87209,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 53,
-          "stock": 53,
+          "disponible": 63,
+          "stock": 63,
           "predespacho": 0
         }
       ]
@@ -89152,8 +89091,8 @@
         {
           "almacen": "40",
           "tipo": "venta",
-          "disponible": 3150,
-          "stock": 3150,
+          "disponible": 3000,
+          "stock": 3000,
           "predespacho": 0
         }
       ]
@@ -89503,8 +89442,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 9775,
-          "stock": 9975,
-          "predespacho": 200
+          "stock": 9775,
+          "predespacho": 0
         },
         {
           "almacen": "118",
@@ -91198,8 +91137,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2749,
-          "stock": 2749,
+          "disponible": 2499,
+          "stock": 2499,
           "predespacho": 0
         },
         {
@@ -91346,8 +91285,8 @@
           "almacen": "VES",
           "tipo": "venta",
           "disponible": 23831,
-          "stock": 23981,
-          "predespacho": 150
+          "stock": 23831,
+          "predespacho": 0
         },
         {
           "almacen": "118",
@@ -92175,7 +92114,7 @@
       "categoria": "PUBLICIDAD",
       "estado_linea": "PUBLICIDAD",
       "un_bx": 1,
-      "peso_kg": 0,
+      "peso_kg": 0.2,
       "precio": 1.66,
       "nombre_corto": "Catalogo 2027",
       "ean13": "",
@@ -92253,8 +92192,8 @@
         {
           "almacen": "40",
           "tipo": "venta",
-          "disponible": 450,
-          "stock": 450,
+          "disponible": 425,
+          "stock": 425,
           "predespacho": 0
         }
       ]
@@ -92472,8 +92411,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 181,
-          "stock": 181,
+          "disponible": 133,
+          "stock": 133,
           "predespacho": 0
         }
       ]
@@ -92646,9 +92585,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 6871,
+          "disponible": 6511,
           "stock": 11161,
-          "predespacho": 4290
+          "predespacho": 4650
         },
         {
           "almacen": "118",
@@ -92716,9 +92655,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 91609,
+          "disponible": 91449,
           "stock": 122829,
-          "predespacho": 31220
+          "predespacho": 31380
         },
         {
           "almacen": "118",
@@ -92800,9 +92739,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 5299,
-          "stock": 7299,
-          "predespacho": 2000
+          "disponible": 5252,
+          "stock": 7302,
+          "predespacho": 2050
         },
         {
           "almacen": "118",
@@ -93554,9 +93493,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1006,
+          "disponible": 994,
           "stock": 1006,
-          "predespacho": 0
+          "predespacho": 12
         },
         {
           "almacen": "118",
@@ -93728,9 +93667,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 1017,
+          "disponible": 997,
           "stock": 1017,
-          "predespacho": 0
+          "predespacho": 20
         },
         {
           "almacen": "118",
@@ -93924,8 +93863,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 11,
-          "stock": 11,
+          "disponible": 5,
+          "stock": 5,
           "predespacho": 0
         }
       ]
@@ -94026,9 +93965,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 646,
+          "disponible": 622,
           "stock": 652,
-          "predespacho": 6
+          "predespacho": 30
         },
         {
           "almacen": "118",
@@ -94304,9 +94243,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 8899,
+          "disponible": 8851,
           "stock": 9837,
-          "predespacho": 938
+          "predespacho": 986
         },
         {
           "almacen": "118",
@@ -94744,9 +94683,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 2756,
-          "stock": 2762,
-          "predespacho": 6
+          "disponible": 2764,
+          "stock": 2764,
+          "predespacho": 0
         },
         {
           "almacen": "118",
@@ -94939,8 +94878,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 52,
-          "stock": 52,
+          "disponible": 48,
+          "stock": 48,
           "predespacho": 0
         },
         {
@@ -95237,9 +95176,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 7719,
+          "disponible": 7587,
           "stock": 7719,
-          "predespacho": 0
+          "predespacho": 132
         },
         {
           "almacen": "118",
@@ -95459,9 +95398,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3098,
-          "stock": 3098,
-          "predespacho": 0
+          "disponible": 3019,
+          "stock": 3099,
+          "predespacho": 80
         },
         {
           "almacen": "118",
@@ -95738,9 +95677,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 3188,
+          "disponible": 3168,
           "stock": 3452,
-          "predespacho": 264
+          "predespacho": 284
         },
         {
           "almacen": "118",
@@ -96128,8 +96067,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 30938,
-          "stock": 34538,
+          "disponible": 31021,
+          "stock": 34621,
           "predespacho": 3600
         },
         {
@@ -96312,8 +96251,8 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 98,
-          "stock": 98,
+          "disponible": 92,
+          "stock": 92,
           "predespacho": 0
         }
       ]
@@ -96674,9 +96613,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 580,
+          "disponible": 578,
           "stock": 642,
-          "predespacho": 62
+          "predespacho": 64
         },
         {
           "almacen": "118",
@@ -96720,9 +96659,9 @@
         {
           "almacen": "VES",
           "tipo": "venta",
-          "disponible": 84,
+          "disponible": 80,
           "stock": 96,
-          "predespacho": 12
+          "predespacho": 16
         },
         {
           "almacen": "118",
