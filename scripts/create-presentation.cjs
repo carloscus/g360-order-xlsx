@@ -5,11 +5,11 @@ pres.layout = 'LAYOUT_16x9';
 pres.author = 'G360 by ccusi';
 pres.title = 'CIPSA OrderX - Guía de Uso';
 
-// Colores G360 Teal
+// Colores Corporativos Azul (v6.0.0)
 const COLORS = {
   primary: '0F172A',
-  accent: '00796B',
-  accentLight: 'E0F2F1',
+  accent: '2563EB',
+  accentLight: 'DBEAFE',
   text: '1E293B',
   muted: '64748B',
   white: 'FFFFFF',
@@ -170,9 +170,78 @@ shortcuts.forEach((s, i) => {
   });
 });
 
-// Slide 7: Soporte
+// Slide 7: Tabla Mejorada (13 columnas + sort + filtro + cajas)
 let slide7 = pres.addSlide();
-slide7.background = { color: COLORS.primary };
+slide7.addText('Tabla de Partidas Mejorada', { x: 0.5, y: 0.3, w: 9, h: 0.8, fontSize: 28, fontFace: 'Arial', color: COLORS.accent, bold: true });
+
+slide7.addText([
+  { text: '13 columnas con colgroup simétrico\n', options: { fontSize: 14, bold: true, color: COLORS.text } },
+  { text: '\n', options: { fontSize: 6 } },
+  { text: '• Encabezados a 2 líneas (etiqueta + unidad)\n', options: { fontSize: 12, color: COLORS.muted } },
+  { text: '• Ordenamiento en headers (click → ▲▼)\n', options: { fontSize: 12, color: COLORS.muted } },
+  { text: '• Filtro de stock: Todos / Con stock / Sin stock\n', options: { fontSize: 12, color: COLORS.muted } },
+  { text: '• Nueva columna CAJAS para logística\n', options: { fontSize: 12, color: COLORS.muted } },
+  { text: '\n', options: { fontSize: 6 } },
+  { text: 'Distribución de ancho (%):', options: { fontSize: 13, bold: true, color: COLORS.accent } },
+  { text: '\n', options: { fontSize: 6 } },
+  { text: 'N° 3% | Cant 6% | U/M 4% | SKU 7% | Desc 24% | P.Lista 7% | Dto1 5% | Dto2 5% | Neto 9% | P.Unit 7% | TOTAL 10% | Cajas 6% | Tipo 7%', options: { fontSize: 10, color: COLORS.text } },
+  { text: '\n', options: { fontSize: 6 } },
+  { text: 'Descripción con clamp de 2 líneas (máx 40 caracteres)', options: { fontSize: 11, color: COLORS.muted } }
+], { x: 0.5, y: 1.3, w: 9, h: 4.2 });
+
+// Slide 8: Paleta Corporativa Azul
+let slide8 = pres.addSlide();
+slide8.addText('Paleta Corporativa Azul', { x: 0.5, y: 0.3, w: 9, h: 0.8, fontSize: 28, fontFace: 'Arial', color: COLORS.accent, bold: true });
+
+const paletteItems = [
+  { name: 'Acento Principal', hex: '#2563EB', desc: 'Azul corporativo' },
+  { name: 'Acento Claro', hex: '#1D4ED8', desc: 'Modo claro' },
+  { name: 'Header', hex: '#1E40AF', desc: 'Gradiente azul' },
+  { name: 'Success', hex: '#10B981', desc: 'Stock OK' },
+  { name: 'Warning', hex: '#F59E0B', desc: 'Stock ajustado' },
+  { name: 'Error', hex: '#EF4444', desc: 'Agotado' }
+];
+
+paletteItems.forEach((item, i) => {
+  const y = 1.3 + (i * 0.65);
+  slide8.addShape(pres.ShapeType.roundRect, {
+    x: 0.5, y: y, w: 9, h: 0.55,
+    fill: { color: item.hex },
+    line: { color: 'E2E8F0', width: 0.5 }
+  });
+  slide8.addText(item.name, {
+    x: 0.7, y: y, w: 2.5, h: 0.55,
+    fontSize: 12, fontFace: 'Arial', color: 'FFFFFF', bold: true, valign: 'middle'
+  });
+  slide8.addText(item.hex, {
+    x: 3.3, y: y, w: 1.5, h: 0.55,
+    fontSize: 11, fontFace: 'Consolas', color: 'FFFFFF', valign: 'middle'
+  });
+  slide8.addText(item.desc, {
+    x: 5, y: y, w: 4, h: 0.55,
+    fontSize: 11, fontFace: 'Arial', color: 'FFFFFF', valign: 'middle'
+  });
+});
+
+// Slide 9: Soporte
+let slide9 = pres.addSlide();
+slide9.background = { color: COLORS.primary };
+slide9.addText('¿Necesitas ayuda?', {
+  x: 0.5, y: 1.5, w: 9, h: 1,
+  fontSize: 32, fontFace: 'Arial', color: COLORS.white, bold: true, align: 'center'
+});
+slide9.addText('G360 by ccusi', {
+  x: 0.5, y: 3, w: 9, h: 0.6,
+  fontSize: 18, fontFace: 'Arial', color: COLORS.accent, align: 'center'
+});
+slide9.addText('CIPSA OrderX v6.0.0 — Paleta Azul Corporativa', {
+  x: 0.5, y: 4, w: 9, h: 0.5,
+  fontSize: 12, fontFace: 'Arial', color: COLORS.muted, align: 'center'
+});
+
+// Slide 10: Soporte (legacy)
+let slide7old = pres.addSlide();
+slide7old.background = { color: COLORS.primary };
 slide7.addText('¿Necesitas ayuda?', {
   x: 0.5, y: 1.5, w: 9, h: 1,
   fontSize: 32, fontFace: 'Arial', color: COLORS.white, bold: true, align: 'center'

@@ -19,13 +19,13 @@ flowchart TD
     SUPABASE["Supabase<br/>Lookup clientes/vendedores"]
     PARSER["erpParser<br/>Formato nuevo ERP VES"]
     API["g360-stock-api<br/>Catálogo 2200+ SKUs"]
-    CATALOG["useCatalogo<br/>API-first + fallback"]
+    CATALOG["useCatalogo<br/>API + fallback + cache"]
     STATE["usePedido<br/>Store + localStorage"]
-    AGENTS["g360-skill-agentes<br/>Cálculos stock/precio"]
-    XLSX["xlsxGenerator<br/>Excel profesional"]
-    DOCX["docxGenerator<br/>Carta corporativa"]
-    HTML["htmlExportBuilder<br/>Reporte distribución"]
-    UI["Sidebar expandible<br/>Context-aware exports"]
+    AGENTS["g360-skill-agentes<br/>Cálculos stock/precio/cajas"]
+    XLSX["xlsxGenerator"]
+    DOCX["docxGenerator"]
+    HTML["htmlExportBuilder"]
+    UI["SolidJS UI<br/>ProductTable · Sidebar · Toast"]
 
     ERP --> PARSER
     SUPABASE -->|clientes| STATE
@@ -37,78 +37,67 @@ flowchart TD
     AGENTS --> DOCX
     AGENTS --> HTML
     STATE --> UI
+    AGENTS --> UI
 ```
 
 ## Tabla de Contenidos
 
 - [Descripción](#descripción)
-- [Novedades v6.0](#novedades-v60)
+- [Novedades v6.0.0](#novedades-v600)
 - [Características](#características)
 - [Tecnologías](#tecnologías)
 - [Instalación](#instalación)
 - [Uso](#uso)
 - [Estructura del Proyecto](#estructura-del-proyecto)
+- [Scripts](#scripts)
+- [Mantenimiento de Catálogo](#mantenimiento-de-catálogo)
 - [Ecosistema G360](#ecosistema-g360)
 
 ---
 
 ## Descripción
 
-**G360 Order XLSX** es una aplicación web desarrollada en **SolidJS** para el procesamiento inteligente de cotizaciones ERP/CRM de CIPSA. Integra Supabase para lookup de clientes y vendedores, genera exports profesionales (XLSX, DOCX, HTML), y ofrece una interfaz moderna con sidebar expandible.
+**G360 Order XLSX** es una aplicación web desarrollada en **SolidJS** para el procesamiento inteligente de cotizaciones ERP/CRM de CIPSA. Integra Supabase para lookup de clientes y vendedores, genera exports profesionales (XLSX, DOCX, HTML) y ofrece una interfaz moderna con sidebar expandible.
+
+**Tipo**: Aplicación Web / Herramienta ERP  
+**Plataforma**: Navegador web (SPA)  
+**Marca**: CIPSA — Corporación de Industrias Plásticas S.A.
+**Paleta**: Azul corporativo (`#2563eb`)
 
 ---
 
-## Novedades v6.0
+## Novedades v6.0.0
 
-### 🆕 Integración Supabase
+### Integración Supabase
 - **Lookup de clientes**: Autocomplete por RUC o código
 - **Lookup de vendedores**: Auto-completado por ID
 - Búsqueda prioriza coincidencia exacta en código
 
-### 🎨 Paleta Corporativa Teal
-- Accent: `#00796B` (Teal 700) — profesional, serio
-- Success: `#10B981` (Emerald) — stock OK
-- Warning: `#F59E0B` (Amber) — stock ajustado
-- Error: `#EF4444` (Rose) — agotado
+### Paleta Corporativa Azul
+- **Acento**: `#2563eb` (azul) en lugar de verde neón
+- **Header**: Gradiente azul corporativo (`#1e40af` → `#3b82f6`)
+- **Colores de estado**: Success `#10b981`, Warning `#f59e0b`, Error `#f87171`
 
-### 📊 XLSX Mejorado
-- KPIs prominentes: Subtotal, Total+IGV, Stock Confirmado
-- Columnas optimizadas (C, H = 125px, L = 160px)
-- Logo tamaño: 2.89cm × 2.14cm
-- Fórmulas corregidas (IGV = Subtotal × 0.18)
+### Tablas Mejoradas (UI + HTML)
+- **13 columnas** con `<colgroup>` (simetría real)
+- **Encabezados a 2 líneas** (etiqueta corta + unidad debajo)
+- **Ordenamiento** en headers (click → asc/desc con ▲▼)
+- **Filtro de stock**: Todos / Con stock / Sin stock
 
-### 📝 DOCX Corporativo
-- Carta formal para instituciones
-- Tabla profesional con headers teal
-- Email vendedor con dominio @cipsa.com.pe
-- Logo tamaño: 2.89cm × 2.14cm
+### Nueva Columna: Cajas
+- Muestra `cajasCompletas` y `unidadesSueltas` (en ámbar `+N`)
+- Consistente en UI y HTML exportado
 
-### 🌐 HTML Reporte
-- Helper unificado (htmlHelper.js)
-- Tabla optimizada para impresión A4
-- Save + Download en una acción
-- Dark/Light theme
+### Mantenimiento de Catálogo
+- **Cache persistente** (localStorage) de lookups individuales
+- **Pre-fetch** de SKUs faltantes antes de calcular
+- Scripts de mantenimiento (`update-catalog`, `enrich-catalog`, `update-flags`)
 
-### 🗂️ Sidebar Expandible
-- Iconos + text labels
-- Agrupación: Navegación / Acciones / Exportar / Sistema
-- Context-aware: XLSX/DOCX en Home, HTML en Distribución
-- Estado activo visual
-
-### 🔍 Búsqueda de Productos
-- Filtro por SKU, descripción o línea
-- Contador de resultados
-- Reset automático de paginación
-
-### 🔔 Toast Notifications
-- Feedback visual sin alert() bloqueantes
-- Tipos: success, warning, error, info
-
-### 📱 Formulario Context-Aware
-- Cliente: Autocomplete por RUC/Código
-- Vendedor: Auto-completado por ID
-- Sucursal: Campo manual opcional
-- Email: Dominio fijo @cipsa.com.pe
+### Correcciones
+- `sin_catalogo` no divide por `un_bx` placeholder (evita cajas falsas)
+- Footer de tabla alineado correctamente
+- Descripción con clamp de 2 líneas (40 chars)
+- Anchos de columna con porcentajes (suma 100%)
 
 ---
 
@@ -116,59 +105,43 @@ flowchart TD
 
 ### Gestión de Pedidos
 - Parseo de texto ERP (formato nuevo 28 columnas)
-- Lookup de clientes desde Supabase
-- Cálculo automático de subtotales, IGV (18%), y totales
+- Lookup de clientes/vendedores desde Supabase
 - Persistencia en localStorage
 
 ### Tabla de Productos
-- Búsqueda por SKU, descripción o línea
-- 13+ columnas compatible con VBA
-- Badges de stock con colores
-- Paginación automática
+- 13 columnas con colgroup simétrico
+- Ordenamiento por headers
+- Filtro de stock
+- Búsqueda por SKU/descripción/línea
+- Columna de Cajas para logística
 
 ### Exportaciones
-- **XLSX**: Excel con fórmulas, KPIs, logo CIPSA
-- **DOCX**: Carta corporativa con condiciones comerciales
-- **HTML**: Reporte de distribución con gráficos
+- **XLSX**: Excel con fórmulas y KPIs
+- **DOCX**: Carta corporativa Word
+- **HTML**: Reporte de distribución (bóveda + descarga)
 - **Print A4**: Impresión optimizada
-
-### Distribución
-- Calendario de letras de pago
-- Gráfico mariposa por línea
-- KPIs y categorías
-- Bóveda de reportes HTML
 
 ---
 
 ## Tecnologías
 
-| Categoría | Tecnología | Versión |
-|-----------|-----------|---------|
-| **Framework** | SolidJS | 1.8.0 |
-| **Router** | @solidjs/router | 0.16.1 |
-| **Build Tool** | Vite | 5.0.0 |
-| **Base de Datos** | Supabase | @supabase/supabase-js |
-| **Export XLSX** | ExcelJS | 4.4.0 |
-| **Export DOCX** | docx | 9.7.1 |
-| **Identidad** | G360 Design | Teal Corporativo |
+| Categoría | Tecnología |
+|-----------|-----------|
+| **Framework** | SolidJS 1.8 |
+| **Build** | Vite 5 |
+| **Base de datos** | Supabase |
+| **Export XLSX** | ExcelJS |
+| **Presintation** | PptxGenJS |
+| **Testing** | Vitest |
 
 ---
 
 ## Instalación
 
 ```bash
-# 1. Clonar
 git clone https://github.com/carloscus/g360-order-xlsx.git
 cd g360-order-xlsx
-
-# 2. Instalar
 npm install
-
-# 3. Configurar Supabase (crear .env.local)
-VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-VITE_SUPABASE_ANON_KEY=tu-anon-key
-
-# 4. Ejecutar
 npm run dev
 ```
 
@@ -177,18 +150,10 @@ npm run dev
 ## Uso
 
 ### Flujo Principal
-
-1. **Buscar cliente**: Escribir RUC o código en el autocomplete
-2. **Cargar datos ERP**: Pegar texto del ERP (Ctrl+V)
-3. **Completar pedido**: N° Pedido, Correo Vendedor
-4. **Exportar**: XLSX (Home) o HTML (Distribución)
-
-### Sidebar
-
-| Página | Acciones |
-|--------|----------|
-| **Home** | Exportar → XLSX / DOCX |
-| **Distribución** | Reporte → Guardar + Descargar HTML |
+1. **Buscar cliente** (RUC o código)
+2. **Pegar datos del ERP** (Ctrl+V)
+3. **Revisar** tabla de partidas
+4. **Exportar** (XLSX / DOCX / HTML)
 
 ---
 
@@ -198,27 +163,61 @@ npm run dev
 g360-order-xlsx/
 ├── src/
 │   ├── components/
-│   │   ├── Header/ClientInfo.jsx    # Autocomplete Supabase
-│   │   ├── Sidebar/Sidebar.jsx      # Expandible context-aware
-│   │   ├── Toast.jsx                # Notificaciones
-│   │   └── ProductTable/            # Búsqueda + paginación
-│   ├── hooks/
-│   │   ├── useClientes.js           # Lookup Supabase
-│   │   ├── useVendedor.js           # Lookup vendedor
-│   │   └── usePedido.ts             # Store + idVendedor
+│   │   ├── ProductTable/         # Tabla con sort/filtro
+│   │   ├── Sidebar/              # Navegación + exportar
+│   │   ├── DistributionPage.jsx
+│   │   └── Toast.jsx
 │   ├── helpers/
-│   │   └── htmlHelper.js            # Helper unificado HTML
+│   │   └── htmlHelper.js         # Generación HTML
+│   ├── hooks/
+│   │   ├── usePedido.ts
+│   │   ├── useCatalogo.js
+│   │   └── useClientes.js / useVendedor.js
 │   ├── lib/
-│   │   └── supabaseClient.js        # Cliente Supabase
+│   │   └── supabaseClient.js
 │   ├── utils/
-│   │   ├── xlsxGenerator.ts         # Excel profesional
-│   │   ├── docxGenerator.ts         # Carta corporativa
-│   │   └── htmlExportBuilder.js     # Reporte distribución
-│   └── core/
-│       └── g360-skill-config.js     # Paleta Teal
-├── .env.local                       # Supabase credentials
-└── package.json
+│   │   ├── xlsxGenerator.ts
+│   │   ├── docxGenerator.ts
+│   │   └── htmlExportBuilder.js
+│   └── data/
+│       └── catalogo_productos.json
+├── scripts/                      # Mantenimiento
+│   ├── update-catalog.cjs
+│   ├── enrich-catalog.cjs
+│   ├── update-flags.cjs
+│   └── create-presentation.cjs
+└── docs/
+    └── CIPSA_OrderX_Guia_Uso.pptx
 ```
+
+---
+
+## Scripts
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Servidor desarrollo |
+| `npm run build` | Build producción |
+| `npm run deploy` | Build + deploy GitHub Pages |
+| `npm run update-catalog` | Sincronizar catálogo desde API |
+| `npm run enrich-catalog` | Enriquecer SKUs faltantes |
+| `npm run presentation` | Regenerar PPTX |
+
+---
+
+## Mantenimiento de Catálogo
+
+El catálogo local (`catalogo_productos.json`) tiene **2257 productos**. La API principal no incluye todos; los faltantes se resuelven via lookup individual con **cache persistente**.
+
+```bash
+npm run update-catalog     # Sincroniza con API (merge, preserva enriquecidos)
+npm run enrich-catalog     # Agrega SKUs faltantes via lookup individual
+node scripts/update-flags.cjs    # Actualiza flags sin_catalogo
+```
+
+### Flags importantes
+- `sin_catalogo: true` → `un_bx` es placeholder (no confiable, se trata como 1 caja)
+- `un_bx` → unidades por caja (del catálogo maestro)
 
 ---
 
@@ -226,10 +225,16 @@ g360-order-xlsx/
 
 - **[g360-cli](https://github.com/carloscus/g360-cli)** — Bootstrap de proyectos
 - **[g360-stock-api](https://github.com/carloscus/g360-stock-api)** — API REST stock
-- **[g360-master-data](https://github.com/carloscus/g360-master-data)** — Catálogo productos
+- **[g360-master-data](https://github.com/carloscus/g360-master-data)** — Catálogo maestro
 
 ---
 
-**Marca**: G360 · Microherramientas para apoyo CRM en CIPSA  
-**Paleta**: Teal Corporativo (#00796B)  
-**Signature**: G360 by ccusi
+## Licencia
+
+Proyecto interno — políticas de la organización.
+
+---
+
+**Marca**: G360 · Microherramientas para apoyo CRM y datos en CIPSA  
+**Paleta**: Azul corporativo `#2563eb`  
+**Signature**: G360 by ccusi · **Powered by**: [g360-signature](https://github.com/carloscus/g360-signature)

@@ -311,10 +311,17 @@ Reporte completo en HTML con:
 - **Gráfico mariposa** con distribución por línea (con barras de valor y volumen)
 - **Categorías**: Badges con colores, montos y desglose de cajas
 - **Programación de letras**: Meses con tarjetas de cuotas
-- **Tabla de partidas**: 12 columnas (#, SKU, Descripción, Cant., U/M, P. Lista, Desc 01, Desc 02, **Total Neto**, **P. Unit c/IGV**, **Total Venta**, **Stock**)
+- **Tabla de partidas**: **13 columnas** (N°, Cant., U/M, SKU, Descripción, P. Lista, Dto1, Dto2, **Neto**, **P.Unit**, **TOTAL**, **Cajas**, **Tipo**)
+- **Encabezados**: Etiqueta + unidad en 2 líneas
+- **Ordenamiento**: Click en headers (▲▼)
+- **Filtro de stock**: Todos / Con stock / Sin stock + contador
+- **Cajas**: `cajasCompletas` + `unidadesSueltas` (ámbar `+N`)
+- **Descripción**: 2 líneas con clamp (40 caracteres)
 - **Estilo**: Tema oscuro (presentación) o claro (impresión), seleccionable al descargar
 - **Botón de impresión**: "🖨️ Imprimir / Guardar como PDF" optimizado para A4
 - **Footer**: Generado por G360 Order System
+
+> **Nota**: El botón de exportar HTML está en el **sidebar** (💾 Guardar y Descargar — guarda en bóveda + descarga).
 
 ### 7.4 Impresión A4
 
