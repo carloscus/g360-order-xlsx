@@ -160,12 +160,12 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   <div class="psf-container">
     <div class="psf-meses-grid">${pg(t).map(u=>{const s=o>0?(u.total/o*100).toFixed(2):0,i=u.cuotas.map(n=>`<div class="psf-mes-cuota"><span class="psf-mes-fecha">${`${String(n.dia).padStart(2,"0")}/${String(n.mes+1).padStart(2,"0")}/${n.anio}`}</span><span class="psf-mes-monto">S/ ${oo(n.monto)}</span></div>`).join("");return`<div class="psf-mes-card"><div class="psf-mes-header"><span class="psf-mes-nombre">${u.nombre} ${u.anio}</span><span class="psf-mes-pct">${s}%</span></div><div class="psf-mes-cuotas">${i}</div><div class="psf-mes-total">Total: S/ ${oo(u.total)}</div></div>`}).join("")}</div>
   </div>
-</div>`,ug=t=>{const o=t.map((s,i)=>{const n=s.estadoStock==="OK"?"stock-ok":s.estadoStock==="AJ"?"stock-aj":"stock-agotado",r=s.estadoStock==="Agotado"?"out":"ok",a=s.cantidad||0,c=Vt(s.valorVenta||0),h=Vt((s.valorVenta||0)/(a||1)*1.18),d=Vt((s.valorVenta||0)*1.18),p=s.estadoLinea,f=s.colorEstadoLinea||Rd[p]||"#6b7280",A=p?`<span class="badge" style="background:${f}20;color:${f};border:1px solid ${f}40;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:600;white-space:nowrap">${p}</span>`:"",m=s.descuento1||0,g=s.descuento2||0,I=s.cajasCompletas||0,E=s.unidadesSueltas||0,k=E>0?`${I}<span class="cajas-sueltas">+${E}</span>`:`${I}`,C=s.descripcion||"",L=C.length>40?C.slice(0,39).trimEnd()+"…":C;return`<tr data-stock="${r}">
+</div>`,ug=t=>{const o=t.map((s,i)=>{const n=s.estadoStock==="OK"?"stock-ok":s.estadoStock==="AJ"?"stock-aj":"stock-agotado",r=s.estadoStock==="Agotado"?"out":"ok",a=s.cantidad||0,c=Vt(s.valorVenta||0),h=Vt((s.valorVenta||0)/(a||1)*1.18),d=Vt((s.valorVenta||0)*1.18),p=s.estadoLinea,f=s.colorEstadoLinea||Rd[p]||"#6b7280",A=p?`<span class="badge" style="background:${f}20;color:${f};border:1px solid ${f}40;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:600;white-space:nowrap">${p}</span>`:"",m=s.descuento1||0,g=s.descuento2||0,I=s.cajasCompletas||0,E=s.unidadesSueltas||0,k=E>0?`${I}<span class="cajas-sueltas">+${E}</span>`:`${I}`,C=s.descripcion||"",L=C.length>70?C.slice(0,69).trimEnd()+"…":C;return`<tr data-stock="${r}">
 <td class="td-center">${i+1}</td>
 <td class="td-right" data-value="${a}"><span class="stock-dot ${n}" title="${s.estadoStock||""}"></span> ${Cc(a)}</td>
 <td class="td-center">${s.unidadMedida||"UND"}</td>
 <td class="td-mono" data-value="${s.codigo}">${s.codigo}</td>
-<td class="td-desc" title="${C.replace(/"/g,"&quot;")}">${L.replace(/"/g,"&quot;")}</td>
+<td class="td-desc" title="${C.replace(/"/g,"&quot;")}"><span class="desc-clamp">${L.replace(/"/g,"&quot;")}</span></td>
 <td class="td-right" data-value="${s.precioUnitario||0}">${Tc(s.precioUnitario||0)}</td>
 <td class="td-center" data-value="${m}">${Vt(m)}</td>
 <td class="td-center" data-value="${g}">${Vt(g)}</td>
@@ -449,6 +449,12 @@ function filtrarStock(modo) {
   tbody tr { display:table-row !important; }
   tfoot td { border-color:#000 !important; padding:5px 3px !important; font-size:9px !important; }
   .td-desc { white-space:normal !important; }
+  /* En impresión: más líneas para que la descripción se vea completa (A4) */
+  .desc-clamp {
+    -webkit-line-clamp:3 !important;
+    line-clamp:3 !important;
+    min-height:3.9em !important;
+  }
   .sort-ind { display:none !important; }
   .stock-dot { width:6px !important; height:6px !important; }
   .footer { color:#666 !important; border-color:#ccc !important; padding:8px 0 4px !important; margin-top:12px !important; font-size:8px !important; }
@@ -631,15 +637,17 @@ function filtrarStock(modo) {
     .td-right { text-align:right; }
     .td-left { text-align:left; }
     .td-mono { font-family:monospace; font-size:9.5px; text-align:center; letter-spacing:0.2px; }
-    .td-desc {
-      white-space:normal;
-      font-size:9.5px;
-      line-height:1.25;
+    /* Descripcion: 2 lineas (clamp en span interno, el td no corta) */
+    .td-desc { white-space:normal; overflow:visible; }
+    .desc-clamp {
       display:-webkit-box;
       -webkit-line-clamp:2;
       line-clamp:2;
       -webkit-box-orient:vertical;
       overflow:hidden;
+      font-size:9.5px;
+      line-height:1.3;
+      min-height:2.6em;
     }
     .td-bold { font-weight:700; }
     .td-total { color:var(--g360-accent); font-weight:700; }
