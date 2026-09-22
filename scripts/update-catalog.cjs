@@ -67,7 +67,19 @@ async function fetchCatalog() {
 async function updateCatalog() {
   try {
     const catalog = await fetchCatalog();
-    
+
+    // MERGE: preservar SKUs existentes que no estén en la nueva descarga (enriquecidos)
+    const existing = fs.existsSync(OUTPUT_FILE)
+      ? JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'))
+      : { productos: [] };
+    const nuevosSkus = new Set(catalog.productos.map(p => p.sku));
+    const preservados = (existing.productos || []).filter(p => p.sku && !nuevosSkus.has(p.sku));
+    if (preservados.length > 0) {
+      catalog.productos.push(...preservados);
+      catalog.total = catalog.productos.length;
+      console.log(`🔗 Preservados ${preservados.length} SKUs enriquecidos no presentes en la API`);
+    }
+
     // Guardar
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(catalog, null, 2));
     console.log(`✅ Catálogo actualizado: ${OUTPUT_FILE}`);
@@ -77,9 +89,11 @@ async function updateCatalog() {
     // Estadísticas
     const conUnBx = catalog.productos.filter(p => p.un_bx > 0).length;
     const conPeso = catalog.productos.filter(p => p.peso_kg > 0).length;
+    const sinCat = catalog.productos.filter(p => p.sin_catalogo).length;
     console.log(`\n📊 Estadísticas:`);
     console.log(`   - Con un_bx: ${conUnBx}/${catalog.total}`);
     console.log(`   - Con peso_kg: ${conPeso}/${catalog.total}`);
+    console.log(`   - sin_catalogo: ${sinCat}/${catalog.total}`);
 
   } catch (error) {
     console.error('\n❌ Error actualizando catálogo:', error.message);
