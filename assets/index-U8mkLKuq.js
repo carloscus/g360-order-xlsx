@@ -160,7 +160,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   <div class="psf-container">
     <div class="psf-meses-grid">${mg(t).map(u=>{const s=o>0?(u.total/o*100).toFixed(2):0,i=u.cuotas.map(n=>`<div class="psf-mes-cuota"><span class="psf-mes-fecha">${`${String(n.dia).padStart(2,"0")}/${String(n.mes+1).padStart(2,"0")}/${n.anio}`}</span><span class="psf-mes-monto">S/ ${ao(n.monto)}</span></div>`).join("");return`<div class="psf-mes-card"><div class="psf-mes-header"><span class="psf-mes-nombre">${u.nombre} ${u.anio}</span><span class="psf-mes-pct">${s}%</span></div><div class="psf-mes-cuotas">${i}</div><div class="psf-mes-total">Total: S/ ${ao(u.total)}</div></div>`}).join("")}</div>
   </div>
-</div>`,Ag=t=>{const o=t.map((s,i)=>{const n=s.estadoStock==="OK"?"stock-ok":s.estadoStock==="AJ"?"stock-aj":"stock-agotado",r=s.estadoStock==="Agotado"?"out":"ok",a=s.cantidad||0,c=xt(s.valorVenta||0),h=xt((s.valorVenta||0)/(a||1)*1.18),d=xt((s.valorVenta||0)*1.18),p=s.estadoLinea,f=s.colorEstadoLinea||Rd[p]||"#6b7280",A=p?`<span class="badge" style="background:${f}20;color:${f};border:1px solid ${f}40;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:600;white-space:nowrap">${p}</span>`:"",m=s.descuento1||0,g=s.descuento2||0,I=s.cajasCompletas||0,E=s.unidadesSueltas||0,k=E>0?`${I}<span class="cajas-sueltas">+${E}</span>`:`${I}`,C=s.descripcion||"",L=C.length>45?C.slice(0,45)+"…":C;return`<tr data-stock="${r}">
+</div>`,Ag=t=>{const o=t.map((s,i)=>{const n=s.estadoStock==="OK"?"stock-ok":s.estadoStock==="AJ"?"stock-aj":"stock-agotado",r=s.estadoStock==="Agotado"?"out":"ok",a=s.cantidad||0,c=xt(s.valorVenta||0),h=xt((s.valorVenta||0)/(a||1)*1.18),d=xt((s.valorVenta||0)*1.18),p=s.estadoLinea,f=s.colorEstadoLinea||Rd[p]||"#6b7280",A=p?`<span class="badge" style="background:${f}20;color:${f};border:1px solid ${f}40;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:600;white-space:nowrap">${p}</span>`:"",m=s.descuento1||0,g=s.descuento2||0,I=s.cajasCompletas||0,E=s.unidadesSueltas||0,k=E>0?`${I}<span class="cajas-sueltas">+${E}</span>`:`${I}`,C=s.descripcion||"",L=C.length>40?C.slice(0,39).trimEnd()+"…":C;return`<tr data-stock="${r}">
 <td class="td-center">${i+1}</td>
 <td class="td-right" data-value="${a}"><span class="stock-dot ${n}" title="${s.estadoStock||""}"></span> ${Cc(a)}</td>
 <td class="td-center">${s.unidadMedida||"UND"}</td>
@@ -251,32 +251,38 @@ https://github.com/nodeca/pako/blob/main/LICENSE
       G360 Order System — Generado el ${d} — ${o||"CHOPERS DISTRIBUCIONES"}
     </div>`}function gg(){return`
 :root {
-  --g360-accent: #00d084;
+  --g360-accent: #2563eb;
+  --g360-accent-2: #1d4ed8;
   --g360-bg: #0f172a;
   --g360-surface: #1e293b;
+  --g360-surface-2: #273449;
   --g360-text: #f1f5f9;
   --g360-muted: #cbd5e1;
   --g360-border: #475569;
-  --g360-success: #22c55e;
+  --g360-success: #10b981;
   --g360-warning: #f59e0b;
   --g360-error: #f87171;
+  --g360-info: #60a5fa;
   --text-2xs:0.5625rem; --text-xs:0.6875rem; --text-sm:0.75rem; --text-base:0.875rem;
   --text-lg:1rem; --text-xl:1.125rem; --text-2xl:1.25rem; --text-3xl:1.5rem;
   --fw-normal:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-extrabold:800;
-  --accent-rgb: 0,208,132;
+  --accent-rgb: 37,99,235;
 }
 
 .light {
-  --g360-accent: #007a4d;
+  --g360-accent: #1d4ed8;
+  --g360-accent-2: #1e40af;
   --g360-bg: #f8fafc;
   --g360-surface: #ffffff;
+  --g360-surface-2: #f1f5f9;
   --g360-text: #1e293b;
   --g360-muted: #64748b;
   --g360-border: #e2e8f0;
-  --g360-success: #15803d;
+  --g360-success: #059669;
   --g360-warning: #b45309;
   --g360-error: #dc2626;
-  --accent-rgb: 0,122,77;
+  --g360-info: #2563eb;
+  --accent-rgb: 29,78,216;
 }`}function Eg(){return`
 <script>
 function toggleTheme() {
@@ -425,18 +431,18 @@ function filtrarStock(modo) {
   .psf-mes-monto { color:#000 !important; }
   .psf-mes-total { color:#000 !important; border-top:1px dashed #333 !important; }
   table { font-size:7.5px !important; table-layout:fixed !important; width:100% !important; }
-  colgroup .col-narrow { width:18px !important; }
-  colgroup .col-cant { width:36px !important; }
-  colgroup .col-um { width:26px !important; }
-  colgroup .col-sku { width:40px !important; }
-  colgroup .col-desc { width:auto !important; }
-  colgroup .col-price { width:42px !important; }
-  colgroup .col-dto { width:28px !important; }
-  colgroup .col-neto { width:50px !important; }
-  colgroup .col-unit { width:40px !important; }
-  colgroup .col-total { width:54px !important; }
-  colgroup .col-cajas { width:36px !important; }
-  colgroup .col-tipo { width:52px !important; }
+  colgroup .col-narrow { width:3% !important; }
+  colgroup .col-cant { width:6% !important; }
+  colgroup .col-um { width:4% !important; }
+  colgroup .col-sku { width:7% !important; }
+  colgroup .col-desc { width:24% !important; }
+  colgroup .col-price { width:7% !important; }
+  colgroup .col-dto { width:5% !important; }
+  colgroup .col-neto { width:9% !important; }
+  colgroup .col-unit { width:7% !important; }
+  colgroup .col-total { width:10% !important; }
+  colgroup .col-cajas { width:6% !important; }
+  colgroup .col-tipo { width:7% !important; }
   thead th { background:#333 !important; color:white !important; padding:4px 3px !important; font-size:7px !important; }
   tbody td { border-color:#ccc !important; padding:4px 3px !important; font-size:7.5px !important; }
   tbody tr:nth-child(even) { background:#f5f5f5 !important; }
@@ -487,7 +493,7 @@ function filtrarStock(modo) {
     /* ===== SNAPSHOT HEADER ===== */
     .snapshot-header {
       position:sticky; top:0; z-index:1000;
-      background:linear-gradient(135deg, #059669 0%, #00a86b 100%);
+      background:linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
       color:white;
       padding:12px 24px;
       display:flex;
@@ -496,7 +502,7 @@ function filtrarStock(modo) {
       box-shadow:0 2px 12px rgba(0,0,0,0.15);
     }
     .light .snapshot-header {
-      background:linear-gradient(135deg, #007a4d 0%, #00a86b 100%);
+      background:linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
     }
     .snapshot-header h2 {
       font-size:1rem;
@@ -531,7 +537,7 @@ function filtrarStock(modo) {
     .header h1 { font-size:calc(var(--text-3xl) + 2px); color:var(--g360-accent); margin-bottom:4px; }
     .header-meta { font-size:var(--text-sm); color:var(--g360-muted); display:flex; gap:16px; flex-wrap:wrap; margin-top:4px; }
     .badge { background:var(--g360-accent); color:white; padding:6px 16px; border-radius:20px; font-size:var(--text-sm); font-weight:var(--fw-bold); text-transform:uppercase; letter-spacing:1px; }
-    .badge-nueva { background:#059669; color:white; border:1px solid #34d399; }
+    .badge-nueva { background:#2563eb; color:white; border:1px solid #3b82f6; }
     .badge-tradicional { background:#f59e0b; color:#1e293b; border:1px solid #fbbf24; }
     .section { margin-bottom:28px; }
     .section-title { font-size:var(--text-lg); font-weight:var(--fw-bold); color:var(--g360-accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid var(--g360-border); }
@@ -600,18 +606,18 @@ function filtrarStock(modo) {
     .psf-mes-total { text-align:right; font-size:var(--text-sm); font-weight:var(--fw-bold); color:var(--g360-accent); padding-top:6px; margin-top:6px; border-top:1px dashed var(--g360-border); }
     .table-container { margin-top:10px; overflow-x:auto; }
     table { width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed; }
-    colgroup .col-narrow { width:26px; }
-    colgroup .col-cant { width:50px; }
-    colgroup .col-um { width:34px; }
-    colgroup .col-sku { width:54px; }
-    colgroup .col-desc { width:auto; }
-    colgroup .col-price { width:56px; }
-    colgroup .col-dto { width:36px; }
-    colgroup .col-neto { width:66px; }
-    colgroup .col-unit { width:52px; }
-    colgroup .col-total { width:72px; }
-    colgroup .col-cajas { width:48px; }
-    colgroup .col-tipo { width:68px; }
+    colgroup .col-narrow { width:3%; }
+    colgroup .col-cant { width:6%; }
+    colgroup .col-um { width:4%; }
+    colgroup .col-sku { width:7%; }
+    colgroup .col-desc { width:24%; }
+    colgroup .col-price { width:7%; }
+    colgroup .col-dto { width:5%; }
+    colgroup .col-neto { width:9%; }
+    colgroup .col-unit { width:7%; }
+    colgroup .col-total { width:10%; }
+    colgroup .col-cajas { width:6%; }
+    colgroup .col-tipo { width:7%; }
     thead { background:var(--g360-surface); }
     thead th { padding:8px 5px; font-size:9px; font-weight:700; color:var(--g360-muted); text-transform:uppercase; letter-spacing:0.4px; border-bottom:2px solid var(--g360-accent); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; vertical-align:middle; user-select:none; }
     thead th[onclick] { cursor:pointer; transition:color 0.15s, background 0.15s; }
@@ -625,7 +631,16 @@ function filtrarStock(modo) {
     .td-right { text-align:right; }
     .td-left { text-align:left; }
     .td-mono { font-family:monospace; font-size:9.5px; text-align:center; letter-spacing:0.2px; }
-    .td-desc { white-space:normal; font-size:10px; line-height:1.3; }
+    .td-desc {
+      white-space:normal;
+      font-size:9.5px;
+      line-height:1.25;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
     .td-bold { font-weight:700; }
     .td-total { color:var(--g360-accent); font-weight:700; }
     .td-cajas { font-size:10px; font-weight:600; color:var(--g360-text); }
