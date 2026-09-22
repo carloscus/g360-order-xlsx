@@ -229,13 +229,13 @@ const renderTablaProductos = (productos) => {
       ? `${cajasComp}<span class="cajas-sueltas">+${sueltas}</span>`
       : `${cajasComp}`
     const descFull = (p.descripcion || '')
-    const descShort = descFull.length > 40 ? descFull.slice(0, 39).trimEnd() + '…' : descFull
+    const descShort = descFull.length > 70 ? descFull.slice(0, 69).trimEnd() + '…' : descFull
     return `<tr data-stock="${stockFlag}">
 <td class="td-center">${idx + 1}</td>
 <td class="td-right" data-value="${cant}"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${formatearEntero(cant)}</td>
 <td class="td-center">${p.unidadMedida || 'UND'}</td>
 <td class="td-mono" data-value="${p.codigo}">${p.codigo}</td>
-<td class="td-desc" title="${descFull.replace(/"/g, '&quot;')}">${descShort.replace(/"/g, '&quot;')}</td>
+<td class="td-desc" title="${descFull.replace(/"/g, '&quot;')}"><span class="desc-clamp">${descShort.replace(/"/g, '&quot;')}</span></td>
 <td class="td-right" data-value="${p.precioUnitario || 0}">${formatear4(p.precioUnitario || 0)}</td>
 <td class="td-center" data-value="${desc1}">${redondear2(desc1)}</td>
 <td class="td-center" data-value="${desc2}">${redondear2(desc2)}</td>
@@ -561,6 +561,12 @@ function getPrintStyles() {
   tbody tr { display:table-row !important; }
   tfoot td { border-color:#000 !important; padding:5px 3px !important; font-size:9px !important; }
   .td-desc { white-space:normal !important; }
+  /* En impresión: más líneas para que la descripción se vea completa (A4) */
+  .desc-clamp {
+    -webkit-line-clamp:3 !important;
+    line-clamp:3 !important;
+    min-height:3.9em !important;
+  }
   .sort-ind { display:none !important; }
   .stock-dot { width:6px !important; height:6px !important; }
   .footer { color:#666 !important; border-color:#ccc !important; padding:8px 0 4px !important; margin-top:12px !important; font-size:8px !important; }
@@ -757,15 +763,17 @@ export const buildCronogramaHTML = (data) => {
     .td-right { text-align:right; }
     .td-left { text-align:left; }
     .td-mono { font-family:monospace; font-size:9.5px; text-align:center; letter-spacing:0.2px; }
-    .td-desc {
-      white-space:normal;
-      font-size:9.5px;
-      line-height:1.25;
+    /* Descripcion: 2 lineas (clamp en span interno, el td no corta) */
+    .td-desc { white-space:normal; overflow:visible; }
+    .desc-clamp {
       display:-webkit-box;
       -webkit-line-clamp:2;
       line-clamp:2;
       -webkit-box-orient:vertical;
       overflow:hidden;
+      font-size:9.5px;
+      line-height:1.3;
+      min-height:2.6em;
     }
     .td-bold { font-weight:700; }
     .td-total { color:var(--g360-accent); font-weight:700; }
