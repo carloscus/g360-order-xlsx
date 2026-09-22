@@ -10,6 +10,7 @@ const NOMBRES_MES = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','A
 const formatear = (n) => (n || 0).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const formatear4 = (n) => (n || 0).toLocaleString('es-PE', { minimumFractionDigits: 4, maximumFractionDigits: 4 })
 const redondear2 = (n) => Math.round((n || 0) * 100) / 100
+const formatearEntero = (n) => Math.round(n || 0).toLocaleString('es-PE')
 
 const COLORES_ESTADO_FALLBACK = { 'NACIONAL': '#059669', 'NUEVO': '#0891b2', 'IMPORTADO': '#d97706', 'TRADICIONAL': '#7c3aed', 'PENDIENTE': '#6b7280', '': '#6b7280' }
 
@@ -209,53 +210,93 @@ const renderDistribucionFecha = (cuotas, totalPedido) => {
 const renderTablaProductos = (productos) => {
   const rows = productos.map((p, idx) => {
     const stockClass = p.estadoStock === 'OK' ? 'stock-ok' : p.estadoStock === 'AJ' ? 'stock-aj' : 'stock-agotado'
+    const stockFlag = p.estadoStock === 'Agotado' ? 'out' : 'ok'
+    const cant = p.cantidad || 0
     const totalNeto = redondear2(p.valorVenta || 0)
-    const precioUnitCIGV = redondear2((p.valorVenta || 0) / (p.cantidad || 1) * 1.18)
+    const precioUnitCIGV = redondear2((p.valorVenta || 0) / (cant || 1) * 1.18)
     const totalVenta = redondear2((p.valorVenta || 0) * 1.18)
     const _estado = p.estadoLinea
     const _colorEstado = p.colorEstadoLinea || COLORES_ESTADO_FALLBACK[_estado] || '#6b7280'
     const badgeTipo = _estado
-      ? `<span class="badge" style="background:${_colorEstado}20;color:${_colorEstado};border:1px solid ${_colorEstado}40;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;white-space:nowrap">${_estado}</span>`
+      ? `<span class="badge" style="background:${_colorEstado}20;color:${_colorEstado};border:1px solid ${_colorEstado}40;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:600;white-space:nowrap">${_estado}</span>`
       : ''
-    // Calcular cajas usando unBx del producto
-    const unBx = p.unBx || 1
-    const cajasCalculadas = Math.ceil((p.cantidad || 0) / unBx)
-    // Obtener descuentos del producto
     const desc1 = p.descuento1 || 0
     const desc2 = p.descuento2 || 0
-    return `<tr><td class="td-center">${idx + 1}</td><td class="td-right"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${p.cantidad}</td><td class="td-center">${p.unidadMedida || 'UND'}</td><td class="td-mono">${p.codigo}</td><td class="td-desc" title="${(p.descripcion || '').replace(/"/g, '&quot;')}">${(p.descripcion || '').slice(0, 45)}${(p.descripcion || '').length > 45 ? '…' : ''}</td><td class="td-right">${formatear4(p.precioUnitario || 0)}</td><td class="td-center">${redondear2(desc1)}</td><td class="td-center">${redondear2(desc2)}</td><td class="td-right td-bold">${formatear(totalNeto)}</td><td class="td-right">${formatear4(precioUnitCIGV)}</td><td class="td-right td-total">${formatear(totalVenta)}</td><td class="td-center">${badgeTipo}</td></tr>`
+    // Cajas (usando valores ya calculados en usePedido)
+    const cajasComp = p.cajasCompletas || 0
+    const sueltas = p.unidadesSueltas || 0
+    const cajasTxt = sueltas > 0
+      ? `${cajasComp}<span class="cajas-sueltas">+${sueltas}</span>`
+      : `${cajasComp}`
+    const descFull = (p.descripcion || '')
+    const descShort = descFull.length > 45 ? descFull.slice(0, 45) + '…' : descFull
+    return `<tr data-stock="${stockFlag}">
+<td class="td-center">${idx + 1}</td>
+<td class="td-right" data-value="${cant}"><span class="stock-dot ${stockClass}" title="${p.estadoStock || ''}"></span> ${formatearEntero(cant)}</td>
+<td class="td-center">${p.unidadMedida || 'UND'}</td>
+<td class="td-mono" data-value="${p.codigo}">${p.codigo}</td>
+<td class="td-desc" title="${descFull.replace(/"/g, '&quot;')}">${descShort.replace(/"/g, '&quot;')}</td>
+<td class="td-right" data-value="${p.precioUnitario || 0}">${formatear4(p.precioUnitario || 0)}</td>
+<td class="td-center" data-value="${desc1}">${redondear2(desc1)}</td>
+<td class="td-center" data-value="${desc2}">${redondear2(desc2)}</td>
+<td class="td-right td-bold" data-value="${totalNeto}">${formatear(totalNeto)}</td>
+<td class="td-right" data-value="${precioUnitCIGV}">${formatear4(precioUnitCIGV)}</td>
+<td class="td-right td-total" data-value="${totalVenta}">${formatear(totalVenta)}</td>
+<td class="td-center td-cajas">${cajasTxt}</td>
+<td class="td-center">${badgeTipo}</td>
+</tr>`
   }).join('')
 
   const totalLinea = redondear2(productos.reduce((s, p) => s + (p.valorVenta || 0), 0))
   const totalVentaFinal = redondear2(totalLinea * 1.18)
   const totalCant = productos.reduce((s, p) => s + (p.cantidad || 0), 0)
+  const totalCajas = productos.reduce((s, p) => s + (p.cajas || 0), 0)
 
   return `
 <div class="section">
   <div class="section-title">📦 DETALLE DE PARTIDAS (${productos.length})</div>
+  <div class="table-toolbar no-print">
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all" onclick="filtrarStock('all')">Todos</button>
+      <button class="filter-btn" data-filter="ok" onclick="filtrarStock('ok')">Con stock</button>
+      <button class="filter-btn" data-filter="out" onclick="filtrarStock('out')">Sin stock</button>
+    </div>
+    <span class="table-count" id="tableCount">Mostrando ${productos.length} de ${productos.length}</span>
+  </div>
   <div class="table-container">
-    <table>
-      <thead><tr>
-        <th class="th-narrow">#</th>
-        <th class="th-right">Cant.</th>
-        <th class="th-center">U/M</th>
-        <th class="th-sku">SKU</th>
-        <th class="th-desc">Descripción</th>
-        <th class="th-right">P. Lista</th>
-        <th class="th-center">Dto1</th>
-        <th class="th-center">Dto2</th>
-        <th class="th-right">Neto</th>
-        <th class="th-right">P.Unit</th>
-        <th class="th-right th-total">TOTAL</th>
-        <th class="th-center">Tipo</th>
-      </tr></thead>
+    <table id="tablaPartidas">
+      <colgroup>
+        <col class="col-narrow"><col class="col-cant"><col class="col-um"><col class="col-sku">
+        <col class="col-desc"><col class="col-price"><col class="col-dto"><col class="col-dto">
+        <col class="col-neto"><col class="col-unit"><col class="col-total"><col class="col-cajas">
+        <col class="col-tipo">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="th-center">#</th>
+          <th class="th-right" onclick="ordenarTabla(1,'num')">Cant.<span class="sort-ind"></span></th>
+          <th class="th-center">U/M</th>
+          <th class="th-center" onclick="ordenarTabla(3,'text')">SKU<span class="sort-ind"></span></th>
+          <th class="th-left">Descripción</th>
+          <th class="th-right" onclick="ordenarTabla(5,'num')">P. Lista<span class="sort-ind"></span></th>
+          <th class="th-center" onclick="ordenarTabla(6,'num')">Dto1<span class="sort-ind"></span></th>
+          <th class="th-center" onclick="ordenarTabla(7,'num')">Dto2<span class="sort-ind"></span></th>
+          <th class="th-right" onclick="ordenarTabla(8,'num')">Neto<span class="sort-ind"></span></th>
+          <th class="th-right" onclick="ordenarTabla(9,'num')">P.Unit<span class="sort-ind"></span></th>
+          <th class="th-right" onclick="ordenarTabla(10,'num')">TOTAL<span class="sort-ind"></span></th>
+          <th class="th-center">Cajas</th>
+          <th class="th-center">Tipo</th>
+        </tr>
+      </thead>
       <tbody>${rows}</tbody>
       <tfoot>
         <tr>
-          <td colspan="9" class="tf-label">TOTALES (${productos.length} productos)</td>
-          <td class="tf-value" style="text-align:right">S/ ${formatear(totalLinea)}</td>
+          <td colspan="8" class="tf-label">TOTALES (${productos.length} productos)</td>
+          <td class="tf-value">${formatear(totalLinea)}</td>
           <td></td>
-          <td class="tf-value tf-total" style="text-align:right">S/ ${formatear(totalVentaFinal)}</td>
+          <td class="tf-value tf-total">${formatear(totalVentaFinal)}</td>
+          <td class="tf-value">${formatearEntero(totalCajas)}</td>
+          <td></td>
         </tr>
       </tfoot>
     </table>
@@ -351,7 +392,83 @@ function toggleTheme() {
   var saved = localStorage.getItem('g360_html_theme');
   if (saved === 'light') document.body.classList.add('light');
 })();
-function printDocument() { window.print(); }
+function printDocument() {
+  if (typeof filtrarStock === 'function') filtrarStock('all');
+  setTimeout(function() { window.print(); }, 80);
+}
+
+// Ordenar tabla por columna
+function ordenarTabla(colIndex, tipo) {
+  var table = document.getElementById('tablaPartidas');
+  if (!table) return;
+  var tbody = table.tBodies[0];
+  var headRow = table.tHead.rows[0];
+  var th = headRow.cells[colIndex];
+  var asc = th.getAttribute('data-dir') !== 'asc';
+
+  // Limpiar indicadores previos
+  Array.prototype.forEach.call(headRow.cells, function(c) {
+    c.setAttribute('data-dir', '');
+    var i = c.querySelector('.sort-ind');
+    if (i) i.textContent = '';
+  });
+
+  th.setAttribute('data-dir', asc ? 'asc' : 'desc');
+  var ind = th.querySelector('.sort-ind');
+  if (ind) ind.textContent = asc ? '▲' : '▼';
+
+  var rows = Array.prototype.slice.call(tbody.rows);
+  rows.sort(function(a, b) {
+    var va = a.cells[colIndex].getAttribute('data-value');
+    var vb = b.cells[colIndex].getAttribute('data-value');
+    if (tipo === 'num') {
+      va = parseFloat(va) || 0;
+      vb = parseFloat(vb) || 0;
+      return asc ? va - vb : vb - va;
+    }
+    va = String(va || '').toLowerCase();
+    vb = String(vb || '').toLowerCase();
+    if (va === vb) return 0;
+    if (asc) return va < vb ? -1 : 1;
+    return va > vb ? -1 : 1;
+  });
+
+  rows.forEach(function(r, i) {
+    tbody.appendChild(r);
+    r.cells[0].textContent = i + 1;
+  });
+}
+
+// Filtrar por disponibilidad de stock
+function filtrarStock(modo) {
+  var table = document.getElementById('tablaPartidas');
+  if (!table) return;
+  var rows = table.tBodies[0].rows;
+  var visibles = 0;
+  var total = rows.length;
+
+  Array.prototype.forEach.call(rows, function(r) {
+    var flag = r.getAttribute('data-stock');
+    var show = modo === 'all' || (modo === 'ok' && flag === 'ok') || (modo === 'out' && flag === 'out');
+    r.style.display = show ? '' : 'none';
+    if (show) visibles++;
+  });
+
+  var btns = document.querySelectorAll('.filter-btn');
+  Array.prototype.forEach.call(btns, function(b) {
+    if (b.getAttribute('data-filter') === modo) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+
+  var cnt = document.getElementById('tableCount');
+  if (cnt) cnt.textContent = 'Mostrando ' + visibles + ' de ' + total;
+
+  // Renumerar filas visibles
+  var n = 0;
+  Array.prototype.forEach.call(rows, function(r) {
+    if (r.style.display !== 'none') { n++; r.cells[0].textContent = n; }
+  });
+}
 </script>`
 }
 
@@ -419,12 +536,26 @@ function getPrintStyles() {
   .psf-mes-fecha { color:#333 !important; }
   .psf-mes-monto { color:#000 !important; }
   .psf-mes-total { color:#000 !important; border-top:1px dashed #333 !important; }
-  table { font-size:8px !important; table-layout:fixed !important; width:100% !important; }
-  thead th { background:#333 !important; color:white !important; padding:3px 3px !important; font-size:7px !important; }
-  tbody td { border-color:#ccc !important; padding:3px 3px !important; font-size:8px !important; }
+  table { font-size:7.5px !important; table-layout:fixed !important; width:100% !important; }
+  colgroup .col-narrow { width:18px !important; }
+  colgroup .col-cant { width:36px !important; }
+  colgroup .col-um { width:26px !important; }
+  colgroup .col-sku { width:40px !important; }
+  colgroup .col-desc { width:auto !important; }
+  colgroup .col-price { width:42px !important; }
+  colgroup .col-dto { width:28px !important; }
+  colgroup .col-neto { width:50px !important; }
+  colgroup .col-unit { width:40px !important; }
+  colgroup .col-total { width:54px !important; }
+  colgroup .col-cajas { width:36px !important; }
+  colgroup .col-tipo { width:52px !important; }
+  thead th { background:#333 !important; color:white !important; padding:4px 3px !important; font-size:7px !important; }
+  tbody td { border-color:#ccc !important; padding:4px 3px !important; font-size:7.5px !important; }
   tbody tr:nth-child(even) { background:#f5f5f5 !important; }
-  tfoot td { border-color:#000 !important; padding:4px 3px !important; font-size:9px !important; }
-  .td-desc { max-width:120px !important; white-space:normal !important; }
+  tbody tr { display:table-row !important; }
+  tfoot td { border-color:#000 !important; padding:5px 3px !important; font-size:9px !important; }
+  .td-desc { white-space:normal !important; }
+  .sort-ind { display:none !important; }
   .stock-dot { width:6px !important; height:6px !important; }
   .footer { color:#666 !important; border-color:#ccc !important; padding:8px 0 4px !important; margin-top:12px !important; font-size:8px !important; }
   .section { page-break-inside:avoid; margin-bottom:8px !important; padding:6px !important; }
@@ -593,40 +724,50 @@ export const buildCronogramaHTML = (data) => {
     .psf-mes-fecha { color:var(--g360-text); font-weight:var(--fw-medium); }
     .psf-mes-monto { color:var(--g360-accent); font-weight:var(--fw-bold); }
     .psf-mes-total { text-align:right; font-size:var(--text-sm); font-weight:var(--fw-bold); color:var(--g360-accent); padding-top:6px; margin-top:6px; border-top:1px dashed var(--g360-border); }
-    .table-container { margin-top:12px; }
+    .table-container { margin-top:10px; overflow-x:auto; }
     table { width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed; }
-    colgroup .col-narrow { width:28px; }
+    colgroup .col-narrow { width:26px; }
     colgroup .col-cant { width:50px; }
-    colgroup .col-um { width:38px; }
-    colgroup .col-sku { width:58px; }
+    colgroup .col-um { width:34px; }
+    colgroup .col-sku { width:54px; }
     colgroup .col-desc { width:auto; }
-    colgroup .col-price { width:62px; }
-    colgroup .col-dto { width:38px; }
-    colgroup .col-neto { width:70px; }
-    colgroup .col-unit { width:58px; }
-    colgroup .col-total { width:75px; }
-    colgroup .col-tipo { width:70px; }
+    colgroup .col-price { width:56px; }
+    colgroup .col-dto { width:36px; }
+    colgroup .col-neto { width:66px; }
+    colgroup .col-unit { width:52px; }
+    colgroup .col-total { width:72px; }
+    colgroup .col-cajas { width:48px; }
+    colgroup .col-tipo { width:68px; }
     thead { background:var(--g360-surface); }
-    thead th { padding:6px 4px; text-align:left; font-size:9px; font-weight:var(--fw-bold); color:var(--g360-muted); text-transform:uppercase; letter-spacing:0.3px; border-bottom:2px solid var(--g360-accent); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .th-narrow { text-align:center; width:28px; }
-    .th-right { text-align:right; }
+    thead th { padding:8px 5px; font-size:9px; font-weight:700; color:var(--g360-muted); text-transform:uppercase; letter-spacing:0.4px; border-bottom:2px solid var(--g360-accent); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; vertical-align:middle; user-select:none; }
+    thead th[onclick] { cursor:pointer; transition:color 0.15s, background 0.15s; }
+    thead th[onclick]:hover { color:var(--g360-accent); background:rgba(0,208,132,0.08); }
     .th-center { text-align:center; }
-    .th-sku { width:58px; }
-    .th-desc { width:auto; }
-    .th-total { color:var(--g360-accent); }
-    tbody td { padding:5px 4px; border-bottom:1px solid var(--g360-border); color:var(--g360-text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .th-right { text-align:right; }
+    .th-left { text-align:left; }
+    .sort-ind { font-size:7px; opacity:0.55; margin-left:3px; }
+    tbody td { padding:7px 5px; border-bottom:1px solid var(--g360-border); color:var(--g360-text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:middle; }
     .td-center { text-align:center; }
     .td-right { text-align:right; }
-    .td-mono { font-family:monospace; font-size:9px; text-align:center; }
-    .td-desc { white-space:normal; overflow:hidden; text-overflow:ellipsis; max-width:180px; font-size:10px; }
-    .td-bold { font-weight:var(--fw-bold); }
-    .td-total { color:var(--g360-accent); font-weight:var(--fw-bold); }
-    tbody tr:hover { background:rgba(0,208,132,0.05); }
-    tbody tr:nth-child(even) { background:rgba(128,128,128,0.03); }
-    tfoot td { padding:8px 4px; border-top:2px solid var(--g360-accent); font-weight:var(--fw-bold); font-size:11px; }
+    .td-left { text-align:left; }
+    .td-mono { font-family:monospace; font-size:9.5px; text-align:center; letter-spacing:0.2px; }
+    .td-desc { white-space:normal; font-size:10px; line-height:1.3; }
+    .td-bold { font-weight:700; }
+    .td-total { color:var(--g360-accent); font-weight:700; }
+    .td-cajas { font-size:10px; font-weight:600; color:var(--g360-text); }
+    .cajas-sueltas { color:var(--g360-warning); font-weight:700; font-size:9px; margin-left:1px; }
+    tbody tr:hover { background:rgba(0,208,132,0.06); }
+    tbody tr:nth-child(even) { background:rgba(128,128,128,0.035); }
+    .table-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+    .filter-group { display:flex; gap:3px; background:var(--g360-surface); padding:3px; border-radius:8px; border:1px solid var(--g360-border); }
+    .filter-btn { background:transparent; border:none; color:var(--g360-muted); padding:6px 14px; border-radius:6px; font-size:10px; font-weight:600; cursor:pointer; transition:all 0.15s; white-space:nowrap; font-family:inherit; letter-spacing:0.3px; text-transform:uppercase; }
+    .filter-btn:hover { color:var(--g360-text); background:rgba(128,128,128,0.12); }
+    .filter-btn.active { background:var(--g360-accent); color:#fff; }
+    .table-count { font-size:10px; color:var(--g360-muted); font-weight:600; }
+    tfoot td { padding:10px 5px; border-top:2px solid var(--g360-accent); font-weight:700; font-size:11px; }
     .tf-label { color:var(--g360-muted); text-transform:uppercase; font-size:9px; letter-spacing:0.5px; }
-    .tf-value { color:var(--g360-accent); font-size:12px; }
-    .tf-total { font-size:13px; color:var(--g360-accent); }
+    .tf-value { color:var(--g360-accent); font-size:12px; text-align:right; }
+    .tf-total { font-size:13px; }
     .stock-dot { display:inline-block; width:8px; height:8px; border-radius:50%; vertical-align:middle; }
     .stock-ok { background:#22c55e; }
     .stock-aj { background:#f59e0b; }
