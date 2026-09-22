@@ -166,25 +166,6 @@ export const DistributionPage = () => {
     window.print()
   }
 
-  const handleDownloadHTML = () => {
-    const faltantes = validarPedidoParaHTML(pedido)
-    if (faltantes.length) {
-      alert(`⚠️ HTML / Distribución requiere:\n• ${faltantes.join('\n• ')}`)
-      return
-    }
-
-    const productos = getProductos()
-    if (!productos || productos.length === 0) {
-      alert('No hay productos para generar el cronograma.')
-      navigate('/')
-      return
-    }
-
-    const htmlContent = generarContenidoHTML(pedido, cuotas())
-    const nombreArchivo = generarNombreArchivo(pedido.ruc, pedido.numeroPedido)
-    descargarHTML(htmlContent, nombreArchivo)
-  }
-
   // UX: Memorizar máximos para el gráfico de barras fuera del bucle For
   const maxMonto = createMemo(() => 
     Math.max(...datosFiltrados().datosLinea.map(x => x.monto || 0), 1)
@@ -500,12 +481,7 @@ export const DistributionPage = () => {
               </div>
             </div>
 
-            {/* Botón descargar HTML */}
-            <div class="dist-actions">
-              <button class="btn-primary" onClick={handleDownloadHTML}>
-                📥 Descargar Reporte HTML
-              </button>
-            </div>
+            {/* El botón de exportar HTML está en el sidebar (guarda en bóveda + descarga) */}
           </div>
         </div>
 
