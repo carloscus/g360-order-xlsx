@@ -11,7 +11,7 @@ import { getAgentesSkill } from '../core/g360-skill-agentes'
 import initialData from '../data/initialData.json'
 import { CHART_COLORS } from '../constants/sharedConstants'
 import { generarXLSX } from '../utils/xlsxGenerator'
-import { generarContenidoHTML, validarPedidoParaHTML, generarNombreArchivo, descargarHTML } from '../helpers/htmlHelper'
+
 
 import { STORAGE_KEYS } from '../constants/storage'
 
