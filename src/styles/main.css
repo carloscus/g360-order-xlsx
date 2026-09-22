@@ -377,13 +377,81 @@ body, .app, .app-with-sidebar, .sidebar, .navbar, .modal-content, .card, .panel,
 }
 
 .product-table th {
-  padding: 12px 8px;
+  padding: 10px 8px;
   text-align: center;
   font-weight: 600;
   color: var(--g360-bg);
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+
+/* Encabezados a 2 líneas: etiqueta corta + unidad debajo */
+.product-table th .th-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  line-height: 1.2;
+}
+
+.product-table th.th-left .th-stack { align-items: flex-start; }
+.product-table th.th-right .th-stack { align-items: flex-end; }
+
+.product-table th .th-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.product-table th .th-unit {
+  font-size: 0.58rem;
+  font-weight: 500;
+  opacity: 0.8;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.product-table th .th-ind {
+  font-size: 0.55rem;
+  opacity: 0.85;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.product-table th .th-ind-idle { opacity: 0.5; }
+
+.product-table th.th-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.product-table th.th-sortable:hover {
+  background: color-mix(in srgb, var(--g360-accent) 85%, white);
+}
+
+.product-table th.th-active {
+  background: color-mix(in srgb, var(--g360-accent) 90%, white);
+}
+
+/* Columna Cajas */
+.product-table .td-cajas {
+  font-weight: 600;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.product-table .cajas-val { color: var(--g360-text); }
+
+.product-table .cajas-sueltas {
+  color: var(--g360-warning);
+  font-weight: 700;
+  font-size: 0.7rem;
+  margin-left: 2px;
 }
 
 .product-table td {

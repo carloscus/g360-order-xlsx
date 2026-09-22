@@ -82,7 +82,7 @@ const LineaGroup = (props) => {
         onClick={props.onToggle}
         style={{ cursor: 'pointer', background: 'var(--g360-surface)', "font-weight": '600' }}
       >
-        <td colSpan={11} style={{ padding: '12px 16px' }}>
+        <td colSpan={13} style={{ padding: '12px 16px' }}>
           <div style={{ display: 'flex', "justify-content": 'space-between', "align-items": 'center' }}>
             <span style={{ display: 'flex', "align-items": 'center', gap: '8px' }}>
               <span style={{ 
@@ -118,21 +118,68 @@ export const ProductTable = (props) => {
   const [currentPage, setCurrentPage] = createSignal(1)
   const [expandedLineas, setExpandedLineas] = createSignal({})
   const [searchTerm, setSearchTerm] = createSignal('')
+  const [sortKey, setSortKey] = createSignal(null)
+  const [sortDir, setSortDir] = createSignal('asc')
   const itemsPerPage = 75
 
   const productos = () => props.productos || []
   const totales = () => props.totales || { subtotal: 0, totalIGV: 0, totalDisponible: 0 }
 
-  // Filtrar productos por búsqueda
+  // Ordenar
+  const ordenar = (key, type) => {
+    if (sortKey() === key) {
+      setSortDir(sortDir() === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortKey(key)
+      setSortDir('asc')
+    }
+  }
+
+  // Filtrar + ordenar
   const productosFiltrados = createMemo(() => {
+    let result = props.productos || []
     const term = searchTerm().toLowerCase().trim()
-    if (!term) return props.productos || []
-    return (props.productos || []).filter(p => 
-      (p.codigo || '').toLowerCase().includes(term) ||
-      (p.descripcion || '').toLowerCase().includes(term) ||
-      (p.linea || '').toLowerCase().includes(term)
-    )
+    if (term) {
+      result = result.filter(p => 
+        (p.codigo || '').toLowerCase().includes(term) ||
+        (p.descripcion || '').toLowerCase().includes(term) ||
+        (p.linea || '').toLowerCase().includes(term)
+      )
+    }
+    const key = sortKey()
+    if (key) {
+      const dir = sortDir() === 'asc' ? 1 : -1
+      result = [...result].sort((a, b) => {
+        let va, vb
+        if (key === 'precioUnitCIGV') {
+          va = a.cantidad ? (a.valorVenta || 0) / a.cantidad : 0
+          vb = b.cantidad ? (b.valorVenta || 0) / b.cantidad : 0
+        } else if (key === 'totalVenta') {
+          va = a.valorVenta || 0
+          vb = b.valorVenta || 0
+        } else {
+          va = a[key]
+          vb = b[key]
+        }
+        return dir * comparar(va, vb, key)
+      })
+    }
+    return result
   })
+
+  const comparar = (va, vb, key) => {
+    // Numérico
+    if (typeof va === 'number' || typeof vb === 'number') {
+      va = Number(va) || 0
+      vb = Number(vb) || 0
+      return va - vb
+    }
+    // Texto
+    va = String(va ?? '').toLowerCase()
+    vb = String(vb ?? '').toLowerCase()
+    if (va === vb) return 0
+    return va < vb ? -1 : 1
+  }
 
   // Agrupar productos por línea
    const productosPorLinea = createMemo(() => {
@@ -195,7 +242,7 @@ export const ProductTable = (props) => {
               Filtrado por: <strong>{props.lineaActiva}</strong> ({productosPorLinea()[props.lineaActiva]?.length || 0} productos)
             </div>
             <table class="product-table">
-              <TableHeader />
+              <TableHeader sortKey={sortKey} sortDir={sortDir} onSort={ordenar} />
               <tbody>
                 <For each={Object.entries(mostrarGrupos())}>
                   {([linea, prods]) => (
@@ -222,7 +269,7 @@ export const ProductTable = (props) => {
         </div>
 
         <table class="product-table">
-          <TableHeader />
+          <TableHeader sortKey={sortKey} sortDir={sortDir} onSort={ordenar} />
           <tbody>
             <For each={currentProducts()}>
               {(producto) => (

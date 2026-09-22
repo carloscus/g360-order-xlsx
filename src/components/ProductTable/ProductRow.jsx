@@ -1,3 +1,4 @@
+import { Show } from 'solid-js'
 import { formatNumero } from '../../utils/formatters'
 import { IVA } from '../../constants/sharedConstants'
 
@@ -39,6 +40,12 @@ export const ProductRow = (props) => {
       <td class="number row-total">{formatNumero(valorVenta())}</td>
       <td class="number">{formatNumero(precioUnitCIGV(), 4)}</td>
       <td class="number">{formatNumero(totalVenta())}</td>
+      <td class="td-cajas text-center">
+        <span class="cajas-val">{p.cajasCompletas || 0}</span>
+        <Show when={(p.unidadesSueltas || 0) > 0}>
+          <span class="cajas-sueltas">+{p.unidadesSueltas}</span>
+        </Show>
+      </td>
       <td class="badge-cell">{badgeLinea()}</td>
     </tr>
   )
