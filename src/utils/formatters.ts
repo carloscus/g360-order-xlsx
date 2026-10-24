@@ -27,7 +27,7 @@ export const formatNumero = (valor: number, decimales = 2): string => {
 
 export const limpiarNombreArchivo = (nombre: string): string => {
   return (nombre || "")
-    .replace(/[<>:"/\X|?*]/g, "_")
+    .replace(/[<>:"/\\|?*]/g, "_")
     .replace(/\s+/g, "-")
     .toLowerCase()
 }
