@@ -1,35 +1,21 @@
+@import './g360-tokens.css';
 ﻿/* G360 Full Style - Dark/Light Theme */
 :root {
-  /* === Paleta Corporativa Moderna === */
-  --g360-accent: #00796B;
   --g360-accent-dark: #004D40;
-  --g360-bg: #0F172A;
-  --g360-surface: #1E293B;
   --g360-surface-2: #334155;
-  --g360-border: #475569;
-  --g360-text: #F1F5F9;
-  --g360-muted: #94A3B8;
-  --g360-success: #10B981;
-  --g360-warning: #F59E0B;
-  --g360-error: #EF4444;
-  --g360-info: #3B82F6;
   --g360-purple: #8B5CF6;
   --g360-teal: #14B8A6;
-
   /* Tipografía Estandarizada */
   --g360-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --g360-font-mono: 'JetBrains Mono', 'Consolas', monospace;
   --g360-font-xs: 0.625rem;
   --g360-font-sm: 0.75rem;
   --g360-font-base: 0.875rem;
   --g360-font-lg: 1rem;
   --g360-font-xl: 1.25rem;
   --g360-font-2xl: 1.5rem;
-  
   --g360-line-height-tight: 1;
   --g360-line-height-normal: 1.4;
   --g360-line-height-relaxed: 1.6;
-  
   --g360-font-weight-light: 300;
   --g360-font-weight-normal: 400;
   --g360-font-weight-medium: 500;
@@ -5486,21 +5472,11 @@ td.number, th.number {
 @media print {
   @page { size: A4; margin: 12mm; }
   :root {
-    --g360-accent: #00a86b;
-    --g360-accent-dark: #008f5b;
-    --g360-bg: #f8fafc;
-    --g360-surface: #ffffff;
-    --g360-surface-2: #f1f5f9;
-    --g360-border: #cbd5e1;
-    --g360-text: #1e293b;
-    --g360-muted: #64748b;
-    --g360-success: #16a34a;
-    --g360-warning: #d97706;
-    --g360-error: #dc2626;
-    --g360-info: #2563eb;
-    --g360-purple: #7c3aed;
-    --g360-teal: #059669;
-  }
+  --g360-accent-dark: #008f5b;
+  --g360-surface-2: #f1f5f9;
+  --g360-purple: #7c3aed;
+  --g360-teal: #059669;
+}
 
   .g360-sidebar, .g360-navbar, .g360-footer, .export-modal-floating, .dist-filter-row, .distribution-header h1 {
     display: none !important;
