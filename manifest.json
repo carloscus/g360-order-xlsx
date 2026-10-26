@@ -4,8 +4,8 @@
   "description": "Consola de Inteligencia ERP - Generación de Pedidos y Distribución",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#00d084",
+  "background_color": "#0b1220",
+  "theme_color": "#008254",
   "orientation": "landscape",
   "icons": [
     {
@@ -33,6 +33,9 @@
       "purpose": "any"
     }
   ],
-  "categories": ["business", "productivity"],
+  "categories": [
+    "business",
+    "productivity"
+  ],
   "prefer_related_applications": false
 }
