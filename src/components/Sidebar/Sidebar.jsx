@@ -240,6 +240,32 @@ export const Sidebar = () => {
     setShowExport(!showExport())
   }
 
+  /**
+   * Botón de navegación del sidebar. Cuando está colapsado muestra un tooltip
+   * flotante con el título, porque sólo queda el icono y no hay forma de saber
+   * qué hace cada acción sin él (el title nativo tarda ~1s y no es consistente).
+   */
+  const NavButton = (props) => (
+    <div class="nav-item-wrapper">
+      <button
+        class={`nav-item${props.active ? ' active' : ''}${props.alert ? ' has-alert' : ''}${props.danger ? ' nav-danger' : ''}`}
+        onClick={props.onClick}
+        aria-label={props.title}
+      >
+        <span class="nav-icon">{props.icon}</span>
+        <Show when={expanded()}>
+          <span class="nav-label">{props.label}</span>
+        </Show>
+        <Show when={props.badge}>
+          <span class="nav-badge">{props.badge}</span>
+        </Show>
+      </button>
+      <Show when={!expanded()}>
+        <span class="sidebar-tooltip">{props.title}</span>
+      </Show>
+    </div>
+  )
+
   return (
     <aside class={`g360-sidebar ${expanded() ? 'expanded' : 'collapsed'}`}>
       {/* Header */}
@@ -261,24 +287,22 @@ export const Sidebar = () => {
           <div class="nav-section-label">NAVEGACIÓN</div>
         </Show>
         
-        <button
-          class={`nav-item ${isHomePage() ? 'active' : ''}`}
-          onClick={() => navigate('/')}
+        <NavButton
+          icon="📦"
+          label="Pedidos"
           title="Pedidos y Cotizaciones"
-        >
-          <span class="nav-icon">📦</span>
-          <Show when={expanded()}><span class="nav-label">Pedidos</span></Show>
-        </button>
+          active={isHomePage()}
+          onClick={() => navigate('/')}
+        />
 
         <Show when={hasProducts()}>
-          <button
-            class={`nav-item ${isDistPage() ? 'active' : ''}`}
-            onClick={() => handleAction('dist')}
+          <NavButton
+            icon="📅"
+            label="Distribución"
             title="Distribución de Letras"
-          >
-            <span class="nav-icon">📅</span>
-            <Show when={expanded()}><span class="nav-label">Distribución</span></Show>
-          </button>
+            active={isDistPage()}
+            onClick={() => handleAction('dist')}
+          />
         </Show>
 
         {/* ACCIONES */}
@@ -287,23 +311,22 @@ export const Sidebar = () => {
         </Show>
 
         <Show when={hasProducts()}>
-          <button class="nav-item" onClick={() => handleAction('chart')} title="Análisis gráfico">
-            <span class="nav-icon">📊</span>
-            <Show when={expanded()}><span class="nav-label">Análisis</span></Show>
-          </button>
+          <NavButton
+            icon="📊"
+            label="Análisis"
+            title="Análisis gráfico"
+            onClick={() => handleAction('chart')}
+          />
         </Show>
 
-        <button
-          class={`nav-item ${stockAlerts() > 0 ? 'has-alert' : ''}`}
-          onClick={() => handleAction('stock')}
+        <NavButton
+          icon="⚠️"
+          label="Stock"
           title={`Stock: ${stockAlerts()} alertas`}
-        >
-          <span class="nav-icon">⚠️</span>
-          <Show when={expanded()}><span class="nav-label">Stock</span></Show>
-          <Show when={stockAlerts() > 0}>
-            <span class="nav-badge">{stockAlerts()}</span>
-          </Show>
-        </button>
+          alert={stockAlerts() > 0}
+          badge={stockAlerts() > 0 ? stockAlerts() : null}
+          onClick={() => handleAction('stock')}
+        />
 
         {/* EXPORTAR — Context-aware */}
         <Show when={expanded()}>
@@ -311,9 +334,14 @@ export const Sidebar = () => {
         </Show>
 
         <div class="export-wrapper">
-          <button ref={exportBtnRef} class="nav-item" onClick={toggleExportPanel} title={isDistPage() ? 'Generar reporte HTML' : 'Exportar pedido'}>
+          <button ref={exportBtnRef} class="nav-item" onClick={toggleExportPanel} aria-label={isDistPage() ? 'Generar reporte HTML' : 'Exportar pedido'}>
             <span class="nav-icon">{exportIcon}</span>
-            <Show when={expanded()}><span class="nav-label">{exportLabel}</span></Show>
+            <Show when={expanded()}>
+              <span class="nav-label">{exportLabel}</span>
+            </Show>
+            <Show when={!expanded()}>
+              <span class="sidebar-tooltip">{isDistPage() ? 'Generar reporte HTML' : 'Exportar pedido'}</span>
+            </Show>
           </button>
         </div>
 
@@ -326,13 +354,13 @@ export const Sidebar = () => {
         </Show>
 
         <Show when={isDistPage()}>
-          <button class="nav-item" onClick={() => handleAction('cargar')} title="Bóveda de reportes">
-            <span class="nav-icon">📂</span>
-            <Show when={expanded()}><span class="nav-label">Bóveda</span></Show>
-            <Show when={htmlCount() > 0}>
-              <span class="nav-badge">{htmlCount()}</span>
-            </Show>
-          </button>
+          <NavButton
+            icon="📂"
+            label="Bóveda"
+            title="Bóveda de reportes"
+            badge={htmlCount() > 0 ? htmlCount() : null}
+            onClick={() => handleAction('cargar')}
+          />
         </Show>
 
         {/* SISTEMA */}
@@ -340,20 +368,27 @@ export const Sidebar = () => {
           <div class="nav-section-label">SISTEMA</div>
         </Show>
 
-        <button class="nav-item" onClick={() => handleAction('refresh')} title="Actualizar catálogo desde API">
-          <span class="nav-icon">🔄</span>
-          <Show when={expanded()}><span class="nav-label">Actualizar Catálogo</span></Show>
-        </button>
+        <NavButton
+          icon="🔄"
+          label="Actualizar Catálogo"
+          title="Actualizar catálogo desde API"
+          onClick={() => handleAction('refresh')}
+        />
 
-        <button class="nav-item" onClick={toggleTheme} title="Cambiar tema">
-          <span class="nav-icon">{darkTheme() ? '☀️' : '🌙'}</span>
-          <Show when={expanded()}><span class="nav-label">{darkTheme() ? 'Claro' : 'Oscuro'}</span></Show>
-        </button>
+        <NavButton
+          icon={darkTheme() ? '☀️' : '🌙'}
+          label={darkTheme() ? 'Claro' : 'Oscuro'}
+          title="Cambiar tema"
+          onClick={toggleTheme}
+        />
 
-        <button class="nav-item nav-danger" onClick={() => handleAction('nuevo')} title="Limpiar todo">
-          <span class="nav-icon">🗑️</span>
-          <Show when={expanded()}><span class="nav-label">Limpiar</span></Show>
-        </button>
+        <NavButton
+          icon="🗑️"
+          label="Limpiar"
+          title="Limpiar todo"
+          danger={true}
+          onClick={() => handleAction('nuevo')}
+        />
       </div>
 
       <HistoryModal show={showHistory()} onClose={() => setShowHistory(false)} />
