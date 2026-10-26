@@ -1,7 +1,7 @@
 /* ============================================
  * G360 Design Tokens
  * Generado por `g360 tokens` — no editar a mano.
- * Skill: moderno | acento: cipsa | tema: dark
+ * Skill: moderno | acento: blue | tema: dark
  *
  * Tema: `color-scheme` decide. `dark light` = sigue al sistema.
  * Toggle manual: <html data-theme="light"> (o "dark").
@@ -29,14 +29,14 @@
   --g360-muted: #94a3b8;
   --g360-text-inverse: #0b1220;
   --g360-text-inverse: light-dark(#0b1220, #ffffff);
-  --g360-accent: #008254;
-  --g360-accent-strong: #0b6b47;
-  --g360-accent-strong: light-dark(#0b6b47, #008254);
-  --g360-accent-bright: #34d399;
-  --g360-accent-bright: light-dark(#34d399, #008254);
-  --g360-accent-soft: rgba(0, 130, 84, 0.14);
-  --g360-accent-hover: #34d399;
-  --g360-accent-hover: light-dark(#34d399, #008254);
+  --g360-accent: #2563eb;
+  --g360-accent-strong: #1d4ed8;
+  --g360-accent-strong: light-dark(#1d4ed8, #2563eb);
+  --g360-accent-bright: #60a5fa;
+  --g360-accent-bright: light-dark(#60a5fa, #2563eb);
+  --g360-accent-soft: rgba(37, 99, 235, 0.12);
+  --g360-accent-hover: #60a5fa;
+  --g360-accent-hover: light-dark(#60a5fa, #2563eb);
   --g360-on-accent: #ffffff;
   --g360-success: #22c55e;
   --g360-success: light-dark(#22c55e, #15803d);
