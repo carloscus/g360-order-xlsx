@@ -441,6 +441,95 @@ body, .app, .app-with-sidebar, .sidebar, .navbar, .modal-content, .card, .panel,
   margin-left: 2px;
 }
 
+/* Control de columnas de la tabla (mostrar/ocultar para dar aire a Descripción) */
+.columns-toolbar { position: relative; display: flex; justify-content: flex-end; margin-bottom: 8px; }
+
+.columns-btn {
+  background: var(--g360-surface);
+  border: 1px solid var(--g360-border);
+  color: var(--g360-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.columns-btn:hover,
+.columns-btn.active {
+  color: var(--g360-accent);
+  border-color: var(--g360-accent);
+}
+
+.columns-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 150;
+  background: var(--g360-surface);
+  border: 1px solid var(--g360-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  min-width: 190px;
+  padding: 6px;
+}
+
+.columns-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--g360-border);
+  margin-bottom: 4px;
+}
+
+.columns-dropdown-header span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--g360-muted);
+}
+
+.columns-reset {
+  background: none;
+  border: none;
+  color: var(--g360-accent);
+  font-size: 0.65rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 2px 4px;
+}
+
+.columns-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  color: var(--g360-text);
+  cursor: pointer;
+}
+
+.columns-option:hover { background: var(--g360-surface-2); }
+
+.columns-option input { accent-color: var(--g360-accent); cursor: pointer; }
+
+.columns-fixed {
+  margin-left: auto;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--g360-muted);
+  background: var(--g360-surface-2);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
 /* Tooltip del sidebar colapsado: al colapsar sólo queda el icono, así que el
    tooltip flotante es la única forma de saber qué hace cada acción. */
 .nav-item-wrapper { position: relative; }

@@ -1,28 +1,13 @@
 import { For, Show } from 'solid-js'
-
-// Encabezados a 2 líneas: etiqueta corta + unidad
-const COLUMNS = [
-  { key: 'id', label: 'N°', unit: '', align: 'center', sortable: true, type: 'num' },
-  { key: 'cantidad', label: 'Cant.', unit: '', align: 'right', sortable: true, type: 'num' },
-  { key: 'unidadMedida', label: 'U/M', unit: '', align: 'center', sortable: false },
-  { key: 'codigo', label: 'SKU', unit: '', align: 'center', sortable: true, type: 'text' },
-  { key: 'descripcion', label: 'Descripción', unit: '', align: 'left', sortable: true, type: 'text' },
-  { key: 'precioUnitario', label: 'P. Lista', unit: '(S/.)', align: 'right', sortable: true, type: 'num' },
-  { key: 'descuento1', label: 'Desc 01', unit: '(%)', align: 'right', sortable: true, type: 'num' },
-  { key: 'descuento2', label: 'Desc 02', unit: '(%)', align: 'right', sortable: true, type: 'num' },
-  { key: 'valorVenta', label: 'Total Neto', unit: '(S/.)', align: 'right', sortable: true, type: 'num' },
-  { key: 'precioUnitCIGV', label: 'P. Unit', unit: 'c/IGV (S/.)', align: 'right', sortable: true, type: 'num' },
-  { key: 'totalVenta', label: 'Total Venta', unit: '(S/.)', align: 'right', sortable: true, type: 'num' },
-  { key: 'cajas', label: 'Cajas', unit: '(BX)', align: 'center', sortable: true, type: 'num' },
-  { key: 'tipo', label: 'Tipo', unit: '', align: 'center', sortable: false },
-  { key: 'estadoCatalogo', label: 'Est', unit: '(cat)', align: 'center', sortable: false },
-]
+import { COLUMNS } from './columns'
 
 export const TableHeader = (props) => {
+  const visibles = () => COLUMNS.filter(c => props.columnasVisibles().has(c.key))
+
   return (
     <thead>
       <tr>
-        <For each={COLUMNS}>
+        <For each={visibles()}>
           {(col) => (
             <th
               class={`th-${col.align}${col.sortable ? ' th-sortable' : ''}${props.sortKey?.() === col.key ? ' th-active' : ''}`}

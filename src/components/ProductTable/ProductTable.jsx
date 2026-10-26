@@ -3,6 +3,7 @@ import { TableHeader } from './TableHeader'
 import { ProductRow } from './ProductRow'
 import { TableFooter } from './TableFooter'
 import { formatNumero } from '../../utils/formatters'
+import { COLUMNS, columnasPorDefecto } from './columns'
 
 const Pagination = (props) => {
   const totalPages = () => props.totalPages
@@ -75,18 +76,22 @@ const LineaGroup = (props) => {
   const totalCajas = () => props.productos.reduce((sum, p) => sum + (p.cajas || 0), 0)
   const totalPeso = () => props.productos.reduce((sum, p) => sum + (p.cantidad * (p.pesoKg || 0)), 0)
 
+  // La fila de grupo ocupa el ancho de las columnas visibles (no un 14 fijo,
+  // que descuadra la tabla si el usuario oculta columnas).
+  const colSpan = () => props.columnasVisibles().size
+
   return (
     <>
-      <tr 
-        class="linea-group-row" 
+      <tr
+        class="linea-group-row"
         onClick={props.onToggle}
         style={{ cursor: 'pointer', background: 'var(--g360-surface)', "font-weight": '600' }}
       >
-        <td colSpan={14} style={{ padding: '12px 16px' }}>
+        <td colSpan={colSpan()} style={{ padding: '12px 16px' }}>
           <div style={{ display: 'flex', "justify-content": 'space-between', "align-items": 'center' }}>
             <span style={{ display: 'flex', "align-items": 'center', gap: '8px' }}>
-              <span style={{ 
-                transform: props.isExpanded ? 'rotate(90deg)' : 'rotate(0deg)', 
+              <span style={{
+                transform: props.isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
                 transition: 'transform 0.2s',
                 "font-size": 'var(--text-sm)'
               }}>▶</span>
@@ -106,6 +111,7 @@ const LineaGroup = (props) => {
           {(producto) => (
             <ProductRow
               producto={producto}
+              columnasVisibles={props.columnasVisibles}
             />
           )}
         </For>
@@ -120,7 +126,21 @@ export const ProductTable = (props) => {
   const [searchTerm, setSearchTerm] = createSignal('')
   const [sortKey, setSortKey] = createSignal(null)
   const [sortDir, setSortDir] = createSignal('asc')
+  const [columnasVisibles, setColumnasVisibles] = createSignal(columnasPorDefecto())
+  const [showColumnas, setShowColumnas] = createSignal(false)
   const itemsPerPage = 75
+
+  // Mostrar/ocultar una columna. Las críticas (hideable:false) no se pueden ocultar.
+  const toggleColumna = (key) => {
+    setColumnasVisibles(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
+  const restaurarColumnas = () => setColumnasVisibles(columnasPorDefecto())
 
   const productos = () => props.productos || []
   const totales = () => props.totales || { subtotal: 0, totalIGV: 0, totalDisponible: 0 }
@@ -234,6 +254,43 @@ export const ProductTable = (props) => {
         </Show>
       </div>
 
+      {/* Control de columnas: permite ocultar las menos críticas para dar más aire a la Descripción */}
+      <div class="columns-toolbar">
+        <button
+          class={`columns-btn${showColumnas() ? ' active' : ''}`}
+          onClick={() => setShowColumnas(!showColumnas())}
+          aria-label="Configurar columnas"
+        >
+          ⚙ Columnas
+        </button>
+
+        <Show when={showColumnas()}>
+          <div class="columns-dropdown">
+            <div class="columns-dropdown-header">
+              <span>Mostrar columnas</span>
+              <button class="columns-reset" onClick={restaurarColumnas}>Restaurar</button>
+            </div>
+
+            <For each={COLUMNS}>
+              {(col) => (
+                <label class="columns-option">
+                  <input
+                    type="checkbox"
+                    checked={columnasVisibles().has(col.key)}
+                    disabled={col.hideable === false}
+                    onChange={() => toggleColumna(col.key)}
+                  />
+                  <span>{col.label}</span>
+                  <Show when={col.hideable === false}>
+                    <span class="columns-fixed">fija</span>
+                  </Show>
+                </label>
+              )}
+            </For>
+          </div>
+        </Show>
+      </div>
+
       <Show 
         when={!props.lineaActiva} 
         fallback={
@@ -242,7 +299,7 @@ export const ProductTable = (props) => {
               Filtrado por: <strong>{props.lineaActiva}</strong> ({productosPorLinea()[props.lineaActiva]?.length || 0} productos)
             </div>
             <table class="product-table">
-              <TableHeader sortKey={sortKey} sortDir={sortDir} onSort={ordenar} />
+              <TableHeader sortKey={sortKey} sortDir={sortDir} onSort={ordenar} columnasVisibles={columnasVisibles} />
               <tbody>
                 <For each={Object.entries(mostrarGrupos())}>
                   {([linea, prods]) => (
@@ -251,6 +308,7 @@ export const ProductTable = (props) => {
                       productos={prods}
                       isExpanded={expandedLineas()[linea] !== false}
                       onToggle={() => toggleLinea(linea)}
+                      columnasVisibles={columnasVisibles}
                     />
                   )}
                 </For>
@@ -269,12 +327,13 @@ export const ProductTable = (props) => {
         </div>
 
         <table class="product-table">
-          <TableHeader sortKey={sortKey} sortDir={sortDir} onSort={ordenar} />
+          <TableHeader sortKey={sortKey} sortDir={sortDir} onSort={ordenar} columnasVisibles={columnasVisibles} />
           <tbody>
             <For each={currentProducts()}>
               {(producto) => (
                 <ProductRow
                   producto={producto}
+                  columnasVisibles={columnasVisibles}
                 />
               )}
             </For>
