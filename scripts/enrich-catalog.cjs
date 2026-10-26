@@ -40,6 +40,17 @@ async function fetchSku(sku) {
       ean14: data.ean14,
       sin_catalogo: !!data.sin_catalogo,
       keywords: data.keywords || [],
+      // Campos enriquecidos del API v2 (para auditoría)
+      descontinuado: !!data.descontinuado,
+      categoria_venta: data.categoria_venta || '',
+      en_guia: data.en_guia !== undefined ? !!data.en_guia : null,
+      compromiso: data.compromiso !== undefined ? !!data.compromiso : null,
+      cotizable: data.cotizable !== undefined ? !!data.cotizable : null,
+      por_activar: !!data.por_activar,
+      vigente: data.vigente !== undefined ? !!data.vigente : null,
+      origen: data.origen || '',
+      revision: data.revision || '',
+      derivado_de: data.derivado_de || '',
       almacenes: data.almacenes || []
     };
   } catch {

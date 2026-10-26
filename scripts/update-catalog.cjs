@@ -48,6 +48,17 @@ async function fetchCatalog() {
       ean14: item.ean14,
       sin_catalogo: !!item.sin_catalogo,
       keywords: item.keywords || [],
+      // Campos enriquecidos del API v2 (para auditoría)
+      descontinuado: !!item.descontinuado,
+      categoria_venta: item.categoria_venta || '',
+      en_guia: item.en_guia !== undefined ? !!item.en_guia : null,
+      compromiso: item.compromiso !== undefined ? !!item.compromiso : null,
+      cotizable: item.cotizable !== undefined ? !!item.cotizable : null,
+      por_activar: !!item.por_activar,
+      vigente: item.vigente !== undefined ? !!item.vigente : null,
+      origen: item.origen || '',
+      revision: item.revision || '',
+      derivado_de: item.derivado_de || '',
       almacenes: item.almacenes || []
     }));
 

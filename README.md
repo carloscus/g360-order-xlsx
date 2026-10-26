@@ -96,8 +96,33 @@ flowchart TD
 ### Correcciones
 - `sin_catalogo` no divide por `un_bx` placeholder (evita cajas falsas)
 - Footer de tabla alineado correctamente
-- Descripción con clamp de 2 líneas (40 chars)
+- Descripción con clamp de 2 líneas (70 chars)
 - Anchos de columna con porcentajes (suma 100%)
+
+### Aprovechamiento del API enriquecido (v2)
+El API de stock ahora entrega campos de ciclo de vida. Se integraron:
+- `descontinuado`, `cotizable`, `vigente`, `por_activar`, `en_guia`, `compromiso`
+- `categoria_venta`, `origen`, `revision`, `derivado_de`
+
+Estos campos se usan en:
+- **6 reglas nuevas de auditoría** (`PRODUCTO_DESCONTINUADO`, `PRODUCTO_NO_COTIZABLE`, `PRODUCTO_NO_VIGENTE`, `PRODUCTO_POR_ACTIVAR`, `PRODUCTO_FUERA_GUIA`, `PRODUCTO_CON_COMPROMISO`)
+- **Badges "Est (cat)"** en la tabla de partidas (UI + HTML)
+
+---
+
+## Tests
+
+Suite de tests con Vitest (29 tests):
+```bash
+npm test
+```
+
+| Archivo | Tests | Cubre |
+|---------|-------|-------|
+| `src/services/erpParser.test.js` | 8 | Parseo del formato ERP (28 cols) |
+| `src/core/g360-skill-agentes.test.js` | 9 | Cálculos (cajas, valorVenta, stock) |
+| `src/constants/audit.test.js` | 6 | Reglas de auditoría enriquecidas |
+| `src/utils/formatters.test.ts` | 6 | Formateo de números/moneda
 
 ---
 
@@ -201,7 +226,7 @@ g360-order-xlsx/
 | `npm run deploy` | Build + deploy GitHub Pages |
 | `npm run update-catalog` | Sincronizar catálogo desde API |
 | `npm run enrich-catalog` | Enriquecer SKUs faltantes |
-| `npm run presentation` | Regenerar PPTX |
+| `npm test` | Ejecutar tests (Vitest) |
 
 ---
 

@@ -152,6 +152,50 @@ export const REGLAS_AUDITORIA = {
     categoria: CATEGORIA_AUDITORIA.LOGISTICA,
     mensaje: 'Unidades por caja no disponibles',
     evaluar: (p) => !p.unBx || p.unBx === 1
+  },
+
+  // Catálogo enriquecido (campos del API v2)
+  PRODUCTO_DESCONTINUADO: {
+    id: 'PRODUCTO_DESCONTINUADO',
+    tipo: TIPO_AUDITORIA.ERROR,
+    categoria: CATEGORIA_AUDITORIA.CATALOGO,
+    mensaje: 'Producto descontinuado',
+    evaluar: (p) => p.descontinuado === true
+  },
+  PRODUCTO_NO_COTIZABLE: {
+    id: 'PRODUCTO_NO_COTIZABLE',
+    tipo: TIPO_AUDITORIA.ERROR,
+    categoria: CATEGORIA_AUDITORIA.CATALOGO,
+    mensaje: 'Producto no cotizable',
+    evaluar: (p) => p.cotizable === false
+  },
+  PRODUCTO_NO_VIGENTE: {
+    id: 'PRODUCTO_NO_VIGENTE',
+    tipo: TIPO_AUDITORIA.WARNING,
+    categoria: CATEGORIA_AUDITORIA.CATALOGO,
+    mensaje: 'Producto no vigente',
+    evaluar: (p) => p.vigente === false
+  },
+  PRODUCTO_POR_ACTIVAR: {
+    id: 'PRODUCTO_POR_ACTIVAR',
+    tipo: TIPO_AUDITORIA.WARNING,
+    categoria: CATEGORIA_AUDITORIA.CATALOGO,
+    mensaje: 'Producto por activar',
+    evaluar: (p) => p.por_activar === true
+  },
+  PRODUCTO_FUERA_GUIA: {
+    id: 'PRODUCTO_FUERA_GUIA',
+    tipo: TIPO_AUDITORIA.INFO,
+    categoria: CATEGORIA_AUDITORIA.CATALOGO,
+    mensaje: 'Producto fuera de guía',
+    evaluar: (p) => p.en_guia === false
+  },
+  PRODUCTO_CON_COMPROMISO: {
+    id: 'PRODUCTO_CON_COMPROMISO',
+    tipo: TIPO_AUDITORIA.INFO,
+    categoria: CATEGORIA_AUDITORIA.CATALOGO,
+    mensaje: 'Producto con compromiso de stock',
+    evaluar: (p) => p.compromiso === true
   }
 }
 

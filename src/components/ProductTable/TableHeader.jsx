@@ -15,6 +15,7 @@ const COLUMNS = [
   { key: 'totalVenta', label: 'Total Venta', unit: '(S/.)', align: 'right', sortable: true, type: 'num' },
   { key: 'cajas', label: 'Cajas', unit: '(BX)', align: 'center', sortable: true, type: 'num' },
   { key: 'tipo', label: 'Tipo', unit: '', align: 'center', sortable: false },
+  { key: 'estadoCatalogo', label: 'Est', unit: '(cat)', align: 'center', sortable: false },
 ]
 
 export const TableHeader = (props) => {

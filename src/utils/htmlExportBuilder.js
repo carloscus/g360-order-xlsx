@@ -228,6 +228,17 @@ const renderTablaProductos = (productos) => {
     const cajasTxt = sueltas > 0
       ? `${cajasComp}<span class="cajas-sueltas">+${sueltas}</span>`
       : `${cajasComp}`
+    // Badges de estado del catálogo enriquecido (API v2)
+    const catBadges = []
+    if (p.descontinuado === true) catBadges.push({ t: 'DESCONT', c: 'ef4444' })
+    if (p.cotizable === false) catBadges.push({ t: 'NO COT', c: 'ef4444' })
+    if (p.vigente === false) catBadges.push({ t: 'NO VIG', c: 'f59e0b' })
+    if (p.por_activar === true) catBadges.push({ t: 'ACTIVAR', c: 'f59e0b' })
+    if (p.en_guia === false) catBadges.push({ t: 'GUÍA', c: '94a3b8' })
+    if (p.compromiso === true) catBadges.push({ t: 'COMPROM', c: '3b82f6' })
+    const catBadgesHtml = catBadges.length
+      ? `<span class="cat-badges">${catBadges.map(b => `<span class="cat-badge" style="background:${b.c}20;color:${b.c};border:1px solid ${b.c}40">${b.t}</span>`).join('')}</span>`
+      : ''
     const descFull = (p.descripcion || '')
     const descShort = descFull.length > 70 ? descFull.slice(0, 69).trimEnd() + '…' : descFull
     return `<tr data-stock="${stockFlag}">
@@ -244,6 +255,7 @@ const renderTablaProductos = (productos) => {
 <td class="td-right td-total" data-value="${totalVenta}">${formatear(totalVenta)}</td>
 <td class="td-center td-cajas">${cajasTxt}</td>
 <td class="td-center">${badgeTipo}</td>
+<td class="td-center">${catBadgesHtml}</td>
 </tr>`
   }).join('')
 
@@ -269,7 +281,7 @@ const renderTablaProductos = (productos) => {
         <col class="col-narrow"><col class="col-cant"><col class="col-um"><col class="col-sku">
         <col class="col-desc"><col class="col-price"><col class="col-dto"><col class="col-dto">
         <col class="col-neto"><col class="col-unit"><col class="col-total"><col class="col-cajas">
-        <col class="col-tipo">
+        <col class="col-tipo"><col class="col-cat">
       </colgroup>
       <thead>
         <tr>
@@ -286,6 +298,7 @@ const renderTablaProductos = (productos) => {
           <th class="th-right" onclick="ordenarTabla(10,'num')">TOTAL<span class="sort-ind"></span></th>
           <th class="th-center">Cajas</th>
           <th class="th-center">Tipo</th>
+          <th class="th-center">Est (cat)</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
@@ -296,6 +309,7 @@ const renderTablaProductos = (productos) => {
           <td></td>
           <td class="tf-value tf-total">${formatear(totalVentaFinal)}</td>
           <td class="tf-value">${formatearEntero(totalCajas)}</td>
+          <td></td>
           <td></td>
         </tr>
       </tfoot>
@@ -750,6 +764,7 @@ export const buildCronogramaHTML = (data) => {
     colgroup .col-total { width:10%; }
     colgroup .col-cajas { width:6%; }
     colgroup .col-tipo { width:7%; }
+    colgroup .col-cat { width:6%; }
     thead { background:var(--g360-surface); }
     thead th { padding:8px 5px; font-size:9px; font-weight:700; color:var(--g360-muted); text-transform:uppercase; letter-spacing:0.4px; border-bottom:2px solid var(--g360-accent); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; vertical-align:middle; user-select:none; }
     thead th[onclick] { cursor:pointer; transition:color 0.15s, background 0.15s; }
@@ -778,6 +793,12 @@ export const buildCronogramaHTML = (data) => {
     .td-bold { font-weight:700; }
     .td-total { color:var(--g360-accent); font-weight:700; }
     .td-cajas { font-size:10px; font-weight:600; color:var(--g360-text); }
+    /* Badges de estado del catálogo enriquecido (API v2) */
+    .cat-badges { display:flex; flex-wrap:wrap; gap:2px; justify-content:center; align-items:center; }
+    .cat-badge {
+      padding:1px 4px; border-radius:3px; font-size:7.5px; font-weight:700; letter-spacing:0.2px;
+      white-space:nowrap; line-height:1.25;
+    }
     .cajas-sueltas { color:var(--g360-warning); font-weight:700; font-size:9px; margin-left:1px; }
     tbody tr:hover { background:rgba(0,208,132,0.06); }
     tbody tr:nth-child(even) { background:rgba(128,128,128,0.035); }

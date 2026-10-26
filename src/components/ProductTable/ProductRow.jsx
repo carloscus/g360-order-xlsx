@@ -1,4 +1,4 @@
-import { Show } from 'solid-js'
+import { Show, For } from 'solid-js'
 import { formatNumero } from '../../utils/formatters'
 import { IVA } from '../../constants/sharedConstants'
 
@@ -24,6 +24,25 @@ export const ProductRow = (props) => {
     return <span class="badge" style={{ background: `${color}20`, color, border: `1px solid ${color}40`, padding: '2px 8px', "border-radius": '4px', "font-size": '11px', "font-weight": 600 }}>{estado}</span>
   }
 
+  // Badges de estado del catálogo enriquecido (API v2)
+  const badgeEstadoCatalogo = () => {
+    const badges = []
+    if (p.descontinuado === true) badges.push({ t: 'DESCONT', c: 'ef4444' })
+    if (p.cotizable === false) badges.push({ t: 'NO COT', c: 'ef4444' })
+    if (p.vigente === false) badges.push({ t: 'NO VIG', c: 'f59e0b' })
+    if (p.por_activar === true) badges.push({ t: 'ACTIVAR', c: 'f59e0b' })
+    if (p.en_guia === false) badges.push({ t: 'GUÍA', c: '94a3b8' })
+    if (p.compromiso === true) badges.push({ t: 'COMPROM', c: '3b82f6' })
+    if (badges.length === 0) return null
+    return (
+      <span class="cat-badges">
+        <For each={badges}>{(b) => (
+          <span class="cat-badge" style={{ background: `${b.c}20`, color: b.c, border: `1px solid ${b.c}40` }}>{b.t}</span>
+        )}</For>
+      </span>
+    )
+  }
+
   return (
     <tr class="fade-in-up">
       <td class="row-num text-center">{p.id}</td>
@@ -47,6 +66,7 @@ export const ProductRow = (props) => {
         </Show>
       </td>
       <td class="badge-cell">{badgeLinea()}</td>
+      <td class="badge-cell">{badgeEstadoCatalogo()}</td>
     </tr>
   )
 }

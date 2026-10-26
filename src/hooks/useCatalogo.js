@@ -50,6 +50,17 @@ const crearMapaCatalogo = (productos) => {
           sinCatalogo: !!p.sin_catalogo,
           estadoLinea: estadoLinea?.estado || null,
           colorEstadoLinea: estadoLinea?.color || null,
+          // Campos enriquecidos del API v2 (para auditoría)
+          descontinuado: !!p.descontinuado,
+          categoriaVenta: p.categoria_venta || '',
+          enGuia: p.en_guia !== undefined ? !!p.en_guia : null,
+          compromiso: p.compromiso !== undefined ? !!p.compromiso : null,
+          cotizable: p.cotizable !== undefined ? !!p.cotizable : null,
+          porActivar: !!p.por_activar,
+          vigente: p.vigente !== undefined ? !!p.vigente : null,
+          origen: p.origen || '',
+          revision: p.revision || '',
+          derivadoDe: p.derivado_de || '',
         })
       }
     })
@@ -67,6 +78,17 @@ const normalizarItemApi = (item) => {
     sinCatalogo: !!item.sin_catalogo,
     estadoLinea: estadoLinea?.estado || null,
     colorEstadoLinea: estadoLinea?.color || null,
+    // Campos enriquecidos del API v2 (para auditoría)
+    descontinuado: !!item.descontinuado,
+    categoriaVenta: item.categoria_venta || '',
+    enGuia: item.en_guia !== undefined ? !!item.en_guia : null,
+    compromiso: item.compromiso !== undefined ? !!item.compromiso : null,
+    cotizable: item.cotizable !== undefined ? !!item.cotizable : null,
+    porActivar: !!item.por_activar,
+    vigente: item.vigente !== undefined ? !!item.vigente : null,
+    origen: item.origen || '',
+    revision: item.revision || '',
+    derivadoDe: item.derivado_de || '',
   }
 }
 
@@ -260,6 +282,17 @@ export const useCatalogo = () => {
       tieneDatosCatalogo: !!info,
       estadoLinea: info?.estadoLinea || 'PENDIENTE',
       colorEstadoLinea: info?.colorEstadoLinea || null,
+      // Campos enriquecidos del API v2 (para auditoría)
+      descontinuado: info?.descontinuado ?? false,
+      categoriaVenta: info?.categoriaVenta || '',
+      en_guia: info?.enGuia ?? null,
+      compromiso: info?.compromiso ?? null,
+      cotizable: info?.cotizable ?? null,
+      por_activar: info?.porActivar ?? false,
+      vigente: info?.vigente ?? null,
+      origen: info?.origen || '',
+      revision: info?.revision || '',
+      derivado_de: info?.derivadoDe || '',
     }
   }
 
