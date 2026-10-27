@@ -52,36 +52,36 @@ class G360Signature extends HTMLElement {
           height: 4px;
           border-radius: 50%;
         }
-        .g360-dot-top { background: var(--g360-gray, #94a3b8); }
-        .g360-dot-mid { background: var(--g360-green, #00d084); }
-        .g360-dot-bottom { background: var(--g360-gray, #94a3b8); }
+        .g360-dot-top { background: var(--g360-gray); }
+        .g360-dot-mid { background: var(--g360-green, var(--g360-success)); }
+        .g360-dot-bottom { background: var(--g360-gray); }
         .g360-chevron {
-          color: var(--g360-green, #00d084);
+          color: var(--g360-green, var(--g360-success));
           width: 20px;
           height: 20px;
         }
         .g360-text {
-          color: var(--g360-gray, #94a3b8);
+          color: var(--g360-gray);
           letter-spacing: 0.5px;
         }
         .g360-version {
-          color: var(--g360-gray, #94a3b8);
+          color: var(--g360-gray);
           opacity: 0.7;
         }
         .g360-separator {
-          color: var(--g360-gray, #94a3b8);
+          color: var(--g360-gray);
           opacity: 0.5;
         }
         @media (prefers-color-scheme: light) {
           .g360-sig {
-            --g360-green: #00d084;
-            --g360-gray: #64748b;
+            --g360-green: var(--g360-success);
+            --g360-gray: var(--g360-text-muted);
           }
         }
         @media (prefers-color-scheme: dark) {
           .g360-sig {
-            --g360-green: #00d084;
-            --g360-gray: #94a3b8;
+            --g360-green: var(--g360-success);
+            --g360-gray: var(--g360-text-muted);
           }
         }
       </style>

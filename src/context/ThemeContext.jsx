@@ -9,9 +9,17 @@ export function ThemeProvider(props) {
   const savedTheme = localStorage.getItem(THEME_KEY)
   const [darkTheme, setDarkTheme] = createSignal(savedTheme !== 'false')
 
-  createEffect(() => {
-    const isDark = darkTheme()
+  const applyTheme = (isDark) => {
+    const root = document.documentElement
+    root.dataset.theme = isDark ? 'dark' : 'light'
+    root.style.colorScheme = isDark ? 'dark' : 'light'
     localStorage.setItem(THEME_KEY, isDark ? 'true' : 'false')
+  }
+
+  applyTheme(darkTheme())
+
+  createEffect(() => {
+    applyTheme(darkTheme())
   })
 
   const toggleTheme = () => setDarkTheme(!darkTheme())

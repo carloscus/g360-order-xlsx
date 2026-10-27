@@ -1,9 +1,5 @@
 [
   {"date": "2026-01-01", "name": "Año Nuevo", "type": "feriado"},
-  {"date": "2026-04-17", "name": "Semana Santa", "type": "feriado"},
-  {"date": "2026-04-18", "name": "Semana Santa", "type": "feriado"},
-  {"date": "2026-04-19", "name": "Semana Santa", "type": "feriado"},
-  {"date": "2026-04-20", "name": "Semana Santa", "type": "feriado"},
   {"date": "2026-05-01", "name": "Día del Trabajo", "type": "feriado"},
   {"date": "2026-06-07", "name": "Batalla de Arica y Día de la Bandera", "type": "feriado"},
   {"date": "2026-06-29", "name": "San Pedro y San Pablo", "type": "feriado"},

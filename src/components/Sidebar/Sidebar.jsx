@@ -162,6 +162,10 @@ export const Sidebar = () => {
   const [htmlCount, setHtmlCount] = createSignal(0)
 
   createEffect(() => {
+    document.body.classList.toggle('sidebar-collapsed', !expanded())
+  })
+
+  createEffect(() => {
     listarHTMLSnapshots().then(items => setHtmlCount(items.length))
   })
 

@@ -38,12 +38,13 @@ const calcularSemanaSanta = (anio) => {
   const mes = Math.floor((h + l - 7 * m + 114) / 31)
   const dia = ((h + l - 7 * m + 114) % 31) + 1
   const domingo = new Date(anio, mes - 1, dia)
-  const jueves = new Date(domingo); jueves.setDate(jueves.getDate() - 3)
+  const sabado = new Date(domingo); sabado.setDate(sabado.getDate() - 1)
   const viernes = new Date(domingo); viernes.setDate(viernes.getDate() - 2)
+  const jueves = new Date(domingo); jueves.setDate(jueves.getDate() - 3)
   return {
     [jueves.toISOString().slice(5, 10)]: 'Jueves Santo',
     [viernes.toISOString().slice(5, 10)]: 'Viernes Santo',
-    [domingo.toISOString().slice(5, 10)]: 'Domingo Resurrección'
+    [sabado.toISOString().slice(5, 10)]: 'Sábado Santo'
   }
 }
 
@@ -234,6 +235,9 @@ export const PaymentSplit = (props) => {
             const n = ms.length
             return `${NOMBRES_MESES[ms[0].mes]} ${ms[0].anio} → ${NOMBRES_MESES[ms[n-1].mes]} ${ms[n-1].anio} (${n} mes${n !== 1 ? 'es' : ''})`
           })()}
+          {cuotasArray().length > 0 && (
+            <span class="psf-rango-selections">• <b>{cuotasArray().length}</b> letra{cuotasArray().length !== 1 ? 's' : ''}</span>
+          )}
         </span>
         <Show when={meses().length === 12}>
           <span class="psf-rango-max">Máximo rango alcanzado: 12 meses</span>
@@ -253,6 +257,9 @@ export const PaymentSplit = (props) => {
                 <div class="psf-cal-mes">
                   <div class="psf-cal-header">
                     <span class="psf-cal-titulo">{NOMBRES_MESES[m.mes]} {m.anio}</span>
+                    <Show when={meses().some(x => x.anio === m.anio && x.mes === m.mes) && Object.values(cuotasMap()).some(c => c.anio === m.anio && c.mes === m.mes)}>
+                      <span class="psf-cal-count">{Object.values(cuotasMap()).filter(c => c.anio === m.anio && c.mes === m.mes).length}</span>
+                    </Show>
                   </div>
                   <div class="psf-cal-grid">
                     <For each={DIAS_LAB}>

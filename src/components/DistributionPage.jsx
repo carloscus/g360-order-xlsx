@@ -189,7 +189,7 @@ export const DistributionPage = () => {
           </div>
         }
       >
-        <div class={`distribution-page ${darkTheme() ? '' : 'light'}`}>
+        <div class="distribution-page">
           <div class="distribution-header">
             <h1>📅 PROGRAMACIÓN DE LETRAS</h1>
           </div>
@@ -343,7 +343,7 @@ export const DistributionPage = () => {
                                   <span style={{ color: 'var(--g360-accent)', "font-weight": 'bold' }}>{d.cajasCompletas}</span>
                                   <span style={{ "font-size": '0.75em', "margin-left": '2px', opacity: 0.7 }}>BX</span>
                                   <Show when={d.unidadesSueltas > 0}>
-                                    <span style={{ "font-size": '0.75em', "margin-left": '4px', color: '#f59e0b' }}>+ {d.unidadesSueltas} und</span>
+                                    <span style={{ "font-size": '0.75em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {d.unidadesSueltas} und</span>
                                   </Show>
                                 </Show>
                                 <Show when={d.cajasCompletas === 0}>
@@ -405,7 +405,7 @@ export const DistributionPage = () => {
                               <b style={{ color: 'var(--g360-accent)' }}>{cat.cajasCompletas}</b>
                               <span style={{ "font-size": '0.75em', "margin-left": '2px', opacity: 0.7 }}>BX</span>
                               <Show when={cat.unidadesSueltas > 0}>
-                                <span style={{ "font-size": '0.75em', "margin-left": '4px', color: '#f59e0b' }}>+ {cat.unidadesSueltas} und</span>
+                                <span style={{ "font-size": '0.75em', "margin-left": '4px', color: 'var(--g360-warning)' }}>+ {cat.unidadesSueltas} und</span>
                               </Show>
                             </Show>
                             <Show when={cat.cajasCompletas === 0}>
