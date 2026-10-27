@@ -28,6 +28,9 @@ export const ProductRow = (props) => {
   }
 
   // Badges de estado del catálogo enriquecido (API v2)
+  // Se muestran máximo 2 + un indicador "+N" para no saturar la celda Est:
+  // el detalle completo va en el title (tooltip al hacer hover).
+  const MAX_BADGES = 2
   const badgeEstadoCatalogo = () => {
     const badges = []
     if (p.descontinuado === true) badges.push({ t: 'DESCONT', c: 'ef4444' })
@@ -37,11 +40,17 @@ export const ProductRow = (props) => {
     if (p.en_guia === false) badges.push({ t: 'GUÍA', c: '94a3b8' })
     if (p.compromiso === true) badges.push({ t: 'COMPROM', c: '3b82f6' })
     if (badges.length === 0) return null
+    const visibles = badges.slice(0, MAX_BADGES)
+    const resto = badges.slice(MAX_BADGES)
+    const title = badges.map(b => b.t).join(' · ')
     return (
-      <span class="cat-badges">
-        <For each={badges}>{(b) => (
+      <span class="cat-badges" title={title}>
+        <For each={visibles}>{(b) => (
           <span class="cat-badge" style={{ background: `${b.c}20`, color: b.c, border: `1px solid ${b.c}40` }}>{b.t}</span>
         )}</For>
+        <Show when={resto.length > 0}>
+          <span class="cat-badge cat-badge-more">+{resto.length}</span>
+        </Show>
       </span>
     )
   }
@@ -69,6 +78,11 @@ export const ProductRow = (props) => {
 
       <Show when={visible('descripcion')}>
         <td class="row-desc" title={p.descripcion}>{p.descripcion}</td>
+      </Show>
+
+      {/* Línea (importante: se marcó fija en columns.js, no se puede ocultar) */}
+      <Show when={visible('linea')}>
+        <td class="row-linea text-center">{p.linea || '-'}</td>
       </Show>
 
       <Show when={visible('precioUnitario')}>

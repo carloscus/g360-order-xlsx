@@ -130,7 +130,7 @@ export const ProductTable = (props) => {
   const [showColumnas, setShowColumnas] = createSignal(false)
   const itemsPerPage = 75
 
-  // Mostrar/ocultar una columna. Las críticas (hideable:false) no se pueden ocultar.
+  // Mostrar/ocultar una columna. Todas son ocultables: el usuario decide qué ver.
   const toggleColumna = (key) => {
     setColumnasVisibles(prev => {
       const next = new Set(prev)
@@ -277,13 +277,9 @@ export const ProductTable = (props) => {
                   <input
                     type="checkbox"
                     checked={columnasVisibles().has(col.key)}
-                    disabled={col.hideable === false}
                     onChange={() => toggleColumna(col.key)}
                   />
                   <span>{col.label}</span>
-                  <Show when={col.hideable === false}>
-                    <span class="columns-fixed">fija</span>
-                  </Show>
                 </label>
               )}
             </For>

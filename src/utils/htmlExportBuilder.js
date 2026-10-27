@@ -236,9 +236,14 @@ const renderTablaProductos = (productos) => {
     if (p.por_activar === true) catBadges.push({ t: 'ACTIVAR', c: 'f59e0b' })
     if (p.en_guia === false) catBadges.push({ t: 'GUÍA', c: '94a3b8' })
     if (p.compromiso === true) catBadges.push({ t: 'COMPROM', c: '3b82f6' })
-    const catBadgesHtml = catBadges.length
-      ? `<span class="cat-badges">${catBadges.map(b => `<span class="cat-badge" style="background:${b.c}20;color:${b.c};border:1px solid ${b.c}40">${b.t}</span>`).join('')}</span>`
-      : ''
+    // Máximo 2 badges visibles + "+N" (no saturar la celda Est);
+    // el detalle completo va en el title del contenedor.
+    const catVisibles = catBadges.slice(0, 2)
+    const catResto = catBadges.slice(2)
+    const catTitle = catBadges.map(b => b.t).join(' · ')
+    const visiblesHtml = catVisibles.map(b => `<span class="cat-badge" style="background:${b.c}20;color:${b.c};border:1px solid ${b.c}40">${b.t}</span>`).join('')
+    const restoHtml = catResto.length ? `<span class="cat-badge cat-badge-more">+${catResto.length}</span>` : ''
+    const catBadgesHtml = catVisibles.length ? `<span class="cat-badges" title="${catTitle}">${visiblesHtml}${restoHtml}</span>` : ''
     const descFull = (p.descripcion || '')
     const descShort = descFull.length > 70 ? descFull.slice(0, 69).trimEnd() + '…' : descFull
     return `<tr data-stock="${stockFlag}">
@@ -247,6 +252,7 @@ const renderTablaProductos = (productos) => {
 <td class="td-center">${p.unidadMedida || 'UND'}</td>
 <td class="td-mono" data-value="${p.codigo}">${p.codigo}</td>
 <td class="td-desc" title="${descFull.replace(/"/g, '&quot;')}"><span class="desc-clamp">${descShort.replace(/"/g, '&quot;')}</span></td>
+<td class="td-center td-linea">${p.linea || '-'}</td>
 <td class="td-right" data-value="${p.precioUnitario || 0}">${formatear4(p.precioUnitario || 0)}</td>
 <td class="td-center" data-value="${desc1}">${redondear2(desc1)}</td>
 <td class="td-center" data-value="${desc2}">${redondear2(desc2)}</td>
@@ -279,7 +285,7 @@ const renderTablaProductos = (productos) => {
     <table id="tablaPartidas">
       <colgroup>
         <col class="col-narrow"><col class="col-cant"><col class="col-um"><col class="col-sku">
-        <col class="col-desc"><col class="col-price"><col class="col-dto"><col class="col-dto">
+        <col class="col-desc"><col class="col-linea"><col class="col-price"><col class="col-dto"><col class="col-dto">
         <col class="col-neto"><col class="col-unit"><col class="col-total"><col class="col-cajas">
         <col class="col-tipo"><col class="col-cat">
       </colgroup>
@@ -290,6 +296,7 @@ const renderTablaProductos = (productos) => {
           <th class="th-center">U/M</th>
           <th class="th-center" onclick="ordenarTabla(3,'text')">SKU<span class="sort-ind"></span></th>
           <th class="th-left">Descripción</th>
+          <th class="th-center">Línea</th>
           <th class="th-right" onclick="ordenarTabla(5,'num')">P. Lista<span class="sort-ind"></span></th>
           <th class="th-center" onclick="ordenarTabla(6,'num')">Dto1<span class="sort-ind"></span></th>
           <th class="th-center" onclick="ordenarTabla(7,'num')">Dto2<span class="sort-ind"></span></th>
@@ -304,7 +311,7 @@ const renderTablaProductos = (productos) => {
       <tbody>${rows}</tbody>
       <tfoot>
         <tr>
-          <td colspan="8" class="tf-label">TOTALES (${productos.length} productos)</td>
+          <td colspan="9" class="tf-label">TOTALES (${productos.length} productos)</td>
           <td class="tf-value">${formatear(totalLinea)}</td>
           <td></td>
           <td class="tf-value tf-total">${formatear(totalVentaFinal)}</td>
@@ -562,6 +569,7 @@ function getPrintStyles() {
   colgroup .col-um { width:4% !important; }
   colgroup .col-sku { width:7% !important; }
   colgroup .col-desc { width:24% !important; }
+  colgroup .col-linea { width:7% !important; }
   colgroup .col-price { width:7% !important; }
   colgroup .col-dto { width:5% !important; }
   colgroup .col-neto { width:9% !important; }
@@ -757,6 +765,7 @@ export const buildCronogramaHTML = (data) => {
     colgroup .col-um { width:4%; }
     colgroup .col-sku { width:7%; }
     colgroup .col-desc { width:24%; }
+    colgroup .col-linea { width:7%; }
     colgroup .col-price { width:7%; }
     colgroup .col-dto { width:5%; }
     colgroup .col-neto { width:9%; }
@@ -778,6 +787,7 @@ export const buildCronogramaHTML = (data) => {
     .td-right { text-align:right; }
     .td-left { text-align:left; }
     .td-mono { font-family:monospace; font-size:9.5px; text-align:center; letter-spacing:0.2px; }
+    .td-linea { font-size:9px; color:var(--g360-muted); font-weight:600; white-space:nowrap; }
     /* Descripcion: 2 lineas (clamp en span interno, el td no corta) */
     .td-desc { white-space:normal; overflow:visible; }
     .desc-clamp {
@@ -798,6 +808,10 @@ export const buildCronogramaHTML = (data) => {
     .cat-badge {
       padding:1px 4px; border-radius:3px; font-size:7.5px; font-weight:700; letter-spacing:0.2px;
       white-space:nowrap; line-height:1.25;
+    }
+    .cat-badge-more {
+      background:var(--g360-surface-2); color:var(--g360-muted);
+      border:1px solid var(--g360-border); cursor:help;
     }
     .cajas-sueltas { color:var(--g360-warning); font-weight:700; font-size:9px; margin-left:1px; }
     tbody tr:hover { background:rgba(0,208,132,0.06); }
