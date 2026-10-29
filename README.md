@@ -226,17 +226,19 @@ g360-order-xlsx/
 | `npm run deploy` | Build + deploy GitHub Pages |
 | `npm run update-catalog` | Sincronizar catálogo desde API |
 | `npm run enrich-catalog` | Enriquecer SKUs faltantes |
+| `node scripts/normalize-catalog.cjs` | Normalizar líneas sin prefijo y completar `linea_id` |
 | `npm test` | Ejecutar tests (Vitest) |
 
 ---
 
 ## Mantenimiento de Catálogo
 
-El catálogo local (`catalogo_productos.json`) tiene **2257 productos**. La API principal no incluye todos; los faltantes se resuelven via lookup individual con **cache persistente**.
+El catálogo local (`catalogo_productos.json`) tiene **2449 productos**. La API principal no incluye todos; los faltantes se resuelven via lookup individual con **cache persistente**.
 
 ```bash
 npm run update-catalog     # Sincroniza con API (merge, preserva enriquecidos)
 npm run enrich-catalog     # Agrega SKUs faltantes via lookup individual
+node scripts/normalize-catalog.cjs   # Normaliza líneas sin prefijo y completa linea_id
 node scripts/update-flags.cjs    # Actualiza flags sin_catalogo
 ```
 

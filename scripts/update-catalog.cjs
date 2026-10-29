@@ -24,7 +24,13 @@ async function fetchCatalog() {
 
     const data = await response.json();
     const items = data.items || [];
-    
+
+    // Descarga vacía = API frío/fallido: abortar para no "preservar" todo el
+    // catálogo viejo vía merge y creer que se actualizó.
+    if (items.length === 0) {
+      throw new Error('La API devolvió 0 items (posible cold start). Reintentar cuando el servicio responda.');
+    }
+
     console.log(`✅ Obtenidos ${items.length} productos`);
     console.log(`📊 Metadata:`, JSON.stringify(data.metadata, null, 2));
 
@@ -35,6 +41,7 @@ async function fetchCatalog() {
       descripcion: item.descripcion,
       um: item.um,
       linea: item.linea,
+      linea_id: item.linea_id || '',
       grupo: item.grupo,
       tipo: item.tipo,
       familia: item.familia,

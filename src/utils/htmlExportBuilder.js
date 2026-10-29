@@ -252,7 +252,7 @@ const renderTablaProductos = (productos) => {
 <td class="td-center">${p.unidadMedida || 'UND'}</td>
 <td class="td-mono" data-value="${p.codigo}">${p.codigo}</td>
 <td class="td-desc" title="${descFull.replace(/"/g, '&quot;')}"><span class="desc-clamp">${descShort.replace(/"/g, '&quot;')}</span></td>
-<td class="td-center td-linea">${p.linea || '-'}</td>
+<td class="td-center td-linea">${(p.lineaId != null && p.lineaId !== '') ? p.lineaId : (p.linea || '-').split(' - ')[0].trim()}</td>
 <td class="td-right" data-value="${p.precioUnitario || 0}">${formatear4(p.precioUnitario || 0)}</td>
 <td class="td-center" data-value="${desc1}">${redondear2(desc1)}</td>
 <td class="td-center" data-value="${desc2}">${redondear2(desc2)}</td>
@@ -563,31 +563,32 @@ function getPrintStyles() {
   .psf-mes-fecha { color:#333 !important; }
   .psf-mes-monto { color:#000 !important; }
   .psf-mes-total { color:#000 !important; border-top:1px dashed #333 !important; }
-  table { font-size:7.5px !important; table-layout:fixed !important; width:100% !important; }
-  colgroup .col-narrow { width:3% !important; }
-  colgroup .col-cant { width:6% !important; }
+  table { font-size:7px !important; table-layout:fixed !important; width:100% !important; }
+  colgroup .col-narrow { width:2% !important; }
+  colgroup .col-cant { width:5% !important; }
   colgroup .col-um { width:4% !important; }
-  colgroup .col-sku { width:7% !important; }
-  colgroup .col-desc { width:24% !important; }
-  colgroup .col-linea { width:7% !important; }
-  colgroup .col-price { width:7% !important; }
-  colgroup .col-dto { width:5% !important; }
-  colgroup .col-neto { width:9% !important; }
-  colgroup .col-unit { width:7% !important; }
+  colgroup .col-sku { width:6% !important; }
+  colgroup .col-desc { width:20% !important; }
+  colgroup .col-linea { width:6% !important; }
+  colgroup .col-price { width:6% !important; }
+  colgroup .col-dto { width:4% !important; }
+  colgroup .col-neto { width:8% !important; }
+  colgroup .col-unit { width:6% !important; }
   colgroup .col-total { width:10% !important; }
-  colgroup .col-cajas { width:6% !important; }
-  colgroup .col-tipo { width:7% !important; }
-  thead th { background:#333 !important; color:white !important; padding:4px 3px !important; font-size:7px !important; }
-  tbody td { border-color:#ccc !important; padding:4px 3px !important; font-size:7.5px !important; }
+  colgroup .col-cajas { width:5% !important; }
+  colgroup .col-tipo { width:6% !important; }
+  colgroup .col-cat { width:8% !important; }
+  thead th { background:#333 !important; color:white !important; padding:3px 2px !important; font-size:6.5px !important; }
+  tbody td { border-color:#ccc !important; padding:3px 2px !important; font-size:7px !important; }
   tbody tr:nth-child(even) { background:#f5f5f5 !important; }
   tbody tr { display:table-row !important; }
-  tfoot td { border-color:#000 !important; padding:5px 3px !important; font-size:9px !important; }
+  tfoot td { border-color:#000 !important; padding:4px 2px !important; font-size:8px !important; }
   .td-desc { white-space:normal !important; }
-  /* En impresión: más líneas para que la descripción se vea completa (A4) */
+  /* En impresión: 2 líneas para la descripción (A4 portrait) */
   .desc-clamp {
-    -webkit-line-clamp:3 !important;
-    line-clamp:3 !important;
-    min-height:3.9em !important;
+    -webkit-line-clamp:2 !important;
+    line-clamp:2 !important;
+    min-height:2.6em !important;
   }
   .sort-ind { display:none !important; }
   .stock-dot { width:6px !important; height:6px !important; }

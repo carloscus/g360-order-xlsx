@@ -79,6 +79,8 @@ export const PaymentSplit = (props) => {
   const [startMonth, setStartMonth] = createSignal('')
   const [endMonth, setEndMonth] = createSignal('')
   const [cuotasMap, setCuotasMap] = createSignal({})
+  const [lastClicked, setLastClicked] = createSignal(null)
+  const [anchorClicked, setAnchorClicked] = createSignal(null)
 
   const maxEndMonth = createMemo(() => {
     const s = obtenerAnioMes(startMonth())
@@ -119,13 +121,21 @@ export const PaymentSplit = (props) => {
     a.anio !== b.anio ? a.anio - b.anio : a.mes !== b.mes ? a.mes - b.mes : a.dia - b.dia
   ))
 
-  const toggleDia = (anio, mes, dia) => {
+  const toggleDia = (anio, mes, dia, event) => {
     const k = key(anio, mes, dia)
-    if (!cuotasMap()[k]) {
-      if (esFechaPasada(anio, mes)) return
-      const tipo = obtenerDiaTipo(anio, mes, dia)
-      if (tipo === 'feriado' || tipo === 'domingo') return
+    const tipo = obtenerDiaTipo(anio, mes, dia)
+    const pasado = esFechaPasada(anio, mes)
+    const bloqueado = !cuotasMap()[k] && (pasado || tipo === 'feriado' || tipo === 'domingo')
+
+    // Shift+click: seleccionar rango desde el último clic
+    if (event?.shiftKey && anchorClicked()) {
+      seleccionarRango(anchorClicked(), k)
+      setLastClicked(k)
+      return
     }
+
+    if (bloqueado) return
+
     const actual = { ...cuotasMap() }
     if (actual[k]) {
       delete actual[k]
@@ -134,6 +144,66 @@ export const PaymentSplit = (props) => {
     }
     setCuotasMap(actual)
     props.onChange?.(Object.values(actual))
+    setLastClicked(k)
+    setAnchorClicked(k)
+  }
+
+  const seleccionarRango = (anchorKey, targetKey) => {
+    const todos = meses().flatMap(m =>
+      Array.from({ length: m.dias }, (_, i) => ({ anio: m.anio, mes: m.mes, dia: i + 1 }))
+    )
+    const idxA = todos.findIndex(d => key(d.anio, d.mes, d.dia) === anchorKey)
+    const idxT = todos.findIndex(d => key(d.anio, d.mes, d.dia) === targetKey)
+    if (idxA < 0 || idxT < 0) return
+    const [lo, hi] = idxA < idxT ? [idxA, idxT] : [idxT, idxA]
+    const actual = { ...cuotasMap() }
+    for (let i = lo; i <= hi; i++) {
+      const d = todos[i]
+      const k = key(d.anio, d.mes, d.dia)
+      if (actual[k]) continue
+      const tipo = obtenerDiaTipo(d.anio, d.mes, d.dia)
+      if (tipo === 'feriado' || tipo === 'domingo' || esFechaPasada(d.anio, d.mes)) continue
+      actual[k] = { id: k, anio: d.anio, mes: d.mes, dia: d.dia, monto: '' }
+    }
+    setCuotasMap(actual)
+    props.onChange?.(Object.values(actual))
+  }
+
+  const seleccionarTodosDelMes = (anio, mes, dias) => {
+    const actual = { ...cuotasMap() }
+    for (let dia = 1; dia <= dias; dia++) {
+      const k = key(anio, mes, dia)
+      if (actual[k]) continue
+      const tipo = obtenerDiaTipo(anio, mes, dia)
+      if (tipo === 'feriado' || tipo === 'domingo' || esFechaPasada(anio, mes)) continue
+      actual[k] = { id: k, anio, mes, dia, monto: '' }
+    }
+    setCuotasMap(actual)
+    props.onChange?.(Object.values(actual))
+  }
+
+  const limpiarMes = (anio, mes) => {
+    const actual = { ...cuotasMap() }
+    Object.keys(actual).forEach(k => {
+      if (actual[k].anio === anio && actual[k].mes === mes) delete actual[k]
+    })
+    setCuotasMap(actual)
+    props.onChange?.(Object.values(actual))
+  }
+
+  const limpiarTodo = () => {
+    setCuotasMap({})
+    props.onChange?.([])
+  }
+
+  const aplicarRangoMeses = (n) => {
+    if (!startMonth()) {
+      setStartMonth(MES_ACTUAL_STR)
+    }
+    const s = obtenerAnioMes(startMonth())
+    if (!s) return
+    const limite = sumarMeses(s.anio, s.mes, n - 1)
+    setEndMonth(`${limite.anio}-${String(limite.mes + 1).padStart(2, '0')}`)
   }
 
   const actualizarMonto = (k, valor) => {
@@ -213,6 +283,7 @@ export const PaymentSplit = (props) => {
               <span class="psf-label">x Letra</span>
               <span class="psf-value eq">S/ {formatNumero(montoEq())}</span>
             </div>
+            <button type="button" class="psf-clear-all-btn" onClick={limpiarTodo} title="Quitar todas las fechas seleccionadas">Limpiar todo</button>
           </Show>
         </div>
       </div>
@@ -226,6 +297,11 @@ export const PaymentSplit = (props) => {
         <div class="psf-rango-input">
           <label class="psf-rango-label">Mes fin</label>
           <input type="month" value={endMonth()} onInput={e => setEndMonth(e.currentTarget.value)} min={MES_ACTUAL_STR} max={maxEndMonth()} class="psf-input psf-month-input" />
+        </div>
+        <div class="psf-rango-quick">
+          <button type="button" class="psf-quick-btn" title="Seleccionar 3 meses desde el mes inicio" onClick={() => aplicarRangoMeses(3)}>3 meses</button>
+          <button type="button" class="psf-quick-btn" title="Seleccionar 6 meses desde el mes inicio" onClick={() => aplicarRangoMeses(6)}>6 meses</button>
+          <button type="button" class="psf-quick-btn" title="Seleccionar 12 meses desde el mes inicio" onClick={() => aplicarRangoMeses(12)}>12 meses</button>
         </div>
       </div>
       <Show when={meses().length > 0}>
@@ -257,9 +333,12 @@ export const PaymentSplit = (props) => {
                 <div class="psf-cal-mes">
                   <div class="psf-cal-header">
                     <span class="psf-cal-titulo">{NOMBRES_MESES[m.mes]} {m.anio}</span>
-                    <Show when={meses().some(x => x.anio === m.anio && x.mes === m.mes) && Object.values(cuotasMap()).some(c => c.anio === m.anio && c.mes === m.mes)}>
-                      <span class="psf-cal-count">{Object.values(cuotasMap()).filter(c => c.anio === m.anio && c.mes === m.mes).length}</span>
-                    </Show>
+                    <div class="psf-cal-header-actions">
+                      <Show when={Object.values(cuotasMap()).some(c => c.anio === m.anio && c.mes === m.mes)}>
+                        <span class="psf-cal-count">{Object.values(cuotasMap()).filter(c => c.anio === m.anio && c.mes === m.mes).length}</span>
+                      </Show>
+                      <button type="button" class="psf-cal-clear-btn" title={`Limpiar ${NOMBRES_MESES[m.mes]}`} onClick={() => limpiarMes(m.anio, m.mes)}>✕</button>
+                    </div>
                   </div>
                   <div class="psf-cal-grid">
                     <For each={DIAS_LAB}>
@@ -276,10 +355,31 @@ export const PaymentSplit = (props) => {
                         const pasado = esFechaPasada(m.anio, m.mes)
                         const bloqueado = !sel && (pasado || tipo === 'feriado' || tipo === 'domingo')
                             const extraClass = pasado ? ' psf-cal-pasado' : (!sel && (tipo === 'feriado' || tipo === 'domingo')) ? ' psf-cal-disabled' : ''
+                        const hoy = new Date()
+                        const esHoy = hoy.getFullYear() === m.anio && hoy.getMonth() === m.mes && hoy.getDate() === dia
+                        const feriadoNombre = (() => {
+                          const mm = String(m.mes + 1).padStart(2, '0')
+                          const dd = String(dia).padStart(2, '0')
+                          const feriados = { ...FERIADOS_PERU, ...calcularSemanaSanta(m.anio) }
+                          return feriados[`${mm}-${dd}`] || ''
+                        })()
+                        const titleTxt = feriadoNombre ? `${formatearFecha(m.anio, m.mes, dia)} · ${feriadoNombre}` : formatearFecha(m.anio, m.mes, dia)
                         return (
                           <div
-                            class={`psf-cal-celda${sel ? ' psf-cal-seleccionado' : ''} psf-cal-${tipo}${extraClass}`}
-                            onClick={bloqueado ? undefined : () => toggleDia(m.anio, m.mes, dia)}
+                            class={`psf-cal-celda${sel ? ' psf-cal-seleccionado' : ''} psf-cal-${tipo}${extraClass}${esHoy ? ' psf-cal-hoy' : ''}`}
+                            title={titleTxt}
+                            onClick={(e) => { if (!bloqueado) toggleDia(m.anio, m.mes, dia, e) }}
+                            onDblClick={() => seleccionarTodosDelMes(m.anio, m.mes, m.dias)}
+                            role="button"
+                            aria-pressed={!!sel}
+                            aria-label={titleTxt}
+                            tabIndex={bloqueado ? -1 : 0}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                if (!bloqueado) toggleDia(m.anio, m.mes, dia, e)
+                              }
+                            }}
                           >
                             <span class="psf-cal-num">{dia}</span>
                           </div>
@@ -292,6 +392,14 @@ export const PaymentSplit = (props) => {
             }}
           </For>
         </div>
+        <div class="psf-cal-leyenda">
+          <span class="psf-leyenda-item"><span class="psf-leyenda-dot psf-leyenda-sel"></span>Seleccionado</span>
+          <span class="psf-leyenda-item"><span class="psf-leyenda-dot psf-leyenda-feriado"></span>Feriado</span>
+          <span class="psf-leyenda-item"><span class="psf-leyenda-dot psf-leyenda-domingo"></span>Domingo</span>
+          <span class="psf-leyenda-item"><span class="psf-leyenda-dot psf-leyenda-pasado"></span>Pasado</span>
+          <span class="psf-leyenda-item"><span class="psf-leyenda-dot psf-leyenda-hoy"></span>Hoy</span>
+        </div>
+        <p class="psf-cal-hint">Click = seleccionar/deseleccionar · Shift+click = rango · doble click = todos los días hábiles · ✕ = limpiar mes · "Limpiar todo" = vaciar todo</p>
       </Show>
 
       <Show when={cuotasPorMes().length > 0}>

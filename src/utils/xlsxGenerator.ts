@@ -349,6 +349,8 @@ export const generarXLSX = async (data: DatosPedido) => {
     fitToHeight: 0,
     orientation: 'landscape',
   }
+  // Vista inicial al abrir: zoom 80% para ver la tabla completa
+  worksheet.views = [{ state: 'normal', zoomScale: 80, zoomScaleNormal: 80 }]
 
   // Descarga
   const buffer = await workbook.xlsx.writeBuffer()

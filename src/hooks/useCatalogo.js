@@ -12,7 +12,7 @@
  */
 
 import dataEstatica from '../data/catalogo_productos.json'
-import { createSignal, createMemo, onMount } from 'solid-js'
+import { createSignal, createMemo } from 'solid-js'
 import { apiClient } from '../services/apiClient'
 
 const PALETA_ESTADOS = [
@@ -35,6 +35,71 @@ const mapearEstadoLinea = (raw) => {
   return { estado: raw, color: '#6b7280' }
 }
 
+/**
+ * Extrae el ID de línea del prefijo del nombre ("01 - PELOTAS" → "01",
+ * "MA - MASCOTAS" → "MA"). El API lo confirma como linea_id, así que este
+ * fallback cubre fuentes sin el campo (JSON estático, cache viejo).
+ * Líneas sin prefijo ("OTROS") no tienen ID → null.
+ */
+export const extraerIdLinea = (linea) => {
+  if (!linea) return null
+  const m = String(linea).match(/^([A-Z0-9]+)\s*-\s*/)
+  return m ? m[1] : null
+}
+
+/**
+ * Índice de líneas canónicas a partir de los items del catálogo: para cada
+ * nombre normalizado y para cada id conserva la variante CON prefijo más
+ * frecuente. La frecuencia resuelve códigos legacy ("CB - ESCRITURA" x4
+ * pierde contra "76 - ESCRITURA" x172) y cubre snapshots sin linea_id.
+ */
+export const crearIndiceLineas = (items) => {
+  const registrar = (indice, clave, linea) => {
+    if (!indice.has(clave)) indice.set(clave, new Map())
+    const variantes = indice.get(clave)
+    variantes.set(linea, (variantes.get(linea) || 0) + 1)
+  }
+  const canonizar = (variantes) => {
+    let mejor = null
+    let mejorCuenta = -1
+    variantes.forEach((cuenta, linea) => {
+      if (cuenta > mejorCuenta) { mejorCuenta = cuenta; mejor = linea }
+    })
+    return { linea: mejor, lineaId: extraerIdLinea(mejor) }
+  }
+
+  const porNombre = new Map()
+  const porId = new Map()
+  ;(items || []).forEach((it) => {
+    const id = extraerIdLinea(it.linea)
+    if (!id) return
+    const nombre = it.linea.replace(/^([A-Z0-9]+)\s*-\s*/, '').trim().toUpperCase()
+    if (!nombre) return
+    registrar(porNombre, nombre, it.linea)
+    registrar(porId, id, it.linea)
+  })
+
+  const indice = { porNombre: new Map(), porId: new Map() }
+  porNombre.forEach((variantes, nombre) => indice.porNombre.set(nombre, canonizar(variantes)))
+  porId.forEach((variantes, id) => indice.porId.set(id, canonizar(variantes)))
+  return indice
+}
+
+/**
+ * Resuelve una línea cruda (catálogo o ERP) contra la variante canónica del
+ * índice. Acepta nombre ("ESCRITURA"), nombre con prefijo ("CB - ESCRITURA")
+ * o solo id ("76"). Devuelve { linea, lineaId } o null si no hay match.
+ */
+export const resolverLineaCanonica = (cruda, indice) => {
+  if (!cruda || typeof cruda !== 'string' || !indice) return null
+  const limpio = cruda.trim()
+  if (!limpio) return null
+  const sinPrefijo = limpio.replace(/^([A-Z0-9]+)\s*-\s*/, '').trim().toUpperCase()
+  return indice.porNombre.get(sinPrefijo)
+    || indice.porId.get(limpio.toUpperCase())
+    || null
+}
+
 const crearMapaCatalogo = (productos) => {
   const mapa = new Map()
   if (productos && Array.isArray(productos)) {
@@ -44,13 +109,13 @@ const crearMapaCatalogo = (productos) => {
         const estadoLinea = mapearEstadoLinea(p.estado_linea)
         mapa.set(sku, {
           linea: p.linea || 'SIN LÍNEA',
+          lineaId: p.linea_id ?? p.lineaId ?? p.id_linea ?? p.idLinea ?? extraerIdLinea(p.linea),
           categoria: p.categoria || 'SIN CATEGORÍA',
           pesoKg: p.peso_kg || 0,
           unBx: p.un_bx || 0,
           sinCatalogo: !!p.sin_catalogo,
           estadoLinea: estadoLinea?.estado || null,
           colorEstadoLinea: estadoLinea?.color || null,
-          // Campos enriquecidos del API v2 (para auditoría)
           descontinuado: !!p.descontinuado,
           categoriaVenta: p.categoria_venta || '',
           enGuia: p.en_guia !== undefined ? !!p.en_guia : null,
@@ -68,17 +133,17 @@ const crearMapaCatalogo = (productos) => {
   return mapa
 }
 
-const normalizarItemApi = (item) => {
+export const normalizarItemApi = (item) => {
   const estadoLinea = mapearEstadoLinea(item.estado_linea)
   return {
-    linea: (item.linea || 'SIN LÍNEA').replace(/^\d+\s*-\s*/, ''),
+    linea: item.linea || 'SIN LÍNEA',
+    lineaId: item.linea_id ?? item.lineaId ?? item.id_linea ?? item.idLinea ?? extraerIdLinea(item.linea),
     categoria: item.categoria || 'SIN CATEGORÍA',
     pesoKg: item.peso_kg || 0,
     unBx: item.un_bx || 0,
     sinCatalogo: !!item.sin_catalogo,
     estadoLinea: estadoLinea?.estado || null,
     colorEstadoLinea: estadoLinea?.color || null,
-    // Campos enriquecidos del API v2 (para auditoría)
     descontinuado: !!item.descontinuado,
     categoriaVenta: item.categoria_venta || '',
     enGuia: item.en_guia !== undefined ? !!item.en_guia : null,
@@ -92,9 +157,16 @@ const normalizarItemApi = (item) => {
   }
 }
 
+export const esItemApiValido = (item) =>
+  item != null &&
+  typeof item === 'object' &&
+  typeof item.sku === 'string' &&
+  item.sku.trim().length > 0 &&
+  typeof item.linea === 'string' &&
+  item.linea.trim().length > 0;
+
 const CACHE_KEY = 'g360_catalogo_lookup_cache'
 
-// Leer cache de lookups individuales desde localStorage
 const loadLookupCache = () => {
   try {
     const raw = localStorage.getItem(CACHE_KEY)
@@ -102,30 +174,25 @@ const loadLookupCache = () => {
   } catch { return {} }
 }
 
-// Guardar cache de lookups individuales
 const saveLookupCache = (cache) => {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache))
-  } catch { /* quota exceeded, ignorar */ }
+  } catch { }
 }
 
-export const useCatalogo = () => {
-  const [catalogo, setCatalogo] = createSignal(dataEstatica)
-  const [cargando, setCargando] = createSignal(false)
-  const [error, setError] = createSignal(null)
-  const [fuente, setFuente] = createSignal('local')
-  const [skusEnriched, setSkusEnriched] = createSignal(new Map())
+// Estado global compartido
+const [catalogo, setCatalogo] = createSignal(dataEstatica)
+const [cargando, setCargando] = createSignal(false)
+const [error, setError] = createSignal(null)
+const [fuente, setFuente] = createSignal('local')
+const [skusEnriched, setSkusEnriched] = createSignal(new Map())
+let initialized = false
+let initPromise = null
 
-  const productosMap = createMemo(() => {
-    const data = catalogo()
-    const prods = data.productos || data
-    const baseMap = crearMapaCatalogo(prods)
-    skusEnriched().forEach((val, key) => baseMap.set(key, val))
-    return baseMap
-  })
-
-  onMount(async () => {
-    // Cargar cache persistente de lookups individuales primero
+const initCatalogo = async () => {
+  if (initialized || initPromise) return initPromise
+  initialized = true
+  initPromise = (async () => {
     const lookupCache = loadLookupCache()
     const cacheSize = Object.keys(lookupCache).length
     if (cacheSize > 0) {
@@ -145,7 +212,6 @@ export const useCatalogo = () => {
         items.forEach(item => {
           if (item.sku) mapaApi.set(item.sku, normalizarItemApi(item))
         })
-        // FUSIONAR: catálogo local + API (la API tiene prioridad)
         const localData = dataEstatica.productos || dataEstatica
         const productosFusionados = [...localData]
         items.forEach(item => {
@@ -154,7 +220,6 @@ export const useCatalogo = () => {
           }
         })
         setCatalogo({ productos: productosFusionados })
-        // Merge: API + cache (cache tiene prioridad para SKUs no en API)
         setSkusEnriched(prev => {
           const next = new Map(prev)
           mapaApi.forEach((v, k) => next.set(k, v))
@@ -173,19 +238,32 @@ export const useCatalogo = () => {
       setError(err.message)
     } finally {
       setCargando(false)
-      console.log('[useCatalogo] Fuente final:', fuente(), '| Productos en mapa:', productosMap().size)
     }
+  })()
+  return initPromise
+}
+
+export const useCatalogo = () => {
+  if (typeof window !== 'undefined') {
+    initCatalogo()
+  }
+
+  const productosMap = createMemo(() => {
+    const data = catalogo()
+    const prods = data.productos || data
+    const baseMap = crearMapaCatalogo(prods)
+    skusEnriched().forEach((val, key) => baseMap.set(key, val))
+    return baseMap
   })
 
   const buscarProducto = (sku) => {
     return productosMap().get(sku) || null
   }
 
-  // Lookup individual con límite de concurrencia
   const lookupQueue = []
   let lookupRunning = 0
   const MAX_CONCURRENT = 3
-  const skusEnCola = new Set() // Evitar duplicar SKUs en la cola
+  const skusEnCola = new Set()
 
   const procesarLookup = async () => {
     if (lookupRunning >= MAX_CONCURRENT || lookupQueue.length === 0) return
@@ -194,14 +272,13 @@ export const useCatalogo = () => {
     skusEnCola.delete(sku)
     try {
       const response = await apiClient.fetchStockBySku(sku)
-      if (response && response.sku) {
+      if (esItemApiValido(response)) {
         const enriched = normalizarItemApi(response)
         setSkusEnriched(prev => {
           const next = new Map(prev)
           next.set(sku, enriched)
           return next
         })
-        // Persistir en cache localStorage
         const cache = loadLookupCache()
         cache[sku] = enriched
         saveLookupCache(cache)
@@ -219,11 +296,9 @@ export const useCatalogo = () => {
   }
 
   const buscarProductoIndividual = (sku) => {
-    // Si ya está en skusEnriched, no buscar de nuevo
     if (skusEnriched().has(sku)) {
       return Promise.resolve(skusEnriched().get(sku))
     }
-    // Si ya está en la cola, no duplicar
     if (skusEnCola.has(sku)) {
       return Promise.resolve(null)
     }
@@ -239,7 +314,7 @@ export const useCatalogo = () => {
     if (local) return local
     try {
       const item = await apiClient.fetchStockBySku(sku)
-      if (item && item.sku) {
+      if (item != null && esItemApiValido(item)) {
         const enriched = normalizarItemApi(item)
         setSkusEnriched(prev => {
           const next = new Map(prev)
@@ -248,11 +323,14 @@ export const useCatalogo = () => {
         })
         return enriched
       }
+      console.warn('[useCatalogo] Respuesta de API inválida para SKU:', sku, item && item.sku)
     } catch (err) {
       console.warn(`[useCatalogo] SKU ${sku} no encontrado en API:`, err.message)
     }
     return null
   }
+
+  const indiceLineas = createMemo(() => crearIndiceLineas(Array.from(productosMap().values())))
 
   const enriquecerProducto = (productoRPE) => {
     const info = buscarProducto(productoRPE.codigo)
@@ -262,7 +340,22 @@ export const useCatalogo = () => {
 
     const pesoKgERP = productoRPE.pesoKg && productoRPE.pesoKg > 0 ? productoRPE.pesoKg : 0
 
-    // Si no se encontró en el catálogo, intentar lookup individual (async)
+    let lineaResuelta = info?.linea
+    let lineaIdResuelto = info?.lineaId ?? extraerIdLinea(lineaResuelta)
+    if (!lineaResuelta && erpTieneLineaValida) {
+      lineaResuelta = lineaERP.toUpperCase()
+    }
+
+    // Canonizar contra el catálogo cuando la línea no tiene prefijo (snapshot
+    // legacy tipo "ESCRITURA" o ERP con nombre/id suelto) para no perder el ID.
+    if (lineaResuelta && !extraerIdLinea(lineaResuelta)) {
+      const canonica = resolverLineaCanonica(lineaResuelta, indiceLineas())
+      if (canonica) {
+        lineaResuelta = canonica.linea
+        lineaIdResuelto = canonica.lineaId
+      }
+    }
+    if (!lineaResuelta) lineaResuelta = 'SIN LÍNEA'
     if (!info && productoRPE.codigo) {
       console.warn(`[useCatalogo] SKU ${productoRPE.codigo} no en catálogo, intentando lookup individual...`)
       buscarProductoIndividual(productoRPE.codigo).then(enriched => {
@@ -274,7 +367,7 @@ export const useCatalogo = () => {
 
     return {
       ...productoRPE,
-      linea: erpTieneLineaValida ? lineaERP.toUpperCase() : (info?.linea || 'SIN LÍNEA'),
+      linea: lineaResuelta,
       pesoKg: pesoKgERP > 0 ? pesoKgERP : (info?.pesoKg || 0),
       unBx: info?.unBx || 0,
       sinCatalogo: !!info?.sinCatalogo,
@@ -282,7 +375,7 @@ export const useCatalogo = () => {
       tieneDatosCatalogo: !!info,
       estadoLinea: info?.estadoLinea || 'PENDIENTE',
       colorEstadoLinea: info?.colorEstadoLinea || null,
-      // Campos enriquecidos del API v2 (para auditoría)
+      lineaId: lineaIdResuelto ?? null,
       descontinuado: info?.descontinuado ?? false,
       categoriaVenta: info?.categoriaVenta || '',
       en_guia: info?.enGuia ?? null,
@@ -321,7 +414,50 @@ export const useCatalogo = () => {
     }
   })
 
-  // Pre-fetch: buscar SKUs faltantes en lote y esperar resultado
+  const refrescarCatalogo = async () => {
+    try {
+      setCargando(true)
+      setError(null)
+      console.log('[useCatalogo] Recargando catálogo desde API...')
+      const response = await apiClient.fetchStock({ fuente: 'todas', limit: 5000 })
+      const items = response.items || []
+      if (items.length > 0) {
+        const mapaApi = new Map()
+        items.forEach((item) => {
+          if (!esItemApiValido(item)) {
+            console.warn('[useCatalogo] Item de API sin SKU o línea, omitido:', item && item.sku)
+            return
+          }
+          mapaApi.set(item.sku, normalizarItemApi(item))
+        })
+        const localData = dataEstatica.productos || catalogo().productos || []
+        const productosFusionados = [...localData]
+        items.forEach(item => {
+          if (item.sku && !localData.some(p => p.sku === item.sku)) {
+            productosFusionados.push({ sku: item.sku, ...item })
+          }
+        })
+        setCatalogo({ productos: productosFusionados })
+        setSkusEnriched(prev => {
+          const next = new Map(prev)
+          mapaApi.forEach((v, k) => next.set(k, v))
+          return next
+        })
+        setFuente('api')
+        setError(null)
+        console.log(`[useCatalogo] Recarga OK: ${items.length} productos`)
+      } else {
+        setFuente('local_fallback')
+        console.warn('[useCatalogo] API sin datos, guardando estado local')
+      }
+    } catch (err) {
+      console.warn('[useCatalogo] Error recargando catálogo:', err.message)
+      setError('No se pudo conectar con el API. Se usará el catálogo local.')
+    } finally {
+      setCargando(false)
+    }
+  }
+
   const prefetchSkus = async (skus) => {
     const map = productosMap()
     const faltantes = [...new Set(skus)].filter(sku => sku && !map.has(sku) && !skusEnCola.has(sku))
@@ -337,6 +473,7 @@ export const useCatalogo = () => {
     cargando,
     error,
     fuente,
+    refrescarCatalogo,
     productosMap,
     buscarProducto,
     buscarProductoApi,
